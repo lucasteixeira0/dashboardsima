@@ -1,0 +1,13 @@
+ID,Forno,Status,Data,Unidade,Status_Ajustado,Dias_Vazio_Consecutivos,Alerta,Mudou,Bloco
+e876c21a,31,Caído,2025-06-26,UPC-Mata Verde,Caído,0,,True,1
+4972ccd1,31,Caído,2025-06-27,UPC-Mata Verde,Caído,0,,False,1
+898e6bc9,31,Caído,2025-06-28,UPC-Mata Verde,Caído,0,,False,1
+b4ffefe1,31,Caído,2025-06-29,UPC-Mata Verde,Caído,0,,False,1
+72b1b184,31,Caído,2025-06-30,UPC-Mata Verde,Caído,0,,False,1
+d1504412,31,Caído,2025-07-01,UPC-Mata Verde,Caído,0,,False,1
+c7b7c7a1,31,Caído,2025-07-02,UPC-Mata Verde,Caído,0,,False,1
+10028816,31,Caído,2025-07-03,UPC-Mata Verde,Caído,0,,False,1
+19d466c7,31,Caído,2025-07-04,UPC-Mata Verde,Caído,0,,False,1
+f5dfdf63,31,Caído,2025-07-05,UPC-Mata Verde,Caído,0,,False,1
+496d261d,31,Caído,2025-07-06,UPC-Mata Verde,Caído,0,,False,1
+49deb4f6,31,Caído,2025-07-07,UPC-Mata Verde,Caído,0,,False,1

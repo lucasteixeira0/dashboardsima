@@ -1,0 +1,13 @@
+ID,Forno,Status,Data,Unidade,Status_Ajustado,Dias_Vazio_Consecutivos,Alerta,Mudou,Bloco
+e876c21a,45,Carbonizando,2025-06-26,UPC-Mata Verde,Carbonizando,0,,True,1
+4972ccd1,45,Carbonizando,2025-06-27,UPC-Mata Verde,Carbonizando,0,,False,1
+898e6bc9,45,Carbonizando,2025-06-28,UPC-Mata Verde,Carbonizando,0,,False,1
+b4ffefe1,45,Carbonizando,2025-06-29,UPC-Mata Verde,Carbonizando,0,,False,1
+72b1b184,45,Carbonizando,2025-06-30,UPC-Mata Verde,Carbonizando,0,,False,1
+d1504412,45,Resfriando,2025-07-01,UPC-Mata Verde,Resfriando,0,,True,2
+c7b7c7a1,45,Resfriando,2025-07-02,UPC-Mata Verde,Resfriando,0,,False,2
+10028816,45,Resfriando,2025-07-03,UPC-Mata Verde,Resfriando,0,,False,2
+19d466c7,45,Descarregado,2025-07-04,UPC-Mata Verde,Descarregado,0,,True,3
+f5dfdf63,45,Descarregado,2025-07-05,UPC-Mata Verde,Vazio,1,,True,4
+496d261d,45,Descarregado,2025-07-06,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,4
+49deb4f6,45,Vazio,2025-07-07,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,False,4
