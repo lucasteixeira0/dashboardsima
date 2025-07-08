@@ -50,8 +50,8 @@ st.success(f"✅ Bem-vindo, {st.session_state.username}!")
 st.title("Dashboard Operacional - UPC Mata Verde")
 
 # Carregar os dados
-df_prod_efetiva = pd.read_csv(r"data\Historico_Fornos_Mata_Verde\producao_estimada_diaria.csv")
-df_prod_em_processo = pd.read_csv(r"data\Historico_Fornos_Mata_Verde\Qnt_emprodução_diaria.csv")
+df_prod_efetiva = pd.read_csv(r"data\producao_estimada_diaria.csv")
+df_prod_em_processo = pd.read_csv(r"data\Qnt_emprodução_diaria.csv")
 df_inatividade = pd.read_csv(r"data\taxa_inatividade_diaria.csv")
 df_media_status = pd.read_csv(r"data\media_geral_por_status.csv")
 df_alertas = pd.read_csv(r"data\fornos_alerta.csv")
@@ -170,13 +170,13 @@ st.header("Projeções de Produção")
 tab3, tab4 = st.tabs(["📆 Próximos 30 dias", "🎯 Meta de Volume"])
 
 with tab3:
-    df_proj_30 = pd.read_csv(r"data\Historico_Fornos_Mata_Verde\simulacao_30dias.csv")
+    df_proj_30 = pd.read_csv(r"data\simulacao_30dias.csv")
     fig5 = px.bar(df_proj_30, x="Previsao_Descarregado", y="Estimativa_m3",
                   title="Projeção próximos 30 dias", text_auto='.2f')
     st.plotly_chart(fig5, use_container_width=True)
 
 with tab4:
-    df_proj_vol = pd.read_csv(r"data\Historico_Fornos_Mata_Verde\simulacao_meta_volume.csv")
+    df_proj_vol = pd.read_csv(r"data\simulacao_meta_volume.csv")
     fig6 = px.bar(df_proj_vol, x="Previsao_Descarregado", y="Estimativa_m3",
                   title="Projeção até atingir Meta", text_auto='.2f')
     st.plotly_chart(fig6, use_container_width=True)
@@ -191,7 +191,7 @@ fornos = [str(f).zfill(2) for f in range(1, 61)]
 forno_sel = st.selectbox("Escolha um forno para exibir histórico:", fornos)
 
 try:
-    df_forno = pd.read_csv(fr"data\Historico_Fornos_Mata_Verde\forno_{forno_sel}.csv")
+    df_forno = pd.read_csv(fr"dataF\forno_{forno_sel}.csv")
     df_forno["Data"] = pd.to_datetime(df_forno["Data"])
     st.dataframe(df_forno)
 except FileNotFoundError:
