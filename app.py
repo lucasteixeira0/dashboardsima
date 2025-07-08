@@ -87,7 +87,7 @@ col1.metric("📦 Produção (últimos 7 dias, m³)", round(df_prod_efetiva.tail
 col2.metric("✅ Disponibilidade Média (%)", round(100 - df_inatividade["Inatividade_%"].mean(),2))
 col3.metric("🚨 Fornos em Alerta", len(df_alertas))
 col4 = st.columns(1)[0]
-col4.metric("💸 Perdas por ociosidade estimadas (m³)", round(df_perdas["Perda_m3"].sum(), 2))
+col4.metric("💸 Atrasos por ociosidade  (m³)", round(df_perdas["Perda_m3"].sum(), 2))
 
 # ------------------------------------------
 # 📈 PRODUÇÃO (Efetiva e em Processo)
@@ -199,10 +199,10 @@ except FileNotFoundError:
     
 
 # ------------------------------------------
-# 📥 Perdas
+# 📥 Atrasos de Produção
 # ------------------------------------------    
     
-st.header("Estimativa de Perdas por Ociosidade")
+st.header("Atrasos por Ociosidade")
 
 df_perdas["Data_Inicio"] = pd.to_datetime(df_perdas["Data_Inicio"])
 
