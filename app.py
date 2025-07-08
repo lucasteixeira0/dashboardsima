@@ -191,7 +191,7 @@ fornos = [str(f).zfill(2) for f in range(1, 61)]
 forno_sel = st.selectbox("Escolha um forno para exibir histórico:", fornos)
 
 try:
-    df_forno = pd.read_csv(fr"dataF\forno_{forno_sel}.csv")
+    df_forno = pd.read_csv(fr"data/forno_{forno_sel}.csv")
     df_forno["Data"] = pd.to_datetime(df_forno["Data"])
     st.dataframe(df_forno)
 except FileNotFoundError:
