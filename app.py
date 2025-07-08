@@ -50,12 +50,12 @@ st.success(f"✅ Bem-vindo, {st.session_state.username}!")
 st.title("Dashboard Operacional - UPC Mata Verde")
 
 # Carregar os dados
-df_prod_efetiva = pd.read_csv(r"data\producao_estimada_diaria.csv")
-df_prod_em_processo = pd.read_csv(r"data\Qnt_emprodução_diaria.csv")
-df_inatividade = pd.read_csv(r"data\taxa_inatividade_diaria.csv")
-df_media_status = pd.read_csv(r"data\media_geral_por_status.csv")
-df_alertas = pd.read_csv(r"data\fornos_alerta.csv")
-df_perdas = pd.read_csv(r"data\perdas_por_vazios.csv")
+df_prod_efetiva = pd.read_csv(r"data/producao_estimada_diaria.csv")
+df_prod_em_processo = pd.read_csv(r"data/Qnt_emprodução_diaria.csv")
+df_inatividade = pd.read_csv(r"data/taxa_inatividade_diaria.csv")
+df_media_status = pd.read_csv(r"data/media_geral_por_status.csv")
+df_alertas = pd.read_csv(r"data/fornos_alerta.csv")
+df_perdas = pd.read_csv(r"data/perdas_por_vazios.csv")
 
 # Converter datas
 df_prod_efetiva["Data"] = pd.to_datetime(df_prod_efetiva["Data"])
@@ -170,13 +170,13 @@ st.header("Projeções de Produção")
 tab3, tab4 = st.tabs(["📆 Próximos 30 dias", "🎯 Meta de Volume"])
 
 with tab3:
-    df_proj_30 = pd.read_csv(r"data\simulacao_30dias.csv")
+    df_proj_30 = pd.read_csv(r"data/simulacao_30dias.csv")
     fig5 = px.bar(df_proj_30, x="Previsao_Descarregado", y="Estimativa_m3",
                   title="Projeção próximos 30 dias", text_auto='.2f')
     st.plotly_chart(fig5, use_container_width=True)
 
 with tab4:
-    df_proj_vol = pd.read_csv(r"data\simulacao_meta_volume.csv")
+    df_proj_vol = pd.read_csv(r"data/simulacao_meta_volume.csv")
     fig6 = px.bar(df_proj_vol, x="Previsao_Descarregado", y="Estimativa_m3",
                   title="Projeção até atingir Meta", text_auto='.2f')
     st.plotly_chart(fig6, use_container_width=True)
@@ -222,7 +222,7 @@ st.plotly_chart(fig_perdas, use_container_width=True)
 # 📥 DOWNLOAD RELATÓRIO PDF
 # ------------------------------------------
 st.header("📥 Baixar Relatório Semanal")
-with open(r"data\relatorio_Mata_Verde_operacional_semana.pdf", "rb") as file:
+with open(r"data/relatorio_Mata_Verde_operacional_semana.pdf", "rb") as file:
     btn = st.download_button(
         label="📥 Baixar PDF",
         data=file,
