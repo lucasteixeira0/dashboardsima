@@ -83,7 +83,7 @@ st.markdown(f"📆 Período selecionado: **{ini.date()} a {fim.date()}**")
 st.header("Resumo Executivo")
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("📦 Produção (últimos 7 dias, m³)", round(df_prod_efetiva.tail(7)["Estimativa_m3"].sum(),2))
+col1.metric("📦 Produção (período filtrado, m³)", round(df_prod_efetiva["Estimativa_m3"].sum(), 2))
 col2.metric("✅ Disponibilidade Média (%)", round(100 - df_inatividade["Inatividade_%"].mean(),2))
 col3.metric("🚨 Fornos em Alerta", len(df_alertas))
 col4 = st.columns(1)[0]
