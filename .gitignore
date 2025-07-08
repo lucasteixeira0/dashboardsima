@@ -1,0 +1,6 @@
+#*.csv
+#*.pdf
+#graficos_temp/
+#__pycache__/
+.env
+.streamlit/secrets.toml
