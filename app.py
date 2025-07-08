@@ -211,7 +211,7 @@ df_perdas_filtrado = df_perdas[(df_perdas["Data_Inicio"] >= ini) & (df_perdas["D
 perdas_agrupadas = df_perdas_filtrado.groupby("Mes")[["Dias_no_Status", "Perda_m3"]].sum().reset_index()
 
 fig_perdas = px.bar(perdas_agrupadas, x="Mes", y="Perda_m3", text_auto='.2f',
-                    title="Perdas Estimadas por Mês (m³)",
+                    title="Perdas Estimadas por semana (m³)",
                     labels={"Perda_m3": "Perda (m³)", "Mes": "Mês"},
                     color_discrete_sequence=["red"])
 
