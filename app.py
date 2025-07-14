@@ -15,7 +15,12 @@ import hashlib
 
 import streamlit as st
 
-
+usuarios = {
+    "Emerson": "sima1234",
+    "Lucas": "admin123",
+    "ademir": "carvao123",
+    "Admin": "admin@123"
+}
 # Configuração da página – deve ser a primeira chamada
 st.set_page_config(page_title="Dashboard Fornos UPC-Mata Verde", layout="wide")
 
