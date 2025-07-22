@@ -96,8 +96,8 @@ df_inatividade["Data"] = pd.to_datetime(df_inatividade["Data"])
 
 # Filtro de data global
 st.sidebar.header("📅 Filtro de Período")
-data_inicio = df_prod_efetiva["Data"].min().date()
-data_fim = df_prod_efetiva["Data"].max().date()
+data_inicio = df_prod_em_processo["Data"].min().date()
+data_fim = df_prod_em_processo["Data"].max().date()
 data_sel = st.sidebar.date_input("Selecione o intervalo:", [data_inicio, data_fim])
 
 # Aplicar o filtro
