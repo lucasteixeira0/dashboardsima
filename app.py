@@ -57,7 +57,7 @@ unidades = ["Mata Verde", "Glória", "Proteção"]
 unidade_sel = st.sidebar.selectbox("Unidade:", unidades)
 caminho_base = f"data/{unidade_sel.lower().replace(' ', '')}"
 
-caminho_absoluto_base = f"data/{caminho_base}"
+caminho_absoluto_base = f"{caminho_base}"
 st.title(f"Dashboard Operacional - UPC {unidade_sel}")
 
 df_prod_efetiva = carregar_csv_seguro(
