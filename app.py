@@ -15,7 +15,12 @@ import hashlib
 
 import streamlit as st
 
-
+usuarios = {
+    "Emerson": "sima1234",
+    "Lucas": "admin123",
+    "ademir": "carvao123",
+    "Admin": "admin@123"
+}
 # Configuração da página – deve ser a primeira chamada
 st.set_page_config(page_title="Dashboard Fornos UPC-Mata Verde", layout="wide")
 
@@ -33,7 +38,7 @@ if not st.session_state["logged_in"]:
     password = st.text_input("Senha", type="password")
 
     if st.button("Entrar"):
-        if username == "Emerson" and password == "sima1234":  # Substitua com segurança depois
+        if username in usuarios and password == usuarios[username]:  # Substitua com segurança depois
             st.session_state["logged_in"] = True
             st.session_state["username"] = username
             st.success("Login realizado com sucesso.")
