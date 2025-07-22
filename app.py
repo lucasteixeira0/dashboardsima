@@ -9,11 +9,17 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-
-
+import os
 import hashlib
-
 import streamlit as st
+
+def carregar_csv_seguro(caminho, colunas_minimas=None):
+    if os.path.exists(caminho):
+        return pd.read_csv(caminho)
+    else:
+        if colunas_minimas:
+            return pd.DataFrame(columns=colunas_minimas)
+        return pd.DataFrame()
 
 usuarios = st.secrets["usuarios"]
 # Configuração da página – deve ser a primeira chamada
@@ -46,21 +52,47 @@ if not st.session_state["logged_in"]:
 st.success(f"✅ Bem-vindo, {st.session_state.username}!")
 
 
-# Título do dashboard
-st.title("Dashboard Operacional - UPC Mata Verde")
+st.sidebar.header("🏭 Selecione a Unidade")
+unidades = ["Mata Verde", "Glória", "Proteção"]
+unidade_sel = st.sidebar.selectbox("Unidade:", unidades)
+caminho_base = f"data/{unidade_sel.lower().replace(' ', '')}"
 
-# Carregar os dados
-df_prod_efetiva = pd.read_csv(r"data/producao_estimada_diaria.csv")
-df_prod_em_processo = pd.read_csv(r"data/Qnt_emprodução_diaria.csv")
-df_inatividade = pd.read_csv(r"data/taxa_inatividade_diaria.csv")
-df_media_status = pd.read_csv(r"data/media_geral_por_status.csv")
-df_alertas = pd.read_csv(r"data/fornos_alerta.csv")
-df_perdas = pd.read_csv(r"data/perdas_por_vazios.csv")
+caminho_absoluto_base = f"data/{caminho_base}"
+st.title(f"Dashboard Operacional - UPC {unidade_sel}")
+
+df_prod_efetiva = carregar_csv_seguro(
+    f"{caminho_absoluto_base}/producao_estimada_diaria.csv",
+    colunas_minimas=["Data", "Estimativa_m3"]
+)
+
+df_prod_em_processo = carregar_csv_seguro(
+    f"{caminho_absoluto_base}/Qnt_emprodução_diaria.csv",
+    colunas_minimas=["Data", "Estimativa_m3"]
+)
+
+df_inatividade = carregar_csv_seguro(
+    f"{caminho_absoluto_base}/taxa_inatividade_diaria.csv",
+    colunas_minimas=["Data", "Inatividade_%"]
+)
+
+df_media_status = carregar_csv_seguro(
+    f"{caminho_absoluto_base}/media_geral_por_status.csv"
+)
+
+df_alertas = carregar_csv_seguro(
+    f"{caminho_absoluto_base}/fornos_alerta.csv"
+)
+
+df_perdas = carregar_csv_seguro(
+    f"{caminho_absoluto_base}/perdas_por_vazios.csv",
+    colunas_minimas=["Mes", "Dias_no_Status", "Perda_m3", "Data_Inicio"]
+)
 
 # Converter datas
 df_prod_efetiva["Data"] = pd.to_datetime(df_prod_efetiva["Data"])
 df_prod_em_processo["Data"] = pd.to_datetime(df_prod_em_processo["Data"])
 df_inatividade["Data"] = pd.to_datetime(df_inatividade["Data"])
+
 
 # Filtro de data global
 st.sidebar.header("📅 Filtro de Período")
@@ -83,31 +115,56 @@ st.markdown(f"📆 Período selecionado: **{ini.date()} a {fim.date()}**")
 st.header("Resumo Executivo")
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("📦 Produção (período filtrado, m³)", round(df_prod_efetiva["Estimativa_m3"].sum(), 2))
-col2.metric("✅ Disponibilidade Média (%)", round(100 - df_inatividade["Inatividade_%"].mean(),2))
+col1.metric("📦 Produção (últimos 7 dias, m³)", round(df_prod_efetiva.tail(7)["Estimativa_m3"].sum(),2))
+if not df_inatividade.empty and "Inatividade_%" in df_inatividade.columns:
+    disponibilidade_media = round(100 - df_inatividade["Inatividade_%"].mean(), 2)
+    col2.metric("✅ Disponibilidade Média (%)", disponibilidade_media)
+else:
+    col2.metric("✅ Disponibilidade Média (%)", "N/D")
 col3.metric("🚨 Fornos em Alerta", len(df_alertas))
 col4 = st.columns(1)[0]
-col4.metric("💸 Atrasos por ociosidade  (m³)", round(df_perdas["Perda_m3"].sum(), 2))
-
+col4.metric("💸 Perdas por ociosidade estimadas (m³)", round(df_perdas["Perda_m3"].sum(), 2))
 # ------------------------------------------
 # 📈 PRODUÇÃO (Efetiva e em Processo)
 # ------------------------------------------
-st.header("Produção")
-
 tab1, tab2 , tab3 = st.tabs(["📈 Meta", "📅 Produção Efetiva", "⚙️ Produção em Processamento"])
 
+# Metas por unidade
+metas_unidade = {
+    "Mata Verde": 500,
+    "Glória": 1000,
+    "Proteção": 900
+}
 
-
-with tab1:
-    valor_atual = df_prod_em_processo.tail(1)["Estimativa_m3"].iloc[0]
-    valor_desejado = 500  # meta
-
-    # Define as faixas
-    faixas = [
+# Faixas de cor por unidade
+faixas_por_unidade = {
+    "Mata Verde": [
         {"range": [0, 400], "cor_solida": "rgba(255,0,0,1)", "cor_clara": "rgba(255,0,0,0.2)"},
         {"range": [400, 600], "cor_solida": "rgba(255,255,0,1)", "cor_clara": "rgba(255,255,0,0.2)"},
         {"range": [600, 680], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
+    ],
+    "Proteção": [
+        {"range": [0, 600], "cor_solida": "rgba(255,0,0,1)", "cor_clara": "rgba(255,0,0,0.2)"},
+        {"range": [600, 850], "cor_solida": "rgba(255,255,0,1)", "cor_clara": "rgba(255,255,0,0.2)"},
+        {"range": [850, 1000], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
+    ],
+    "Glória": [
+        {"range": [0, 700], "cor_solida": "rgba(255,0,0,1)", "cor_clara": "rgba(255,0,0,0.2)"},
+        {"range": [700, 950], "cor_solida": "rgba(255,255,0,1)", "cor_clara": "rgba(255,255,0,0.2)"},
+        {"range": [950, 1100], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
     ]
+}
+
+with tab1:
+    # Pega o valor da meta e faixas da unidade
+    valor_desejado = metas_unidade.get(unidade_sel, 500)
+    faixas = faixas_por_unidade.get(unidade_sel, [])
+
+    # Garante valor mesmo com df vazio
+    if not df_prod_em_processo.empty and "Estimativa_m3" in df_prod_em_processo.columns:
+        valor_atual = df_prod_em_processo.tail(1)["Estimativa_m3"].iloc[0]
+    else:
+        valor_atual = 0
 
     # Montar os steps com base no valor atual
     steps_config = []
@@ -121,8 +178,8 @@ with tab1:
         value=valor_atual,
         delta={"reference": valor_desejado, "increasing": {"color": "green"}, "decreasing": {"color": "red"}},
         gauge={
-            "axis": {"range": [0, 680]},
-            "bar": {"color": "rgba(0,102,204,0.8)"},  # azul com leve transparência
+            "axis": {"range": [0, faixas[-1]["range"][1] if faixas else 1000]},
+            "bar": {"color": "rgba(0,102,204,0.8)"},
             "steps": steps_config,
             "threshold": {
                 "line": {"color": "black", "width": 4},
@@ -136,19 +193,26 @@ with tab1:
     st.plotly_chart(fig, use_container_width=True)
 
 
+
 with tab2:
-    fig1 = px.bar(df_prod_efetiva, x="Data", y="Estimativa_m3",color_discrete_sequence=["#2ca02c"], title="Produção Diária Efetiva (m³)")
+    fig1 = px.bar(df_prod_efetiva, x="Data", y="Estimativa_m3",color_discrete_sequence=["#2ca02c"], title="Produção Diária Efetiva (m³)", text_auto='.2f')
     st.plotly_chart(fig1, use_container_width=True)
 
 with tab3:
     fig2 = px.line(df_prod_em_processo, x="Data", y="Estimativa_m3",color_discrete_sequence=["#2ca02c"], title="Carvão em Produção (m³)")
     st.plotly_chart(fig2, use_container_width=True)
-
 # ------------------------------------------
 # 🚦 DISPONIBILIDADE OPERACIONAL
 # ------------------------------------------
 st.header("Disponibilidade Operacional")
 
+if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
+    df_inatividade = pd.DataFrame({
+        "Data": pd.date_range(start=ini, end=fim, freq="D"),
+        "Inatividade_%": 0
+    })
+
+# Calcular disponibilidade
 df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
 fig3 = px.line(df_inatividade, x="Data", y="Disponibilidade_%",color_discrete_sequence=["#2ca02c"], title="Disponibilidade Diária (%)", markers=True)
 st.plotly_chart(fig3, use_container_width=True)
@@ -169,17 +233,37 @@ st.header("Projeções de Produção")
 
 tab3, tab4 = st.tabs(["📆 Próximos 30 dias", "🎯 Meta de Volume"])
 
+# Caminhos dos arquivos
+caminho_proj_30 = f"{caminho_absoluto_base}/simulacao_30dias.csv"
+caminho_proj_meta = f"{caminho_absoluto_base}/simulacao_meta_volume.csv"
+
 with tab3:
-    df_proj_30 = pd.read_csv(r"data/simulacao_30dias.csv")
-    fig5 = px.bar(df_proj_30, x="Previsao_Descarregado", y="Estimativa_m3",
-                  title="Projeção próximos 30 dias", text_auto='.2f')
-    st.plotly_chart(fig5, use_container_width=True)
+    if os.path.exists(caminho_proj_30):
+        df_proj_30 = pd.read_csv(caminho_proj_30)
+        fig5 = px.bar(
+            df_proj_30,
+            x="Previsao_Descarregado",
+            y="Estimativa_m3",
+            title="Projeção próximos 30 dias",
+            text_auto='.2f'
+        )
+        st.plotly_chart(fig5, use_container_width=True)
+    else:
+        st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
 
 with tab4:
-    df_proj_vol = pd.read_csv(r"data/simulacao_meta_volume.csv")
-    fig6 = px.bar(df_proj_vol, x="Previsao_Descarregado", y="Estimativa_m3",
-                  title="Projeção até atingir Meta", text_auto='.2f')
-    st.plotly_chart(fig6, use_container_width=True)
+    if os.path.exists(caminho_proj_meta):
+        df_proj_vol = pd.read_csv(caminho_proj_meta)
+        fig6 = px.bar(
+            df_proj_vol,
+            x="Previsao_Descarregado",
+            y="Estimativa_m3",
+            title="Projeção até atingir Meta",
+            text_auto='.2f'
+        )
+        st.plotly_chart(fig6, use_container_width=True)
+    else:
+        st.warning("⛔ Projeção de volume até atingir a meta não disponível para esta unidade.")
 
 # ------------------------------------------
 # 📅 HISTÓRICO INDIVIDUAL POR FORNO
@@ -190,46 +274,66 @@ fornos = [str(f).zfill(2) for f in range(1, 61)]
 
 forno_sel = st.selectbox("Escolha um forno para exibir histórico:", fornos)
 
-try:
-    df_forno = pd.read_csv(fr"data/forno_{forno_sel}.csv")
-    df_forno["Data"] = pd.to_datetime(df_forno["Data"])
+caminho_forno = f"{caminho_absoluto_base}/forno_{forno_sel}.csv"
+
+if os.path.exists(caminho_forno):
+    df_forno = pd.read_csv(caminho_forno)
+    if not df_forno.empty and "Data" in df_forno.columns:
+        df_forno["Data"] = pd.to_datetime(df_forno["Data"])
     st.dataframe(df_forno)
-except FileNotFoundError:
-    st.error("Dados não encontrados para o forno selecionado!")
-    
+else:
+    st.warning("⛔ Dados não encontrados para o forno selecionado nesta unidade.")
+
+
 
 # ------------------------------------------
 # 📥 Atrasos de Produção
 # ------------------------------------------    
     
-st.header("Atrasos por Ociosidade")
+st.header("Estimativa de Perdas por Ociosidade")
 
-df_perdas["Data_Inicio"] = pd.to_datetime(df_perdas["Data_Inicio"])
-
-# Filtro de período
-df_perdas_filtrado = df_perdas[(df_perdas["Data_Inicio"] >= ini) & (df_perdas["Data_Inicio"] <= fim)]
-perdas_agrupadas = df_perdas_filtrado.groupby("Mes")[["Dias_no_Status", "Perda_m3"]].sum().reset_index()
-
-fig_perdas = px.bar(perdas_agrupadas, x="Mes", y="Perda_m3", text_auto='.2f',
-                    title="Perdas Estimadas por semana (m³)",
-                    labels={"Perda_m3": "Perda (m³)", "Mes": "Mês"},
-                    color_discrete_sequence=["red"])
-
-st.plotly_chart(fig_perdas, use_container_width=True)
+if not df_perdas.empty and {"Data_Inicio", "Mes", "Perda_m3"}.issubset(df_perdas.columns):
+    df_perdas["Data_Inicio"] = pd.to_datetime(df_perdas["Data_Inicio"])
     
+    # Filtro de período
+    df_perdas_filtrado = df_perdas[(df_perdas["Data_Inicio"] >= ini) & (df_perdas["Data_Inicio"] <= fim)]
+    
+    if not df_perdas_filtrado.empty:
+        perdas_agrupadas = df_perdas_filtrado.groupby("Mes")[["Dias_no_Status", "Perda_m3"]].sum().reset_index()
+
+        fig_perdas = px.bar(
+            perdas_agrupadas,
+            x="Mes",
+            y="Perda_m3",
+            text_auto='.2f',
+            title="Perdas Estimadas por Mês (m³)",
+            labels={"Perda_m3": "Perda (m³)", "Mes": "Mês"},
+            color_discrete_sequence=["red"]
+        )
+
+        st.plotly_chart(fig_perdas, use_container_width=True)
+    else:
+        st.info("Não há perdas registradas no período selecionado.")
+else:
+    st.warning("⛔ Dados de perdas por ociosidade não estão disponíveis ou incompletos para esta unidade.")
+    
+
 
 # ------------------------------------------
 # 📥 DOWNLOAD RELATÓRIO PDF
 # ------------------------------------------
 st.header("📥 Baixar Relatório Semanal")
-with open(r"data/relatorio_Mata_Verde_operacional_semana.pdf", "rb") as file:
-    btn = st.download_button(
-        label="📥 Baixar PDF",
-        data=file,
-        file_name="Relatorio_Semanal_Fornos.pdf",
-        mime="application/pdf"
-    )
-    
+caminho_pdf = f"{caminho_absoluto_base}/Relatorio_Semanal_{unidade_sel.replace(' ', '_')}.pdf"
+try:
+    with open(caminho_pdf, "rb") as file:
+        st.download_button(
+            label="📥 Baixar PDF",
+            data=file,
+            file_name=f"Relatorio_Semanal_{unidade_sel}.pdf",
+            mime="application/pdf"
+        )
+except FileNotFoundError:
+    st.warning("Relatório ainda não disponível para esta unidade.")
     
 
 
