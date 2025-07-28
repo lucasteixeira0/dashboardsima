@@ -142,8 +142,8 @@ st.success(f"✅ Bem-vindo, {st.session_state.username}!")
 
 
 st.sidebar.header("🏭 Selecione a Unidade")
-unidades = ["Mata Verde", "Glória", "Proteção"]
-unidade_sel = st.sidebar.selectbox("Unidade:", unidades)
+todas_fazendas = list(fazendas_ativas.keys())
+unidade_sel = st.sidebar.selectbox("Unidade:", todas_fazendas)
 caminho_base = f"data/{unidade_sel.lower().replace(' ', '').replace('.', '')}"
 ativa = fazendas_ativas[unidade_sel]
 
