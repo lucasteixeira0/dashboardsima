@@ -145,6 +145,7 @@ st.sidebar.header("🏭 Selecione a Unidade")
 unidades = ["Mata Verde", "Glória", "Proteção"]
 unidade_sel = st.sidebar.selectbox("Unidade:", unidades)
 caminho_base = f"data/{unidade_sel.lower().replace(' ', '')}"
+ativa = fazendas_ativas[unidade_sel]
 
 caminho_absoluto_base = f"{caminho_base}"
 if ativa:
