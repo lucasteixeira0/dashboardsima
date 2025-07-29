@@ -198,7 +198,10 @@ if ativa:
     st.sidebar.header("📅 Filtro de Período")
     data_inicio = df_prod_em_processo["Data"].min().date()
     data_fim = df_prod_em_processo["Data"].max().date()
-    data_sel = st.sidebar.date_input("Selecione o intervalo:", [data_inicio, data_fim])
+    if not df_prod_em_processo.empty: 
+        data_sel = st.sidebar.date_input("Selecione o intervalo:", [data_inicio, data_fim])
+    else:     
+        data_sel=[1,2]
 
     # Aplicar o filtro
     if len(data_sel) == 2:
