@@ -183,6 +183,11 @@ if ativa:
         colunas_minimas=["Mes", "Dias_no_Status", "Perda_m3", "Data_Inicio"]
     )
 
+    df_transporte = carregar_csv_seguro(
+        f"{caminho_absoluto_base}/df_transporte.csv",
+        colunas_minimas=["Data Transporte", "Fazenda Origem","Volume medido (m³st)","Transportadora", "Placa Caminhão", "Tipo Entrega", "Observações" ]
+    )
+
     # Converter datas
     df_prod_efetiva["Data"] = pd.to_datetime(df_prod_efetiva["Data"])
     df_prod_em_processo["Data"] = pd.to_datetime(df_prod_em_processo["Data"])
@@ -222,7 +227,7 @@ if ativa:
     # ------------------------------------------
     # 📈 PRODUÇÃO (Efetiva e em Processo)
     # ------------------------------------------
-    tab1, tab2 , tab3 = st.tabs(["📈 Meta", "📅 Produção Efetiva", "⚙️ Produção em Processamento"])
+    tab1, tab2 , tab3, tab4 = st.tabs(["📈 Meta", "📅 Produção Efetiva", "⚙️ Produção em Processamento","🚛 Transporte"])
 
     # Metas por unidade
     metas_unidade = {
@@ -296,69 +301,89 @@ if ativa:
     with tab3:
         fig2 = px.line(df_prod_em_processo, x="Data", y="Estimativa_m3",color_discrete_sequence=["#2ca02c"], title="Carvão em Produção (m³)")
         st.plotly_chart(fig2, use_container_width=True)
+
+    with tab4:
+        st.subheader("🚛 Dados de Transporte")
+        try:
+            colunas=["Data Transporte", "Fazenda Origem","Volume medido (m³st)","Transportadora", "Placa Caminhão", "Tipo Entrega", "Observações", ]
+            df_transporte = df_transporte[[col for col in colunas if col in df_transporte.columns]]
+            st.dataframe(df_transporte)
+        except Exception as e:
+            st.error(f"Erro ao carregar dados de transporte: {e}")
+
     # ------------------------------------------
     # 🚦 DISPONIBILIDADE OPERACIONAL
     # ------------------------------------------
-    st.header("Disponibilidade Operacional")
+    st.header(" Saúde Operacional")
+    
+    tabinat,tabdisp= st.tabs(["Taxa de Inatividade","Disponibilidade Operacional"])
+    with tabinat: 
+        if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
+            df_inatividade = pd.DataFrame({
+                "Data": pd.date_range(start=ini, end=fim, freq="D"),
+                "Inatividade_%": 0
+            })
+        
+        # Calcular disponibilidade
+        df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
+        fig3 = px.line(df_inatividade, x="Data", y="Disponibilidade_%",color_discrete_sequence=["#2ca02c"], title="Disponibilidade Diária (%)", markers=True)
+        st.plotly_chart(fig3, use_container_width=True)
+    
+    with tabdisp:
+        fig4 = px.line(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)")
+        st.plotly_chart(fig4, use_container_width=True)
 
-    if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
-        df_inatividade = pd.DataFrame({
-            "Data": pd.date_range(start=ini, end=fim, freq="D"),
-            "Inatividade_%": 0
-        })
-
-    # Calcular disponibilidade
-    df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
-    fig3 = px.line(df_inatividade, x="Data", y="Disponibilidade_%",color_discrete_sequence=["#2ca02c"], title="Disponibilidade Diária (%)", markers=True)
-    st.plotly_chart(fig3, use_container_width=True)
-
-    # ------------------------------------------
-    # 📉 TAXA DE INATIVIDADE
-    # ------------------------------------------
-
-    st.header("Taxa de Inatividade")
-
-    fig4 = px.line(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)")
-    st.plotly_chart(fig4, use_container_width=True)
 
     # ------------------------------------------
     # 🔮 PREVISÕES DE PRODUÇÃO (PROJEÇÕES)
     # ------------------------------------------
-    st.header("Projeções de Produção")
-
-    tab3, tab4 = st.tabs(["📆 Próximos 30 dias", "🎯 Meta de Volume"])
-
-    # Caminhos dos arquivos
-    caminho_proj_30 = f"{caminho_absoluto_base}/simulacao_30dias.csv"
-    caminho_proj_meta = f"{caminho_absoluto_base}/simulacao_meta_volume.csv"
-
-    with tab3:
-        if os.path.exists(caminho_proj_30):
-            df_proj_30 = pd.read_csv(caminho_proj_30)
-            fig5 = px.bar(
-                df_proj_30,
-                x="Previsao_Descarregado",
-                y="Estimativa_m3",
-                title="Projeção próximos 30 dias",
-                text_auto='.2f'
-            )
-            st.plotly_chart(fig5, use_container_width=True)
-        else:
-            st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
-
-    with tab4:
-        if os.path.exists(caminho_proj_meta):
-            df_proj_vol = pd.read_csv(caminho_proj_meta)
-            fig6 = px.bar(
-                df_proj_vol,
-                x="Previsao_Descarregado",
-                y="Estimativa_m3",
-                title="Projeção até atingir Meta",
-                text_auto='.2f'
-            )
-            st.plotly_chart(fig6, use_container_width=True)
-        else:
-            st.warning("⛔ Projeção de volume até atingir a meta não disponível para esta unidade.")
+    st.header("Detalhes Avançados")
+    tab_hist, tab_proj = st.tabs(["📜 Análise Histórica", "🔮 Projeções"])
+    
+    with tab_hist:
+            
+        df_historico = carregar_csv_seguro(
+        f"{caminho_absoluto_base}/fazendas.csv", 
+        colunas_minimas=["FazendaNome", "Data", "Metragem"]
+        )
+        exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda)
+        
+    with tab_proj:    
+        st.header("Projeções de Produção")
+        
+        tab3, tab4 = st.tabs(["Próximos 30 dias", "Meta de Volume"])
+        
+        # Caminhos dos arquivos
+        caminho_proj_30 = f"{caminho_absoluto_base}/simulacao_30dias.csv"
+        caminho_proj_meta = f"{caminho_absoluto_base}/simulacao_meta_volume.csv"
+        
+        with tab3:
+            if os.path.exists(caminho_proj_30):
+                df_proj_30 = pd.read_csv(caminho_proj_30)
+                fig5 = px.bar(
+                    df_proj_30,
+                    x="Previsao_Descarregado",
+                    y="Estimativa_m3",
+                    title="Projeção próximos 30 dias",
+                    text_auto='.2f'
+                )
+                st.plotly_chart(fig5, use_container_width=True)
+            else:
+                st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
+        
+        with tab4:
+            if os.path.exists(caminho_proj_meta):
+                df_proj_vol = pd.read_csv(caminho_proj_meta)
+                fig6 = px.bar(
+                    df_proj_vol,
+                    x="Previsao_Descarregado",
+                    y="Estimativa_m3",
+                    title="Projeção até atingir Meta",
+                    text_auto='.2f'
+                )
+                st.plotly_chart(fig6, use_container_width=True)
+            else:
+                st.warning("⛔ Projeção de volume até atingir a meta não disponível para esta unidade.")
 
     # ------------------------------------------
     # 📅 HISTÓRICO INDIVIDUAL POR FORNO
@@ -411,17 +436,7 @@ if ativa:
             st.info("Não há perdas registradas no período selecionado.")
     else:
         st.warning("⛔ Dados de perdas por ociosidade não estão disponíveis ou incompletos para esta unidade.")
-    # ------------------------------------------
-    # 📥 Exibir histórico  
-    # ------------------------------------------    
-        
-    df_historico = carregar_csv_seguro(
-    f"{caminho_absoluto_base}/fazendas.csv", 
-    colunas_minimas=["FazendaNome", "Data", "Metragem"]
-    )
-    exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda)    
-
-
+    
     # ------------------------------------------
     # 📥 DOWNLOAD RELATÓRIO PDF
     # ------------------------------------------
