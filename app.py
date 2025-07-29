@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 import os
 import hashlib
 import streamlit as st
+import time 
 
 def carregar_csv_seguro(caminho, colunas_minimas=None):
     if os.path.exists(caminho):
@@ -138,8 +139,11 @@ if not st.session_state["logged_in"]:
     st.stop()  # Impede que o restante do dashboard carregue sem login
 
 # Exibir mensagem no dashboard
-st.success(f"✅ Bem-vindo, {st.session_state.username}!")
+mensagem = st.empty()
+mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 
+time.sleep(3)
+mensagem.empty()
 
 st.sidebar.header("🏭 Selecione a Unidade")
 todas_fazendas = list(fazendas_ativas.keys())
