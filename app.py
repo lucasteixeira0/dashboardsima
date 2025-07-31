@@ -353,7 +353,7 @@ if ativa:
             fig5.add_hline(y=media_carregamento, line_dash="dash", line_color="gray",
                         annotation_text=f"Média: {media_carregamento:.1f}", annotation_position="top left")
             st.plotly_chart(fig5, use_container_width=True)
-            colca,colcamax =st.columns
+            colca,colcamax =st.columns(2)
             colca.metric("Quantidade média de carregamentos diários ", f"{media_carregamento}" if media_carregamento else "N/D")
             colcamax.metric("Máximo de  fornos carregados em um dia  ", f"{max_carregamentos}" if max_carregamentos else "N/D")
         else:
@@ -363,12 +363,16 @@ if ativa:
     with tabdescarregamento:
         if "df_descarregamentos" in locals() and not df_descarregamentos.empty:
             media_descarregamento = df_descarregamentos["Qtde_Descarregada"].mean()
+            max_descarregamentos = df_carregamentos["Qtde_Carregada"].max()
             fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",
                         color_discrete_sequence=["#2ca02c"],
                         title="Fornos Descarregados (Qtde)")
             fig6.add_hline(y=media_descarregamento, line_dash="dash", line_color="gray",
                         annotation_text=f"Média: {media_descarregamento:.1f}", annotation_position="top left")
             st.plotly_chart(fig6, use_container_width=True)
+            coldca,coldcamax =st.columns(2)
+            coldca.metric("Quantidade média de descarregamentos diários ", f"{media_descarregamento}" if media_descarregamento else "N/D")
+            coldcamax.metric("Máximo de  fornos descarregados em um dia  ", f"{max_descarregamentos}" if max_descarregamentos else "N/D")
         else:
             st.info("Nenhum dado de descarregamento disponível para exibir.")
     # ------------------------------------------
