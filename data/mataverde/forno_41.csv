@@ -1,34 +1,35 @@
-ID,Forno,Status,Data,Unidade,Status_Ajustado,Dias_Vazio_Consecutivos,Alerta,Mudou,Bloco
-e876c21a,41,Carbonizando,2025-06-26,UPC-Mata Verde,Carbonizando,0,,True,1
-4972ccd1,41,Carbonizando,2025-06-27,UPC-Mata Verde,Carbonizando,0,,False,1
-898e6bc9,41,Resfriando,2025-06-28,UPC-Mata Verde,Resfriando,0,,True,2
-b4ffefe1,41,Resfriando,2025-06-29,UPC-Mata Verde,Resfriando,0,,False,2
-72b1b184,41,Resfriando,2025-06-30,UPC-Mata Verde,Resfriando,0,,False,2
-d1504412,41,Resfriando,2025-07-01,UPC-Mata Verde,Resfriando,0,,False,2
-c7b7c7a1,41,Resfriando,2025-07-02,UPC-Mata Verde,Resfriando,0,,False,2
-10028816,41,Resfriando,2025-07-03,UPC-Mata Verde,Resfriando,0,,False,2
-19d466c7,41,Resfriando,2025-07-04,UPC-Mata Verde,Resfriando,0,,False,2
-f5dfdf63,41,Vazio,2025-07-05,UPC-Mata Verde,Vazio,1,,True,3
-496d261d,41,Vazio,2025-07-06,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,3
-49deb4f6,41,Vazio,2025-07-07,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,False,3
-4facd70b,41,Carregado,2025-07-08,UPC-Mata Verde,Carregado,0,,True,4
-1f3876bc,41,Carbonizando,2025-07-09,UPC-Mata Verde,Carbonizando,0,,True,5
-a667de14,41,Carbonizando,2025-07-10,UPC-Mata Verde,Carbonizando,0,,False,5
-9140ecb7,41,Carbonizando,2025-07-11,UPC-Mata Verde,Carbonizando,0,,False,5
-836f3310,41,Carbonizando,2025-07-12,UPC-Mata Verde,Carbonizando,0,,False,5
-6f32cffb,41,Resfriando,2025-07-13,UPC-Mata Verde,Resfriando,0,,True,6
-ca705202,41,Resfriando,2025-07-14,UPC-Mata Verde,Resfriando,0,,False,6
-e2d0c89d,41,Vazio,2025-07-15,UPC-Mata Verde,Vazio,1,,True,7
-1ed85af1,41,Vazio,2025-07-16,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,7
-4f0c3deb,41,Vazio,2025-07-17,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,False,7
-fc2482a1,41,Carbonizando,2025-07-18,UPC-Mata Verde,Carbonizando,0,,True,8
-b06275b4,41,Resfriando,2025-07-19,UPC-Mata Verde,Resfriando,0,,True,9
-aa02211a,41,Resfriando,2025-07-20,UPC-Mata Verde,Resfriando,0,,False,9
-a0530255,41,Resfriando,2025-07-21,UPC-Mata Verde,Resfriando,0,,False,9
-31e3dec8,41,Resfriando,2025-07-22,UPC-Mata Verde,Resfriando,0,,False,9
-63cce7ca,41,Resfriando,2025-07-23,UPC-Mata Verde,Resfriando,0,,False,9
-9a238d8a,41,Resfriando,2025-07-24,UPC-Mata Verde,Resfriando,0,,False,9
-72ddcec5,41,Resfriando,2025-07-25,UPC-Mata Verde,Resfriando,0,,False,9
-3a1af6c3,41,Resfriando,2025-07-26,UPC-Mata Verde,Resfriando,0,,False,9
-c5982aac,41,Resfriando,2025-07-27,UPC-Mata Verde,Resfriando,0,,False,9
-9d4f136d,41,Resfriando,2025-07-28,UPC-Mata Verde,Resfriando,0,,False,9
+ID,Forno,Status,Data,Unidade,Status_Ajustado,Dias_Vazio_Consecutivos,Alerta,Mudou,Bloco,Status_Anterior,Carregou,Descarregou
+e876c21a,41,Carbonizando,2025-06-26,UPC-Mata Verde,Carbonizando,0,,True,1,,False,False
+4972ccd1,41,Carbonizando,2025-06-27,UPC-Mata Verde,Carbonizando,0,,False,1,Carbonizando,False,False
+898e6bc9,41,Resfriando,2025-06-28,UPC-Mata Verde,Resfriando,0,,True,2,Carbonizando,False,False
+b4ffefe1,41,Resfriando,2025-06-29,UPC-Mata Verde,Resfriando,0,,False,2,Resfriando,False,False
+72b1b184,41,Resfriando,2025-06-30,UPC-Mata Verde,Resfriando,0,,False,2,Resfriando,False,False
+d1504412,41,Resfriando,2025-07-01,UPC-Mata Verde,Resfriando,0,,False,2,Resfriando,False,False
+c7b7c7a1,41,Resfriando,2025-07-02,UPC-Mata Verde,Resfriando,0,,False,2,Resfriando,False,False
+10028816,41,Resfriando,2025-07-03,UPC-Mata Verde,Resfriando,0,,False,2,Resfriando,False,False
+19d466c7,41,Resfriando,2025-07-04,UPC-Mata Verde,Resfriando,0,,False,2,Resfriando,False,False
+f5dfdf63,41,Vazio,2025-07-05,UPC-Mata Verde,Vazio,1,,True,3,Resfriando,False,True
+496d261d,41,Vazio,2025-07-06,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,3,Vazio,False,False
+49deb4f6,41,Vazio,2025-07-07,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,False,3,Vazio,False,False
+4facd70b,41,Carregado,2025-07-08,UPC-Mata Verde,Carregado,0,,True,4,Vazio,True,False
+1f3876bc,41,Carbonizando,2025-07-09,UPC-Mata Verde,Carbonizando,0,,True,5,Carregado,False,False
+a667de14,41,Carbonizando,2025-07-10,UPC-Mata Verde,Carbonizando,0,,False,5,Carbonizando,False,False
+9140ecb7,41,Carbonizando,2025-07-11,UPC-Mata Verde,Carbonizando,0,,False,5,Carbonizando,False,False
+836f3310,41,Carbonizando,2025-07-12,UPC-Mata Verde,Carbonizando,0,,False,5,Carbonizando,False,False
+6f32cffb,41,Resfriando,2025-07-13,UPC-Mata Verde,Resfriando,0,,True,6,Carbonizando,False,False
+ca705202,41,Resfriando,2025-07-14,UPC-Mata Verde,Resfriando,0,,False,6,Resfriando,False,False
+e2d0c89d,41,Vazio,2025-07-15,UPC-Mata Verde,Vazio,1,,True,7,Resfriando,False,True
+1ed85af1,41,Vazio,2025-07-16,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,7,Vazio,False,False
+4f0c3deb,41,Vazio,2025-07-17,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,False,7,Vazio,False,False
+fc2482a1,41,Carbonizando,2025-07-18,UPC-Mata Verde,Carbonizando,0,,True,8,Vazio,True,False
+b06275b4,41,Resfriando,2025-07-19,UPC-Mata Verde,Resfriando,0,,True,9,Carbonizando,False,False
+aa02211a,41,Resfriando,2025-07-20,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+a0530255,41,Resfriando,2025-07-21,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+31e3dec8,41,Resfriando,2025-07-22,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+63cce7ca,41,Resfriando,2025-07-23,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+9a238d8a,41,Resfriando,2025-07-24,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+72ddcec5,41,Resfriando,2025-07-25,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+3a1af6c3,41,Resfriando,2025-07-26,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+c5982aac,41,Resfriando,2025-07-27,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+9d4f136d,41,Resfriando,2025-07-28,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
+ca91db1e,41,Resfriando,2025-07-29,UPC-Mata Verde,Resfriando,0,,False,9,Resfriando,False,False
