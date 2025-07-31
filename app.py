@@ -188,6 +188,13 @@ if ativa:
         colunas_minimas=["Data Transporte", "Fazenda Origem","Volume medido (m³st)","Transportadora", "Placa Caminhão", "Tipo Entrega", "Observações" ]
     )
 
+    df_carregamentos = carregar_csv_seguro(
+        f"{caminho_absoluto_base}/carregamentos.csv"
+    )
+
+    df_descarregamentos = carregar_csv_seguro(
+        f"{caminho_absoluto_base}/descarregamentos.csv"
+    )
     # Converter datas
     df_prod_efetiva["Data"] = pd.to_datetime(df_prod_efetiva["Data"])
     df_prod_em_processo["Data"] = pd.to_datetime(df_prod_em_processo["Data"])
@@ -319,7 +326,7 @@ if ativa:
     # ------------------------------------------
     st.header(" Saúde Operacional")
     
-    tabinat,tabdisp= st.tabs(["Taxa de Inatividade","Disponibilidade Operacional"])
+    tabinat,tabdisp,tabcarregamento,tabdescarregamento= st.tabs(["Taxa de Inatividade","Disponibilidade Operacional","Carregamentos Diários", "Descarregamentos Diários"])
     with tabinat: 
         if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
             df_inatividade = pd.DataFrame({
@@ -336,7 +343,15 @@ if ativa:
         fig4 = px.line(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)")
         st.plotly_chart(fig4, use_container_width=True)
 
+    with tabcarregamento:
+        fig5 = px.line(df_carregamentos, x="Data", y="Qtde_Carregada",color_discrete_sequence=["#2ca02c"], title="Fornos carregados(Qtde)")
+        st.plotly_chart(fig4, use_container_width=True)
 
+
+    with tabdescarregamento:
+
+        fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",color_discrete_sequence=["#2ca02c"], title="Fornos Descarregados(Qtde)")
+        st.plotly_chart(fig4, use_container_width=True)
     # ------------------------------------------
     # 🔮 PREVISÕES DE PRODUÇÃO (PROJEÇÕES)
     # ------------------------------------------
