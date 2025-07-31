@@ -345,14 +345,20 @@ if ativa:
     with tabcarregamento:
         if "df_carregamentos" in locals() and not df_carregamentos.empty:
             media_carregamento = df_carregamentos["Qtde_Carregada"].mean()
+            max_carregamentos = df_carregamentos["Qtde_Carregada"].max()
+            
             fig5 = px.line(df_carregamentos, x="Data", y="Qtde_Carregada",
                         color_discrete_sequence=["#2ca02c"],
                         title="Fornos Carregados (Qtde)")
             fig5.add_hline(y=media_carregamento, line_dash="dash", line_color="gray",
                         annotation_text=f"Média: {media_carregamento:.1f}", annotation_position="top left")
             st.plotly_chart(fig5, use_container_width=True)
+            colca,colcamax =st.columns
+            colca.metric("Quantidade média de carregamentos diários ", f"{media_carregamento}" if media_carregamento else "N/D")
+            colcamax.metric("Máximo de  fornos carregados em um dia  ", f"{max_carregamentos}" if max_carregamentos else "N/D")
         else:
             st.info("Nenhum dado de carregamento disponível para exibir.")
+        
 
     with tabdescarregamento:
         if "df_descarregamentos" in locals() and not df_descarregamentos.empty:
