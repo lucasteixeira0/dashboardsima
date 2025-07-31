@@ -1,0 +1,31 @@
+ID,Forno,Status,Data,Unidade,Status_Ajustado,Dias_Vazio_Consecutivos,Alerta,Mudou,Bloco
+e876c21a,18,Resfriando,2025-06-26,UPC-Mata Verde,Resfriando,0,,True,1
+4972ccd1,18,Descarregado,2025-06-27,UPC-Mata Verde,Descarregado,0,,True,2
+898e6bc9,18,Descarregado,2025-06-28,UPC-Mata Verde,Vazio,1,,True,3
+b4ffefe1,18,Descarregado,2025-06-29,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,3
+72b1b184,18,Carregado,2025-06-30,UPC-Mata Verde,Carregado,0,,True,4
+d1504412,18,Carbonizando,2025-07-01,UPC-Mata Verde,Carbonizando,0,,True,5
+c7b7c7a1,18,Resfriando,2025-07-02,UPC-Mata Verde,Resfriando,0,,True,6
+10028816,18,Vazio,2025-07-03,UPC-Mata Verde,Vazio,1,,True,7
+19d466c7,18,Vazio,2025-07-04,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,7
+f5dfdf63,18,Vazio,2025-07-05,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,False,7
+496d261d,18,Vazio,2025-07-06,UPC-Mata Verde,Vazio,4,Forno vazio há 4 dias consecutivos!,False,7
+49deb4f6,18,Carbonizando,2025-07-07,UPC-Mata Verde,Carbonizando,0,,True,8
+4facd70b,18,Carbonizando,2025-07-08,UPC-Mata Verde,Carbonizando,0,,False,8
+1f3876bc,18,Carbonizando,2025-07-09,UPC-Mata Verde,Carbonizando,0,,False,8
+a667de14,18,Descarregado,2025-07-10,UPC-Mata Verde,Descarregado,0,,True,9
+9140ecb7,18,Descarregado,2025-07-11,UPC-Mata Verde,Vazio,1,,True,10
+836f3310,18,Vazio,2025-07-12,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,False,10
+6f32cffb,18,Carbonizando,2025-07-13,UPC-Mata Verde,Carbonizando,0,,True,11
+ca705202,18,Carbonizando,2025-07-14,UPC-Mata Verde,Carbonizando,0,,False,11
+e2d0c89d,18,Carbonizando,2025-07-15,UPC-Mata Verde,Carbonizando,0,,False,11
+1ed85af1,18,Carbonizando,2025-07-16,UPC-Mata Verde,Carbonizando,0,,False,11
+4f0c3deb,18,Carbonizando,2025-07-17,UPC-Mata Verde,Carbonizando,0,,False,11
+fc2482a1,18,Carbonizando,2025-07-18,UPC-Mata Verde,Carbonizando,0,,False,11
+b06275b4,18,Carbonizando,2025-07-19,UPC-Mata Verde,Carbonizando,0,,False,11
+aa02211a,18,Resfriando,2025-07-20,UPC-Mata Verde,Resfriando,0,,True,12
+a0530255,18,Resfriando,2025-07-21,UPC-Mata Verde,Resfriando,0,,False,12
+31e3dec8,18,Resfriando,2025-07-22,UPC-Mata Verde,Resfriando,0,,False,12
+63cce7ca,18,Resfriando,2025-07-23,UPC-Mata Verde,Resfriando,0,,False,12
+9a238d8a,18,Resfriando,2025-07-24,UPC-Mata Verde,Resfriando,0,,False,12
+72ddcec5,18,Resfriando,2025-07-25,UPC-Mata Verde,Resfriando,0,,False,12
