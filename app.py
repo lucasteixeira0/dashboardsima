@@ -344,13 +344,21 @@ if ativa:
         st.plotly_chart(fig4, use_container_width=True)
 
     with tabcarregamento:
-        fig5 = px.line(df_carregamentos, x="Data", y="Qtde_Carregada",color_discrete_sequence=["#2ca02c"], title="Fornos carregados(Qtde)")
+        media_carregamento = df_carregamentos["Qtde_Carregada"].mean()
+        fig5 = px.line(df_carregamentos, x="Data", y="Qtde_Carregada",
+                    color_discrete_sequence=["#2ca02c"],
+                    title="Fornos Carregados (Qtde)")
+        fig5.add_hline(y=media_carregamento, line_dash="dash", line_color="gray",
+                    annotation_text=f"Média: {media_carregamento:.1f}", annotation_position="top left")
         st.plotly_chart(fig5, use_container_width=True)
 
-
     with tabdescarregamento:
-
-        fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",color_discrete_sequence=["#2ca02c"], title="Fornos Descarregados(Qtde)")
+        media_descarregamento = df_descarregamentos["Qtde_Descarregada"].mean()
+        fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",
+                    color_discrete_sequence=["#2ca02c"],
+                    title="Fornos Descarregados (Qtde)")
+        fig6.add_hline(y=media_descarregamento, line_dash="dash", line_color="gray",
+                    annotation_text=f"Média: {media_descarregamento:.1f}", annotation_position="top left")
         st.plotly_chart(fig6, use_container_width=True)
     # ------------------------------------------
     # 🔮 PREVISÕES DE PRODUÇÃO (PROJEÇÕES)
