@@ -345,13 +345,13 @@ if ativa:
 
     with tabcarregamento:
         fig5 = px.line(df_carregamentos, x="Data", y="Qtde_Carregada",color_discrete_sequence=["#2ca02c"], title="Fornos carregados(Qtde)")
-        st.plotly_chart(fig4, use_container_width=True)
+        st.plotly_chart(fig5, use_container_width=True)
 
 
     with tabdescarregamento:
 
         fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",color_discrete_sequence=["#2ca02c"], title="Fornos Descarregados(Qtde)")
-        st.plotly_chart(fig4, use_container_width=True)
+        st.plotly_chart(fig6, use_container_width=True)
     # ------------------------------------------
     # 🔮 PREVISÕES DE PRODUÇÃO (PROJEÇÕES)
     # ------------------------------------------
