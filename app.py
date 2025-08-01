@@ -424,10 +424,7 @@ if ativa:
                 # Somar volume total projetado
                 volume_total = df_proj_vol["Estimativa_m3"].sum()
 
-                # Exibir métricas
-                col1, col2 = st.columns(2)
-                col1.metric("⏳ Intervalo de dias", f"{dias_corridos} dias")
-                col2.metric("📦 Volume Total", f"{volume_total:.2f} m³")
+             
 
                 # Exibir gráfico
                 fig6 = px.bar(
@@ -438,6 +435,10 @@ if ativa:
                     text_auto='.2f'
                 )
                 st.plotly_chart(fig6, use_container_width=True)
+                
+                col1, col2 = st.columns(2)
+                col1.metric("⏳ Intervalo de dias", f"{dias_corridos} dias")
+                col2.metric("📦 Volume Total", f"{volume_total:.2f} m³")
             else:
                 st.warning("⛔ Projeção de volume até atingir a meta não disponível para esta unidade.")
 
