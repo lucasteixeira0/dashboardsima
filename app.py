@@ -415,6 +415,21 @@ if ativa:
         with tab4:
             if os.path.exists(caminho_proj_meta):
                 df_proj_vol = pd.read_csv(caminho_proj_meta)
+
+                # Calcular intervalo de datas
+                data_min = pd.to_datetime(df_proj_vol["Previsao_Descarregado"].min())
+                data_max = pd.to_datetime(df_proj_vol["Previsao_Descarregado"].max())
+                dias_corridos = (data_max - data_min).days + 1
+
+                # Somar volume total projetado
+                volume_total = df_proj_vol["Estimativa_m3"].sum()
+
+                # Exibir métricas
+                col1, col2 = st.columns(2)
+                col1.metric("⏳ Intervalo de dias", f"{dias_corridos} dias")
+                col2.metric("📦 Volume Total", f"{volume_total:.2f} m³")
+
+                # Exibir gráfico
                 fig6 = px.bar(
                     df_proj_vol,
                     x="Previsao_Descarregado",
