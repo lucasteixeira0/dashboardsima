@@ -419,7 +419,7 @@ if ativa:
                     df_proj_vol,
                     x="Previsao_Descarregado",
                     y="Estimativa_m3",
-                    title="Projeção até atingir Meta",
+                    title="Projeção até zerar estoque",
                     text_auto='.2f'
                 )
                 st.plotly_chart(fig6, use_container_width=True)
