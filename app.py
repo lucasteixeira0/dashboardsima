@@ -363,7 +363,7 @@ if ativa:
     with tabdescarregamento:
         if "df_descarregamentos" in locals() and not df_descarregamentos.empty:
             media_descarregamento = df_descarregamentos["Qtde_Descarregada"].mean()
-            max_descarregamentos = df_descarregamentos["Qtde_Carregada"].max()
+            max_descarregamentos = df_descarregamentos["Qtde_Descarregada"].max()
             fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",
                         color_discrete_sequence=["#2ca02c"],
                         title="Fornos Descarregados (Qtde)")
