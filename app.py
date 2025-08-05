@@ -23,7 +23,6 @@ def carregar_csv_seguro(caminho, colunas_minimas=None):
         return pd.DataFrame()
 def formatar_nome_fazenda(nome):
     return nome.lower().replace(" ", "").replace(".", "")
-
 def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     st.subheader("📅 Dados históricos")
     
@@ -101,6 +100,9 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     colG.metric("% com umidade ≤ 12%", f"{dentro_umid:.1f}%" if not pd.isna(dentro_umid) else "N/D")
     st.info(f"🔍 Dias com umidade anômala detectados: **{num_outliers_umd}**")
 
+
+
+
 fazendas_ativas = {
     "Mata Verde": True,
     "Gloria": True,
@@ -142,7 +144,7 @@ if not st.session_state["logged_in"]:
 mensagem = st.empty()
 mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 
-time.sleep(3)
+time.sleep(2)
 mensagem.empty()
 
 st.sidebar.header("🏭 Selecione a Unidade")
@@ -150,8 +152,15 @@ todas_fazendas = list(fazendas_ativas.keys())
 unidade_sel = st.sidebar.selectbox("Unidade:", todas_fazendas)
 caminho_base = f"data/{unidade_sel.lower().replace(' ', '').replace('.', '')}"
 ativa = fazendas_ativas[unidade_sel]
-
 caminho_absoluto_base = f"{caminho_base}"
+
+if st.sidebar.button("🔄 Ir para Painel de Transportes"):
+    st.session_state["pagina"] = "transportes"
+
+# Botão para voltar
+if st.sidebar.button("🏠 Voltar ao Painel Principal"):
+    st.session_state["pagina"] = "principal"
+
 if ativa:
     st.title(f"Dashboard Operacional - UPC {unidade_sel}")
 
