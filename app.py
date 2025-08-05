@@ -147,13 +147,26 @@ mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 time.sleep(2)
 mensagem.empty()
 
-st.sidebar.button("Painel de Gestão")
+# -----------------------------------------------------------
+# 🔀 NAVEGAÇÃO PELAS PÁGINAS DO DASHBOARD
+# -----------------------------------------------------------
+PAGES = {
+    "Painel de Gestão":      "gestao",
+    "Visão 360°":            "visao360",
+    "Indicadores Operacionais":"indicadores",
+    "Simulador":             "simulador",
+    "Auditoria Cubagem":     "auditoria"      # << NOVA PÁGINA
+}
 
-st.sidebar.button("Visão 360° ")
+# valor inicial
+if "page" not in st.session_state:
+    st.session_state["page"] = "gestao"
 
-st.sidebar.button("Indicadores Operacionais")
+# renderiza os botões
+for nome, chave in PAGES.items():
+    if st.sidebar.button(nome):
+        st.session_state["page"] = chave
 
-st.sidebar.button("Simulador")
 
 
 st.sidebar.header("🏭 Selecione a Unidade")
