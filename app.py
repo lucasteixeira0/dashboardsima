@@ -572,9 +572,13 @@ elif st.session_state["page"] == "auditoria":
     # caminhos dos dois CSVs gerados pelo script de auditoria
     caminho_alertas_motorista  = os.path.join(base_2, "alertas_motorista.csv")
     caminho_ranking_motoristas = os.path.join(base_2, "ranking_motoristas.csv")
+    caminho_alertas_carga=os.path.join(base_2,"alertas_carga.csv")
+    caminho_fazendas=os.path.join(base_2,"fazendas_concatenadas.csv")
 
     df_alertas_mot = carregar_csv_seguro(caminho_alertas_motorista)
     df_ranking_mot = carregar_csv_seguro(caminho_ranking_motoristas)
+    df_alertas_carga=carregar_csv_seguro(caminho_alertas_carga)
+    df_fazendas=carregar_csv_seguro(caminho_fazendas)
 
     tab_rank, tab_alertas = st.tabs(["🏆 Ranking de Motoristas", "🚨 Cargas Suspeitas"])
 
@@ -616,6 +620,48 @@ elif st.session_state["page"] == "auditoria":
                 color_discrete_sequence=["#ff7f0e"]
             )
             st.plotly_chart(fig_mot, use_container_width=True)
+    st.markdown("### 📈 Densidade Seca por Fazenda com Alertas")
+
+# 1 ▸ garantir que Data está em datetime
+for df_tmp in (df_fazendas, df_alertas_carga):
+    if not df_tmp.empty:
+        df_tmp["Data"] = pd.to_datetime(df_tmp["Data"], errors="coerce")
+
+# 2 ▸ selectbox das fazendas disponíveis no CSV concatenado
+fazendas_disponiveis = sorted(df_fazendas["FazendaNome"].unique())
+fazenda_escolhida = st.selectbox("Selecione a fazenda:", fazendas_disponiveis)
+
+# 3 ▸ filtrar dados principais + alertas da fazenda
+df_faz_sel   = df_fazendas[df_fazendas["FazendaNome"] == fazenda_escolhida]
+df_alert_sel = df_alertas_carga[df_alertas_carga["FazendaNome"] == fazenda_escolhida]
+
+if df_faz_sel.empty:
+    st.info("Nenhum registro encontrado para essa fazenda.")
+else:
+    # 4 ▸ figura base – linha de densidade
+    fig_faz = px.line(
+        df_faz_sel.sort_values("Data"),
+        x="Data", y="DensidadeSeca",
+        title=f"Densidade Seca – {fazenda_escolhida}",
+        labels={"DensidadeSeca": "kg/m³"},
+        color_discrete_sequence=["#1f77b4"]
+    )
+
+    # 5 ▸ sobrepor pontos de alerta, se existirem
+    if not df_alert_sel.empty:
+        fig_alert = px.scatter(
+            df_alert_sel,
+            x="Data", y="DensidadeSeca",
+            color_discrete_sequence=["#d62728"],
+            symbol_sequence=["circle-open"],
+            labels={"DensidadeSeca": "kg/m³"}
+        )
+        fig_faz.add_traces(fig_alert.data)
+        fig_faz.update_traces(marker=dict(size=10), selector=dict(mode="markers"))
+        fig_faz.update_layout(legend=dict(title="Legenda"),
+                              showlegend=False)  # esconde legenda duplicada
+
+    st.plotly_chart(fig_faz, use_container_width=True)
 # ------------------------------------------
 # 📝 FOOTER
 # ------------------------------------------
