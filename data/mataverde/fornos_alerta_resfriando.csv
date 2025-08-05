@@ -1,12 +1,10 @@
 ID,Forno,Status,Data,Unidade,Status_Ajustado,Dias_Vazio_Consecutivos,Alerta,Dias_Resfriando_Consecutivos,Alerta_Resfriamento
-dfa3d550,59,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,10,Forno resfriando há 10 dias consecutivos!
-dfa3d550,30,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,57,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,13,Forno resfriando há 13 dias consecutivos!
-dfa3d550,25,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,24,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,26,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,27,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,28,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,29,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
-dfa3d550,58,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,12,Forno resfriando há 12 dias consecutivos!
-dfa3d550,60,Resfriando,2025-08-03,UPC-Mata Verde,Resfriando,0,,12,Forno resfriando há 12 dias consecutivos!
+8cf06826,30,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
+8cf06826,25,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
+8cf06826,24,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
+8cf06826,23,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
+8cf06826,22,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!
+8cf06826,26,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
+8cf06826,27,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
+8cf06826,28,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
+8cf06826,29,Resfriando,2025-08-04,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!
