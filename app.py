@@ -664,6 +664,65 @@ else:
                               showlegend=False)  # esconde legenda duplicada
 
     st.plotly_chart(fig_faz, use_container_width=True)
+
+#=======================================================
+# 🔄  COMPARAÇÃO DE 2 FAZENDAS NO PERÍODO COMUM
+# =======================================================
+st.markdown("### 📊 Comparar Duas Fazendas – Período em Comum")
+
+# 1 ▸ Escolher exatamente 2 fazendas
+fazendas_mult = st.multiselect(
+    "Escolha duas fazendas para comparar:",
+    fazendas_disponiveis,
+    max_selections=2
+)
+
+if len(fazendas_mult) != 2:
+    st.info("Selecione exatamente duas fazendas.")
+else:
+    f1, f2 = fazendas_mult
+
+    # 2 ▸ Datas de cada fazenda
+    min1, max1 = df_fazendas.query("FazendaNome == @f1")["Data"].min(), df_fazendas.query("FazendaNome == @f1")["Data"].max()
+    min2, max2 = df_fazendas.query("FazendaNome == @f2")["Data"].min(), df_fazendas.query("FazendaNome == @f2")["Data"].max()
+
+    # 3 ▸ Período em comum (interseção)
+    ini_comum = max(min1, min2)
+    fim_comum = min(max1, max2)
+
+    if ini_comum >= fim_comum:
+        st.warning("Essas fazendas não têm período de dados em comum.")
+    else:
+        # 4 ▸ Filtrar dados principais e alertas nesse intervalo
+        mask_common = (df_fazendas["Data"].between(ini_comum, fim_comum)) & (df_fazendas["FazendaNome"].isin(fazendas_mult))
+        df_common   = df_fazendas[mask_common]
+
+        mask_alert  = (df_alertas_carga["Data"].between(ini_comum, fim_comum)) & (df_alertas_carga["FazendaNome"].isin(fazendas_mult))
+        df_alert_cm = df_alertas_carga[mask_alert]
+
+        # 5 ▸ Gráfico combinado
+        fig_comb = px.line(
+            df_common.sort_values("Data"),
+            x="Data", y="DensidadeSeca",
+            color="FazendaNome",
+            labels={"DensidadeSeca": "kg/m³"},
+            title=f"Período comum: {ini_comum.date()} a {fim_comum.date()}"
+        )
+
+        # 6 ▸ Adicionar pontos de alerta por fazenda
+        for faz, cor in zip(fazendas_mult, ["#d62728", "#9467bd"]):   # 2 cores p/ marcadores
+            df_alert_f = df_alert_cm[df_alert_cm["FazendaNome"] == faz]
+            if not df_alert_f.empty:
+                fig_comb.add_scatter(
+                    x=df_alert_f["Data"],
+                    y=df_alert_f["DensidadeSeca"],
+                    mode="markers",
+                    marker=dict(symbol="circle-open", size=10, line=dict(width=2, color=cor)),
+                    name=f"Alertas {faz}",
+                    showlegend=True
+                )
+
+        st.plotly_chart(fig_comb, use_container_width=True)
 # ------------------------------------------
 # 📝 FOOTER
 # ------------------------------------------
