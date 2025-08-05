@@ -101,7 +101,7 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     st.info(f"🔍 Dias com umidade anômala detectados: **{num_outliers_umd}**")
 
 
-
+base_2="data/auditoria"
 
 fazendas_ativas = {
     "Mata Verde": True,
@@ -177,7 +177,66 @@ ativa = fazendas_ativas[unidade_sel]
 caminho_absoluto_base = f"{caminho_base}"
 
 
+# ===================== PÁGINA PRINCIPAL (Gestão) =====================
+if st.session_state["page"] == "gestao":
+    #  todo o código que hoje compõe seu Painel de Gestão
+    ...
+    
+# ===================== VISÃO 360° ====================================
+elif st.session_state["page"] == "visao360":
+    st.title("Visão 360°")
+    #  código da Visão 360°
 
+# ===================== INDICADORES OPERACIONAIS ======================
+elif st.session_state["page"] == "indicadores":
+    st.title("Indicadores Operacionais")
+    #  código correspondente
+
+# ===================== SIMULADOR =====================================
+elif st.session_state["page"] == "simulador":
+    st.title("Simulador")
+    #  código do simulador
+
+# ===================== AUDITORIA CUBAGEM ==============================
+elif st.session_state["page"] == "auditoria":
+    st.title("📋 Painel de Auditoria – Cubagem")
+
+    # caminhos dos dois CSVs gerados pelo script de auditoria
+    caminho_alertas_motorista  = os.path.join(base_2, "alertas_motorista.csv")
+    caminho_ranking_motoristas = os.path.join(base_2, "ranking_motoristas.csv")
+
+    df_alertas_mot = carregar_csv_seguro(caminho_alertas_motorista)
+    df_ranking_mot = carregar_csv_seguro(caminho_ranking_motoristas)
+
+    tab_rank, tab_alertas = st.tabs(["🏆 Ranking de Motoristas", "🚨 Cargas Suspeitas"])
+
+    with tab_rank:
+        if df_ranking_mot.empty:
+            st.info("Nenhum dado de ranking disponível.")
+        else:
+            st.dataframe(df_ranking_mot)
+            fig_rank = px.bar(df_ranking_mot.reset_index(),
+                              x="MotoristaVeiculo", y="Percentual",
+                              text_auto='.1f',
+                              title="Percentual de Alertas por Motorista",
+                              color_discrete_sequence=["#d62728"])
+            st.plotly_chart(fig_rank, use_container_width=True)
+
+    with tab_alertas:
+        if df_alertas_mot.empty:
+            st.info("Nenhum alerta registrado.")
+        else:
+            st.dataframe(df_alertas_mot)
+            if "MOTIVO_MOT" in df_alertas_mot.columns:
+                motivos = (df_alertas_mot["MOTIVO_MOT"]
+                           .value_counts()
+                           .reset_index()
+                           .rename(columns={"index": "Motivo", "MOTIVO_MOT": "Qtd"}))
+                fig_mot = px.bar(motivos, x="Motivo", y="Qtd",
+                                 title="Frequência dos Motivos de Alerta",
+                                 text_auto=True,
+                                 color_discrete_sequence=["#ff7f0e"])
+                st.plotly_chart(fig_mot, use_container_width=True)
 
 
 if ativa:
