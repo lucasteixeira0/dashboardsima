@@ -622,10 +622,12 @@ elif st.session_state["page"] == "auditoria":
             st.plotly_chart(fig_mot, use_container_width=True)
     st.markdown("### 📈 Densidade Seca por Fazenda com Alertas")
 
-# 1 ▸ garantir que Data está em datetime
-for df_tmp in (df_fazendas, df_alertas_carga):
-    if not df_tmp.empty:
-        df_tmp["Data"] = pd.to_datetime(df_tmp["Data"], errors="coerce")
+if not df_alertas_carga.empty:
+    df_alertas_carga = df_alertas_carga.rename(columns={"DataEntrada": "Data"})  # só na memória
+    df_alertas_carga["Data"] = pd.to_datetime(df_alertas_carga["Data"], errors="coerce")
+
+if not df_fazendas.empty:
+    df_fazendas["Data"] = pd.to_datetime(df_fazendas["Data"], errors="coerce")
 
 # 2 ▸ selectbox das fazendas disponíveis no CSV concatenado
 fazendas_disponiveis = sorted(df_fazendas["FazendaNome"].unique())
