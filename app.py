@@ -582,16 +582,16 @@ elif st.session_state["page"] == "auditoria":
 
     tab_rank, tab_alertas = st.tabs(["🏆 Ranking de Motoristas", "🚨 Cargas Suspeitas"])
 
-    #with tab_rank:
-     #   if df_ranking_mot.empty:
-      #      st.info("Nenhum dado de ranking disponível.")
-       # else:
-        #    st.dataframe(df_ranking_mot)
-         #   fig_rank = px.bar(df_ranking_mot.reset_index(),
-          #                    x="MotoristaVeiculo", y="Percentual",
-           #                   text_auto='.1f',
-            #                  title="Percentual de Alertas por Motorista",
-             #                 color_discrete_sequence=["#d62728"])
+    with tab_rank:
+        if df_ranking_mot.empty:
+            st.info("Nenhum dado de ranking disponível.")
+        else:
+            st.dataframe(df_ranking_mot)
+            #fig_rank = px.bar(df_ranking_mot.reset_index(),
+             #                 x="MotoristaVeiculo", y="Percentual",
+              #                text_auto='.1f',
+               #               title="Percentual de Alertas por Motorista",
+                #              color_discrete_sequence=["#d62728"])
             #st.plotly_chart(fig_rank, use_container_width=True)
 
     with tab_alertas:
