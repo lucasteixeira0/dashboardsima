@@ -153,6 +153,9 @@ st.sidebar.button("Visão 360° ")
 
 st.sidebar.button("Indicadores Operacionais")
 
+st.sidebar.button("Simulador")
+
+
 st.sidebar.header("🏭 Selecione a Unidade")
 todas_fazendas = list(fazendas_ativas.keys())
 unidade_sel = st.sidebar.selectbox("Unidade:", todas_fazendas)
