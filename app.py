@@ -147,6 +147,12 @@ mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 time.sleep(2)
 mensagem.empty()
 
+st.sidebar.button("📊 Painel de Gestão")
+
+st.sidebar.button("📌 Visão Geral da Unidade")
+
+st.sidebar.button("📈 Indicadores Operacionais")
+
 st.sidebar.header("🏭 Selecione a Unidade")
 todas_fazendas = list(fazendas_ativas.keys())
 unidade_sel = st.sidebar.selectbox("Unidade:", todas_fazendas)
@@ -154,12 +160,9 @@ caminho_base = f"data/{unidade_sel.lower().replace(' ', '').replace('.', '')}"
 ativa = fazendas_ativas[unidade_sel]
 caminho_absoluto_base = f"{caminho_base}"
 
-if st.sidebar.button("🔄 Ir para Painel de Transportes"):
-    st.session_state["pagina"] = "transportes"
 
-# Botão para voltar
-if st.sidebar.button("🏠 Voltar ao Painel Principal"):
-    st.session_state["pagina"] = "principal"
+
+
 
 if ativa:
     st.title(f"Dashboard Operacional - UPC {unidade_sel}")
