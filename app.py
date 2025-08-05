@@ -658,7 +658,7 @@ else:
             symbol_sequence=["circle-open"],
             labels={"DensidadeSeca": "kg/m³"}
         )
-        fig_faz.add_traces(fig_alert.Data)
+        fig_faz.add_traces(fig_alert.data) 
         fig_faz.update_traces(marker=dict(size=10), selector=dict(mode="markers"))
         fig_faz.update_layout(legend=dict(title="Legenda"),
                               showlegend=False)  # esconde legenda duplicada
