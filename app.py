@@ -147,11 +147,11 @@ mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 time.sleep(2)
 mensagem.empty()
 
-st.sidebar.button("📊 Painel de Gestão")
+st.sidebar.button("Painel de Gestão")
 
-st.sidebar.button("📌 Visão Geral da Unidade")
+st.sidebar.button("Visão 360° ")
 
-st.sidebar.button("📈 Indicadores Operacionais")
+st.sidebar.button("Indicadores Operacionais")
 
 st.sidebar.header("🏭 Selecione a Unidade")
 todas_fazendas = list(fazendas_ativas.keys())
