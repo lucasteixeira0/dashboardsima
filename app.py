@@ -241,7 +241,7 @@ elif st.session_state["page"] == "auditoria":
         else:
             fig_mot = px.bar(
                 motivos,
-                x="Motivo",
+                x="MOTIVO_MOT",
                 y="Qtd",
                 title="Frequência dos Motivos de Alerta",
                 text_auto=True,
