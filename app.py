@@ -651,12 +651,12 @@ else:
     if not df_alert_sel.empty:
         fig_alert = px.scatter(
             df_alert_sel,
-            x="Data", y="DensidadeSeca",
+            x="DataEntrada", y="DensidadeSeca",
             color_discrete_sequence=["#d62728"],
             symbol_sequence=["circle-open"],
             labels={"DensidadeSeca": "kg/m³"}
         )
-        fig_faz.add_traces(fig_alert.data)
+        fig_faz.add_traces(fig_alert.DataEntrada)
         fig_faz.update_traces(marker=dict(size=10), selector=dict(mode="markers"))
         fig_faz.update_layout(legend=dict(title="Legenda"),
                               showlegend=False)  # esconde legenda duplicada
