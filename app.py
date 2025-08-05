@@ -223,21 +223,31 @@ elif st.session_state["page"] == "auditoria":
             st.plotly_chart(fig_rank, use_container_width=True)
 
     with tab_alertas:
-        if df_alertas_mot.empty:
-            st.info("Nenhum alerta registrado.")
+        if "MOTIVO_MOT" in df_alertas_mot.columns and not df_alertas_mot.empty:
+                motivos = (
+                    df_alertas_mot["MOTIVO_MOT"]              # série de textos
+                    .value_counts()                         # série: motivo → contagem
+                    .reset_index(name="Qtd")               # -> DataFrame: index=Motivo, Qtd=contagem
+                    .rename(columns={"index": "Motivo"})    # renomeia a coluna gerada pelo index
+                )
         else:
-            st.dataframe(df_alertas_mot)
-            if "MOTIVO_MOT" in df_alertas_mot.columns:
-                motivos = (df_alertas_mot["MOTIVO_MOT"]
-                           .value_counts()
-                           .reset_index()
-                           .rename(columns={"index": "Motivo", "MOTIVO_MOT": "Qtd"}))
-                fig_mot = px.bar(motivos, x="Motivo", y="Qtd",
-                                 title="Frequência dos Motivos de Alerta",
-                                 text_auto=True,
-                                 color_discrete_sequence=["#ff7f0e"])
-                st.plotly_chart(fig_mot, use_container_width=True)
+                motivos = pd.DataFrame(columns=["Motivo", "Qtd"])
 
+        # ------------------------------------------------------------------
+        # 🚨 Gráfico só se houver dados
+        # ------------------------------------------------------------------
+        if motivos.empty:
+            st.info("Nenhum motivo de alerta encontrado.")
+        else:
+            fig_mot = px.bar(
+                motivos,
+                x="Motivo",
+                y="Qtd",
+                title="Frequência dos Motivos de Alerta",
+                text_auto=True,
+                color_discrete_sequence=["#ff7f0e"]
+            )
+            st.plotly_chart(fig_mot, use_container_width=True)
 
 if ativa:
     st.title(f"Dashboard Operacional - UPC {unidade_sel}")
