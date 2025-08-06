@@ -308,7 +308,7 @@ if st.session_state["page"] == "gestao":
 
         with tab1:
             # Pega o valor da meta e faixas da unidade
-            valor_desejado = metas_unidade.get(unidade_sel, [])
+            valor_desejado = metas_unidade.get(unidade_sel, [1000])
             faixas = faixas_por_unidade.get(unidade_sel, [])
 
             # Garante valor mesmo com df vazio
