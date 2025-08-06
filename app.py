@@ -315,7 +315,9 @@ if st.session_state["page"] == "gestao":
         # 🔄 Carregar dados adicionais salvos em JSON
         caminho_json_resumo = f"{caminho_absoluto_base}/resumo_operacional.json"
         resumo = carregar_json_seguro(caminho_json_resumo)
-
+        st.markdown(" ")
+        st.markdown("---")
+        st.markdown(" ")
         # Exibir indicadores adicionais se existirem
         if resumo:
             col5, col6, col7,col8 = st.columns(4)
