@@ -111,6 +111,15 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     colG.metric("% com umidade ≤ 12%", f"{dentro_umid:.1f}%" if not pd.isna(dentro_umid) else "N/D")
     st.info(f"🔍 Dias com umidade anômala detectados: **{num_outliers_umd}**")
 
+def faixa_disponibilidade(valor):
+    if valor >= 95:
+        return "Alta (≥95%)"
+    elif valor >= 85:
+        return "Média (85–95%)"
+    else:
+        return "Baixa (<85%)"
+
+
 
 base_2="data/auditoria"
 
@@ -370,6 +379,7 @@ if st.session_state["page"] == "gestao":
         tabinat,tabdisp,tabcarregamento,tabdescarregamento= st.tabs(["Disponibilidade Operacional","Taxa de Inatividade","Carregamentos Diários", "Descarregamentos Diários"])
         with tabinat: 
             if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
+                df_inatividade["FaixaDisp"] = df_inatividade["Disponibilidade_%"].apply(faixa_disponibilidade)
                 df_inatividade = pd.DataFrame({
                     "Data": pd.date_range(start=ini, end=fim, freq="D"),
                     "Inatividade_%": 0
@@ -377,7 +387,18 @@ if st.session_state["page"] == "gestao":
             
             # Calcular disponibilidade
             df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
-            fig3 = px.bar(df_inatividade, x="Data", y="Disponibilidade_%",color_discrete_sequence=["#2ca02c"], title="Disponibilidade Diária (%)")
+            fig3 = px.bar(
+                    df_inatividade,
+                    x="Data",
+                    y="Disponibilidade_%",
+                    color="FaixaDisp",
+                    title="Disponibilidade Diária (%)",
+                    color_discrete_map={
+                        "Alta (≥95%)": "#2ca02c",       # verde
+                        "Média (85–95%)": "#ffbf00",    # amarelo
+                        "Baixa (<85%)": "#d62728"       # vermelho
+                    }
+                )
             st.plotly_chart(fig3, use_container_width=True)
         
         with tabdisp:
