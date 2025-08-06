@@ -299,7 +299,7 @@ if st.session_state["page"] == "gestao":
                 {"range": [600, 850], "cor_solida": "rgba(255,255,0,1)", "cor_clara": "rgba(255,255,0,0.2)"},
                 {"range": [850, 1000], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
             ],
-            "Glória": [
+            "Gloria": [
                 {"range": [0, 700], "cor_solida": "rgba(255,0,0,1)", "cor_clara": "rgba(255,0,0,0.2)"},
                 {"range": [700, 950], "cor_solida": "rgba(255,255,0,1)", "cor_clara": "rgba(255,255,0,0.2)"},
                 {"range": [950, 1100], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
