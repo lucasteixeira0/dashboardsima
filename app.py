@@ -207,8 +207,8 @@ if st.session_state["page"] == "gestao":
         )
 
         df_inatividade = carregar_csv_seguro(
-            f"{caminho_absoluto_base}/taxa_inatividade_diaria.csv",
-            colunas_minimas=["Data", "Inatividade_%"]
+            f"{caminho_absoluto_base}/taxa_inatividade_diaria.csv"
+            
         )
 
         df_media_status = carregar_csv_seguro(
