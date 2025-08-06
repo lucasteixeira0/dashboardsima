@@ -329,7 +329,7 @@ if st.session_state["page"] == "gestao":
         # ------------------------------------------
         # 📈 PRODUÇÃO (Efetiva e em Processo)
         # ------------------------------------------
-        tab1, tab2 , tab3, tab4 = st.tabs(["Meta", "Produção Efetiva", "Produção em Processamento","Transporte"])
+        tab1, tab2 , tab3, tab4 = st.tabs(["Desempenho", "Produção Efetiva", "Produção em Processamento","Transporte"])
 
         # Metas por unidade
         metas_unidade = {
