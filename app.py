@@ -307,36 +307,41 @@ if st.session_state["page"] == "gestao":
         }
 
         with tab1:
+            # Pega o valor da meta e faixas da unidade
             valor_desejado = metas_unidade.get(unidade_sel, 500)
-            valor_atual = df_prod_em_processo.tail(1)["Estimativa_m3"].iloc[0] if not df_prod_em_processo.empty else 0
-
             faixas = faixas_por_unidade.get(unidade_sel, [])
-            faixa_superior_faixas = faixas[-1]["range"][1] if faixas else 1000
 
-            # Garante que o eixo cubra tanto o valor atual quanto o valor da meta
-            faixa_max = max(faixa_superior_faixas, valor_desejado, valor_atual)
+            # Garante valor mesmo com df vazio
+            if not df_prod_em_processo.empty and "Estimativa_m3" in df_prod_em_processo.columns:
+                valor_atual = df_prod_em_processo.tail(1)["Estimativa_m3"].iloc[0]
+            else:
+                valor_atual = 0
 
+            # Montar os steps com base no valor atual
             steps_config = []
             for faixa in faixas:
                 cor = faixa["cor_solida"] if valor_atual >= faixa["range"][0] else faixa["cor_clara"]
                 steps_config.append({"range": faixa["range"], "color": cor})
 
+            # Criar o gráfico
             fig = go.Figure(go.Indicator(
                 mode="gauge+number+delta",
                 value=valor_atual,
                 delta={"reference": valor_desejado, "increasing": {"color": "green"}, "decreasing": {"color": "red"}},
                 gauge={
-                    "axis": {"range": [0, faixa_max]},
+                    "axis": {"range": [0, faixas[-1]["range"][1] if faixas else 1000]},
                     "bar": {"color": "rgba(0,102,204,0.8)"},
                     "steps": steps_config,
                     "threshold": {
-                        "line": {"color": "black", "width": 4},
+                        "line": {"color": "rgba(0,0,0,0)", "width": 4},
                         "thickness": 0.75,
                         "value": valor_desejado
                     }
                 },
                 title={"text": "Desempenho Operacional (m³)"}
             ))
+
+            st.plotly_chart(fig, use_container_width=True)
 
 
 
