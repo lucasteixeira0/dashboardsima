@@ -660,7 +660,7 @@ elif st.session_state["page"] == "visao360":
         st.warning("❗ Nenhum dado disponível para exibir o comparativo.")
         st.stop()
     #---------------------------------------------------------------------------
-    tab_mensal, tab_diario = st.tabs([" Produção Mensal", "Produção Diária"])
+    tab_mensal, tab_diario, tab_box = st.tabs([" Produção Mensal", "Produção Diária","Distribuição (Boxplot)"])
     with tab_mensal:    
         st.subheader("Produção Mensal por Unidade")
 
@@ -700,7 +700,27 @@ elif st.session_state["page"] == "visao360":
             text_auto=".2s"
         )
 
-        st.plotly_chart(fig_prod_diaria, use_container_width=True)    
+        st.plotly_chart(fig_prod_diaria, use_container_width=True) 
+
+    with tab_box:
+        st.subheader("📈 Distribuição da Produção Diária por Unidade")
+
+        df_diario_box = df_comparativo.copy()
+        df_diario_box["Dia"] = df_diario_box["Data"].dt.date
+
+        df_boxplot = df_diario_box.groupby(["Dia", "Unidade"])["Estimativa_m3"].sum().reset_index()
+
+        fig_box = px.box(
+            df_boxplot,
+            x="Unidade",
+            y="Estimativa_m3",
+            points="outliers",  # ou "all" se quiser todos os pontos individuais
+            color="Unidade",
+            title="Distribuição da Produção Diária por Unidade",
+            labels={"Estimativa_m3": "Produção (m³)"}
+        )
+
+        st.plotly_chart(fig_box, use_container_width=True)   
 
 
     st.subheader("Disponibilidade Operacional Média por Unidade")
