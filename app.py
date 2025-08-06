@@ -384,9 +384,11 @@ if st.session_state["page"] == "gestao":
                     "Data": pd.date_range(start=ini, end=fim, freq="D"),
                     "Inatividade_%": 0
                 })
-            df_inatividade["FaixaDisp"] = df_inatividade["Disponibilidade_%"].apply(faixa_disponibilidade)
-            # Calcular disponibilidade
+
+             # Calcular disponibilidade
             df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
+            df_inatividade["FaixaDisp"] = df_inatividade["Disponibilidade_%"].apply(faixa_disponibilidade)
+            
             fig3 = px.bar(
                     df_inatividade,
                     x="Data",
