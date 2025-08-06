@@ -634,9 +634,67 @@ if st.session_state["page"] == "gestao":
 
 # ===================== VISÃO 360° ====================================
 elif st.session_state["page"] == "visao360":
-    st.title("Visão 360°")
-    #  código da Visão 360°
+    st.title("🌍 Visão 360° – Comparativo entre Unidades")
+    st.markdown("Esta página consolida os principais indicadores das unidades ativas para análise integrada de desempenho.")
 
+    # 🔁 Unidades que deseja comparar
+    unidades_ativas = [k for k, v in fazendas_ativas.items() if v]
+
+    # Base de dados por unidade
+    dados_unidades = {}
+
+    for unidade in unidades_ativas:
+        caminho = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/producao_estimada_diaria.csv"
+        df = carregar_csv_seguro(caminho, colunas_minimas=["Data", "Estimativa_m3"])
+        if not df.empty:
+            df["Unidade"] = unidade
+            df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
+            df["AnoMes"] = df["Data"].dt.to_period("M").astype(str)
+            dados_unidades[unidade] = df
+
+    # Unir todos em um único DataFrame
+    df_comparativo = pd.concat(dados_unidades.values(), ignore_index=True) if dados_unidades else pd.DataFrame()
+
+    # Verificar se há dados
+    if df_comparativo.empty:
+        st.warning("❗ Nenhum dado disponível para exibir o comparativo.")
+        st.stop()
+    #---------------------------------------------------------------------------
+
+    st.subheader("📈 Produção Mensal por Unidade")
+
+    df_mensal = df_comparativo.groupby(["Unidade", "AnoMes"])["Estimativa_m3"].sum().reset_index()
+
+    fig_prod_mensal = px.bar(
+        df_mensal,
+        x="AnoMes",
+        y="Estimativa_m3",
+        color="Unidade",
+        barmode="group",
+        title="Produção mensal (m³) por unidade",
+        labels={"Estimativa_m3": "Produção (m³)", "AnoMes": "Ano-Mês"},
+        text_auto=".2s"
+    )
+
+    st.plotly_chart(fig_prod_mensal, use_container_width=True)
+
+
+    st.subheader("✅ Disponibilidade Operacional Média por Unidade")
+
+    df_disponibilidade_total = []
+
+    for unidade in unidades_ativas:
+        caminho_disp = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/taxa_inatividade_diaria.csv"
+        df_disp = carregar_csv_seguro(caminho_disp)
+        if not df_disp.empty and "Inatividade_%" in df_disp.columns:
+            disponibilidade = 100 - df_disp["Inatividade_%"].mean()
+            df_disponibilidade_total.append({
+                "Unidade": unidade,
+                "Disponibilidade Média (%)": round(disponibilidade, 2)
+            })
+
+    df_disp_final = pd.DataFrame(df_disponibilidade_total)
+    st.dataframe(df_disp_final)
 # ===================== INDICADORES OPERACIONAIS ======================
 elif st.session_state["page"] == "indicadores":
     st.title("Indicadores Operacionais")
