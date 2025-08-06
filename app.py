@@ -13,6 +13,7 @@ import os
 import hashlib
 import streamlit as st
 import time 
+import json
 
 def carregar_csv_seguro(caminho, colunas_minimas=None):
     if os.path.exists(caminho):
@@ -31,6 +32,26 @@ def carregar_csv_seguro(caminho, colunas_minimas=None):
         if colunas_minimas:
             return pd.DataFrame(columns=colunas_minimas)
         return pd.DataFrame()
+def carregar_json_seguro(caminho, valor_padrao=None):
+    """
+    Carrega um arquivo JSON de forma segura.
+    
+    Parâmetros:
+    - caminho (str): caminho completo do arquivo JSON.
+    - valor_padrao (dict, opcional): valor de retorno caso o arquivo não exista ou esteja corrompido.
+    
+    Retorna:
+    - dict: conteúdo do JSON ou valor_padrao.
+    """
+    if not os.path.exists(caminho):
+        return valor_padrao if valor_padrao is not None else {}
+
+    try:
+        with open(caminho, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, IOError) as e:
+        print(f"[Erro ao carregar JSON] {e}")
+        return valor_padrao if valor_padrao is not None else {}
 def formatar_nome_fazenda(nome):
     return nome.lower().replace(" ", "").replace(".", "")
 def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
@@ -277,6 +298,8 @@ if st.session_state["page"] == "gestao":
         # 📊 RESUMO EXECUTIVO
         # ------------------------------------------
         st.header("Resumo Executivo")
+
+        
         col1, col2, col3, col4 = st.columns(4)
 
         col1.metric("📦 Produção no Período Selecionado (m³)", round(df_prod_efetiva["Estimativa_m3"].sum(), 2))
@@ -288,6 +311,17 @@ if st.session_state["page"] == "gestao":
         col3.metric("🚨 Fornos em Alerta", len(df_alertas))
         col4 = st.columns(1)[0]
         col4.metric("💸 Perdas por ociosidade estimadas (m³)", round(df_perdas["Perda_m3"].sum(), 2))
+
+        # 🔄 Carregar dados adicionais salvos em JSON
+        caminho_json_resumo = f"{caminho_absoluto_base}/resumo_operacional.json"
+        resumo = carregar_json_seguro(caminho_json_resumo)
+
+        # Exibir indicadores adicionais se existirem
+        if resumo:
+            col5, col6, col7 = st.columns(3)
+            col5.metric("🧱 Estoque Atual (m³st)", f"{resumo.get('EstoqueAtual_m3st', 'N/D')}")
+            col6.metric("⏳ Ciclo Médio (dias)", f"{resumo.get('DuracaoMediaCiclo_dias', 'N/D')}")
+            col7.metric("🔥 Fornos Operacionais", f"{resumo.get('FornosOperacionais', 'N/D')}")
         # ------------------------------------------
         # 📈 PRODUÇÃO (Efetiva e em Processo)
         # ------------------------------------------
