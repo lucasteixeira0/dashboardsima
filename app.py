@@ -660,23 +660,47 @@ elif st.session_state["page"] == "visao360":
         st.warning("❗ Nenhum dado disponível para exibir o comparativo.")
         st.stop()
     #---------------------------------------------------------------------------
+    tab_mensal, tab_diario = st.tabs([" Produção Mensal", "Produção Diária"])
+    with tab_mensal:    
+        st.subheader("Produção Mensal por Unidade")
 
-    st.subheader("Produção Mensal por Unidade")
+        df_mensal = df_comparativo.groupby(["Unidade", "AnoMes"])["Estimativa_m3"].sum().reset_index()
 
-    df_mensal = df_comparativo.groupby(["Unidade", "AnoMes"])["Estimativa_m3"].sum().reset_index()
+        fig_prod_mensal = px.bar(
+            df_mensal,
+            x="AnoMes",
+            y="Estimativa_m3",
+            color="Unidade",
+            barmode="group",
+            title="Produção mensal (m³) por unidade",
+            labels={"Estimativa_m3": "Produção (m³)", "AnoMes": "Ano-Mês"},
+            text_auto=".2s"
+        )
 
-    fig_prod_mensal = px.bar(
-        df_mensal,
-        x="AnoMes",
-        y="Estimativa_m3",
-        color="Unidade",
-        barmode="group",
-        title="Produção mensal (m³) por unidade",
-        labels={"Estimativa_m3": "Produção (m³)", "AnoMes": "Ano-Mês"},
-        text_auto=".2s"
-    )
+        st.plotly_chart(fig_prod_mensal, use_container_width=True)
+    with tab_diario:
 
-    st.plotly_chart(fig_prod_mensal, use_container_width=True)
+        st.subheader("📆 Produção Diária Consolidada por Unidade")
+
+        # Agrupar por dia e unidade
+        df_diario = df_comparativo.copy()
+        df_diario["Dia"] = df_diario["Data"].dt.date  # só a data, sem hora
+
+        df_diaria_agrupada = df_diario.groupby(["Dia", "Unidade"])["Estimativa_m3"].sum().reset_index()
+
+        # Gráfico de barras por dia
+        fig_prod_diaria = px.bar(
+            df_diaria_agrupada,
+            x="Dia",
+            y="Estimativa_m3",
+            color="Unidade",
+            barmode="group",
+            title="Produção diária (m³) por unidade",
+            labels={"Estimativa_m3": "Produção (m³)", "Dia": "Data"},
+            text_auto=".2s"
+        )
+
+        st.plotly_chart(fig_prod_diaria, use_container_width=True)    
 
 
     st.subheader("Disponibilidade Operacional Média por Unidade")
