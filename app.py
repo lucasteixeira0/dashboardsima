@@ -408,6 +408,7 @@ if st.session_state["page"] == "gestao":
             st.plotly_chart(fig3, use_container_width=True)
         
         with tabdisp:
+            df_inatividade["FaixaInat"] = df_inatividade["Inatividade_%"].apply(faixa_inatividade)
             fig4 = px.bar(df_inatividade, x="Data", y="Inatividade_%",color_discrete_map={
         "Baixa (≤10%)": "#2ca02c",       # verde
         "Média (10–30%)": "#ffbf00",     # amarelo
