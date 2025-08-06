@@ -319,10 +319,12 @@ if st.session_state["page"] == "gestao":
 
         # Exibir indicadores adicionais se existirem
         if resumo:
-            col5, col6, col7 = st.columns(3)
-            col5.metric("🧱 Estoque Atual (m³st)", f"{resumo.get('EstoqueAtual_m3st', 'N/D')}")
-            col6.metric("⏳ Ciclo Médio (dias)", f"{resumo.get('DuracaoMediaCiclo_dias', 'N/D')}")
-            col7.metric("🔥 Fornos Operacionais", f"{resumo.get('FornosOperacionais', 'N/D')}")
+            col5, col6, col7,col8 = st.columns(4)
+            col5.metric("Estoque Atual (m³st)", f"{resumo.get('EstoqueAtual_m3st', 'N/D')}")
+            col6.metric("Ciclo Médio (dias)", f"{resumo.get('DuracaoMediaCiclo_dias', 'N/D')}")
+            col7.metric("Fornos Operacionais", f"{resumo.get('FornosOperacionais', 'N/D')}")
+            col8.metric(" Conversão(mst/mca)", f"{resumo.get('Conversaost', 'N/D')}")
+
         # ------------------------------------------
         # 📈 PRODUÇÃO (Efetiva e em Processo)
         # ------------------------------------------
