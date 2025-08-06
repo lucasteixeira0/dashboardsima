@@ -350,7 +350,7 @@ if st.session_state["page"] == "gestao":
             st.plotly_chart(fig1, use_container_width=True)
 
         with tab3:
-            fig2 = px.line(df_prod_em_processo, x="Data", y="Estimativa_m3",color_discrete_sequence=["#2ca02c"], title="Carvão em Produção (m³)")
+            fig2 = px.bar(df_prod_em_processo, x="Data", y="Estimativa_m3",color_discrete_sequence=["#2ca02c"], title="Carvão em Produção (m³)",text_auto='.2f')
             st.plotly_chart(fig2, use_container_width=True)
 
         with tab4:
