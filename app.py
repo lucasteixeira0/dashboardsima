@@ -306,9 +306,9 @@ if st.session_state["page"] == "gestao":
         col1.metric("Produção no Período Selecionado (m³)", round(df_prod_efetiva["Estimativa_m3"].sum(), 2))
         if not df_inatividade.empty and "Inatividade_%"  in df_inatividade.columns:
             disponibilidade_media = round(100 - df_inatividade["Inatividade_%"].mean(), 2)
-            col2.metric("✅ Disponibilidade Média (%)", disponibilidade_media)
+            col2.metric("Disponibilidade Média (%)", disponibilidade_media)
         else:
-            col2.metric("✅ Disponibilidade Média (%)", "N/D")
+            col2.metric("Disponibilidade Média (%)", "N/D")
         col3.metric(" Fornos em Alerta", len(df_alertas))
         col4.metric("Perdas por ociosidade estimadas (m³)", round(df_perdas["Perda_m3"].sum(), 2))
 
