@@ -302,7 +302,7 @@ if st.session_state["page"] == "gestao":
             "Glória": [
                 {"range": [0, 700], "cor_solida": "rgba(255,0,0,1)", "cor_clara": "rgba(255,0,0,0.2)"},
                 {"range": [700, 950], "cor_solida": "rgba(255,255,0,1)", "cor_clara": "rgba(255,255,0,0.2)"},
-                {"range": [950, 1100], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
+                {"range": [950, 1500], "cor_solida": "rgba(0,255,0,1)", "cor_clara": "rgba(0,255,0,0.2)"}
             ]
         }
 
