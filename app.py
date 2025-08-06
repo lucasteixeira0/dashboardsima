@@ -329,7 +329,7 @@ if st.session_state["page"] == "gestao":
         # ------------------------------------------
         # 📈 PRODUÇÃO (Efetiva e em Processo)
         # ------------------------------------------
-        tab1, tab2 , tab3, tab4 = st.tabs(["📈 Meta", "📅 Produção Efetiva", "⚙️ Produção em Processamento","🚛 Transporte"])
+        tab1, tab2 , tab3, tab4 = st.tabs(["Meta", "Produção Efetiva", "Produção em Processamento","Transporte"])
 
         # Metas por unidade
         metas_unidade = {
@@ -405,7 +405,7 @@ if st.session_state["page"] == "gestao":
             st.plotly_chart(fig2, use_container_width=True)
 
         with tab4:
-            st.subheader("🚛 Dados de Transporte")
+            st.subheader("Dados de Transporte")
             try:
                 colunas=["Data Transporte", "Fazenda Origem","Volume medido (m³st)","Transportadora", "Placa Caminhão", "Tipo Entrega", "Observações", ]
                 df_transporte = df_transporte[[col for col in colunas if col in df_transporte.columns]]
