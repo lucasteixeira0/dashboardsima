@@ -330,7 +330,7 @@ if st.session_state["page"] == "gestao":
                 delta={"reference": valor_desejado, "increasing": {"color": "green"}, "decreasing": {"color": "red"}},
                 gauge={
                     "axis": {"range": [0, faixas[-1]["range"][1] if faixas else 1000]},
-                    "bar": {"color": "rgba(0,102,204,0.8)"},
+                    "bar": {"color": "rgba(0,0,0,0)"},
                     "steps": steps_config,
                     "threshold": {
                         "line": {"color": "black", "width": 4},
