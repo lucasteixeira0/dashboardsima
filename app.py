@@ -293,7 +293,7 @@ if st.session_state["page"] == "gestao":
             df_inatividade = df_inatividade[(df_inatividade["Data"] >= ini) & (df_inatividade["Data"] <= fim)]
             
 
-        st.markdown(f"📆 Período selecionado: **{ini.date()} a {fim.date()}**")
+        st.markdown(f"Período selecionado: **{ini.date()} a {fim.date()}**")
 
         # ------------------------------------------
         # 📊 RESUMO EXECUTIVO
@@ -491,7 +491,7 @@ if st.session_state["page"] == "gestao":
         # 🔮 PREVISÕES DE PRODUÇÃO (PROJEÇÕES)
         # ------------------------------------------
         st.header("Detalhes Avançados")
-        tab_hist, tab_proj = st.tabs(["📜 Análise Histórica", "🔮 Projeções"])
+        tab_hist, tab_proj = st.tabs(["Análise Histórica", "Projeções"])
         
         with tab_hist:
                 
@@ -609,7 +609,7 @@ if st.session_state["page"] == "gestao":
         # ------------------------------------------
         # 📥 DOWNLOAD RELATÓRIO PDF
         # ------------------------------------------
-        st.header("📥 Baixar Relatório Semanal")
+        st.header("Baixar Relatório Semanal")
         caminho_pdf = f"{caminho_absoluto_base}/Relatorio_Semanal_{unidade_sel.replace(' ', '_')}.pdf"
         try:
             with open(caminho_pdf, "rb") as file:
@@ -623,7 +623,7 @@ if st.session_state["page"] == "gestao":
             st.warning("Relatório ainda não disponível para esta unidade.")
             
     else:
-        st.title(f"📊 Histórico de Produção - Fazenda {unidade_sel} (Inativa)")
+        st.title(f"Histórico de Produção - Fazenda {unidade_sel} (Inativa)")
         
         # Carregar histórico geral
         df_historico = carregar_csv_seguro(
