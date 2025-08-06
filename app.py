@@ -379,12 +379,12 @@ if st.session_state["page"] == "gestao":
         tabinat,tabdisp,tabcarregamento,tabdescarregamento= st.tabs(["Disponibilidade Operacional","Taxa de Inatividade","Carregamentos Diários", "Descarregamentos Diários"])
         with tabinat: 
             if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
-                df_inatividade["FaixaDisp"] = df_inatividade["Disponibilidade_%"].apply(faixa_disponibilidade)
+               
                 df_inatividade = pd.DataFrame({
                     "Data": pd.date_range(start=ini, end=fim, freq="D"),
                     "Inatividade_%": 0
                 })
-            
+            df_inatividade["FaixaDisp"] = df_inatividade["Disponibilidade_%"].apply(faixa_disponibilidade)
             # Calcular disponibilidade
             df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
             fig3 = px.bar(
