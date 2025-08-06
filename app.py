@@ -16,11 +16,22 @@ import time
 
 def carregar_csv_seguro(caminho, colunas_minimas=None):
     if os.path.exists(caminho):
-        return pd.read_csv(caminho)
+        df = pd.read_csv(caminho)
+        # Padronização de nomes de colunas problemáticas
+        renomear_colunas = {
+            "Inatividade (%)": "Inatividade_%",
+            "Inatividade (%) ": "Inatividade_%",  # com espaço
+            " Inatividade (%)": "Inatividade_%"   # com espaço antes
+        }
+
+        df.rename(columns=renomear_colunas, inplace=True)
+
+        return df
     else:
         if colunas_minimas:
             return pd.DataFrame(columns=colunas_minimas)
         return pd.DataFrame()
+
 def formatar_nome_fazenda(nome):
     return nome.lower().replace(" ", "").replace(".", "")
 def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
@@ -256,7 +267,7 @@ if st.session_state["page"] == "gestao":
         col1, col2, col3, col4 = st.columns(4)
 
         col1.metric("📦 Produção no Período Selecionado (m³)", round(df_prod_efetiva["Estimativa_m3"].sum(), 2))
-        if not df_inatividade.empty and "Inatividade_%" in df_inatividade.columns:
+        if not df_inatividade.empty and "Inatividade_%"  in df_inatividade.columns:
             disponibilidade_media = round(100 - df_inatividade["Inatividade_%"].mean(), 2)
             col2.metric("✅ Disponibilidade Média (%)", disponibilidade_media)
         else:
