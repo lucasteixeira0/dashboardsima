@@ -310,7 +310,6 @@ if st.session_state["page"] == "gestao":
         else:
             col2.metric("✅ Disponibilidade Média (%)", "N/D")
         col3.metric(" Fornos em Alerta", len(df_alertas))
-        col4 = st.columns(1)[0]
         col4.metric("Perdas por ociosidade estimadas (m³)", round(df_perdas["Perda_m3"].sum(), 2))
 
         # 🔄 Carregar dados adicionais salvos em JSON
