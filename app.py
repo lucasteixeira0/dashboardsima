@@ -283,7 +283,7 @@ if st.session_state["page"] == "gestao":
         # Metas por unidade
         metas_unidade = {
             "Mata Verde": 500,
-            "Glória": 1000,
+            "Gloria": 1000,
             "Proteção": 900
         }
 
