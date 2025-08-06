@@ -31,7 +31,6 @@ def carregar_csv_seguro(caminho, colunas_minimas=None):
         if colunas_minimas:
             return pd.DataFrame(columns=colunas_minimas)
         return pd.DataFrame()
-
 def formatar_nome_fazenda(nome):
     return nome.lower().replace(" ", "").replace(".", "")
 def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
@@ -110,15 +109,20 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     colF.metric("Umidade média pond. (%)", f"{wavg_umid:,.1f}" if wavg_umid else "N/D")
     colG.metric("% com umidade ≤ 12%", f"{dentro_umid:.1f}%" if not pd.isna(dentro_umid) else "N/D")
     st.info(f"🔍 Dias com umidade anômala detectados: **{num_outliers_umd}**")
-
 def faixa_disponibilidade(valor):
     if valor >= 95:
-        return "Alta (≥95%)"
+        return "Alta (≥90%)"
     elif valor >= 85:
-        return "Média (85–95%)"
+        return "Média (70–90%)"
     else:
-        return "Baixa (<85%)"
-
+        return "Baixa (<70%)"
+def faixa_inatividade(valor):
+    if valor <= 5:
+        return "Baixa (≤10%)"
+    elif valor <= 15:
+        return "Média (10–30%)"
+    else:
+        return "Alta (>30%)"
 
 
 base_2="data/auditoria"
@@ -396,15 +400,19 @@ if st.session_state["page"] == "gestao":
                     color="FaixaDisp",
                     title="Disponibilidade Diária (%)",
                     color_discrete_map={
-                        "Alta (≥95%)": "#2ca02c",       # verde
-                        "Média (85–95%)": "#ffbf00",    # amarelo
-                        "Baixa (<85%)": "#d62728"       # vermelho
+                        "Alta (≥90%)": "#2ca02c",       # verde
+                        "Média (70–90%)": "#ffbf00",    # amarelo
+                        "Baixa (<70%)": "#d62728"       # vermelho
                     }
                 )
             st.plotly_chart(fig3, use_container_width=True)
         
         with tabdisp:
-            fig4 = px.bar(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)")
+            fig4 = px.bar(df_inatividade, x="Data", y="Inatividade_%",color_discrete_map={
+        "Baixa (≤10%)": "#2ca02c",       # verde
+        "Média (10–30%)": "#ffbf00",     # amarelo
+        "Alta (>30%)": "#d62728"        # vermelho
+    }, title="Taxa de Inatividade Diária (%)")
             st.plotly_chart(fig4, use_container_width=True)
         with tabcarregamento:
             if "df_carregamentos" in locals() and not df_carregamentos.empty:
