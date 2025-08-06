@@ -660,7 +660,7 @@ elif st.session_state["page"] == "visao360":
         st.warning("❗ Nenhum dado disponível para exibir o comparativo.")
         st.stop()
     #---------------------------------------------------------------------------
-    tab_mensal, tab_diario, tab_box = st.tabs([" Produção Mensal", "Produção Diária","Distribuição (Boxplot)"])
+    tab_mensal, tab_diario, tab_box,tab_radar  = st.tabs([" Produção Mensal", "Produção Diária","Distribuição (Boxplot)","Perfil Comparativo (Radar)"])
     with tab_mensal:    
         st.subheader("Produção Mensal por Unidade")
 
@@ -680,7 +680,7 @@ elif st.session_state["page"] == "visao360":
         st.plotly_chart(fig_prod_mensal, use_container_width=True)
     with tab_diario:
 
-        st.subheader("📆 Produção Diária Consolidada por Unidade")
+        st.subheader("Produção Diária Consolidada por Unidade")
 
         # Agrupar por dia e unidade
         df_diario = df_comparativo.copy()
@@ -720,9 +720,82 @@ elif st.session_state["page"] == "visao360":
             labels={"Estimativa_m3": "Produção (m³)"}
         )
 
-        st.plotly_chart(fig_box, use_container_width=True)   
+        st.plotly_chart(fig_box, use_container_width=True) 
+    with tab_radar:
+        st.subheader("🧭 Perfil Comparativo – Unidades de Produção")
 
+        # Inicializar lista de dados
+        radar_dados = []
 
+        for unidade in unidades_ativas:
+            base = f"data/{unidade.lower().replace(' ', '').replace('.', '')}"
+
+            # Produção total
+            df_prod = carregar_csv_seguro(f"{base}/producao_estimada_diaria.csv", ["Data", "Estimativa_m3"])
+            producao_total = df_prod["Estimativa_m3"].sum() if not df_prod.empty else 0
+
+            # Disponibilidade
+            df_disp = carregar_csv_seguro(f"{base}/taxa_inatividade_diaria.csv")
+            disponibilidade = 100 - df_disp["Inatividade_%"].mean() if not df_disp.empty and "Inatividade_%" in df_disp else 0
+
+            # Alertas
+            df_alertas = carregar_csv_seguro(f"{base}/fornos_alerta.csv")
+            n_alertas = len(df_alertas)
+
+            # Perdas
+            df_perdas = carregar_csv_seguro(f"{base}/perdas_por_vazios.csv", ["Perda_m3"])
+            perdas = df_perdas["Perda_m3"].sum() if not df_perdas.empty else 0
+
+            radar_dados.append({
+                "Unidade": unidade,
+                "Produção": producao_total,
+                "Disponibilidade": disponibilidade,
+                "Alertas": n_alertas,
+                "Perdas": perdas
+            })
+
+        df_radar = pd.DataFrame(radar_dados)
+
+        # ✅ Normalizar para 0–100
+        def normalizar(col):
+            min_val = df_radar[col].min()
+            max_val = df_radar[col].max()
+            return 100 * (df_radar[col] - min_val) / (max_val - min_val) if max_val != min_val else 100
+
+        df_radar_norm = df_radar.copy()
+        for col in ["Produção", "Disponibilidade", "Alertas", "Perdas"]:
+            df_radar_norm[col] = normalizar(col if col != "Alertas" else col)  # alertas também normaliza
+
+        # Inverter eixo de alertas e perdas (quanto menor, melhor)
+        df_radar_norm["Alertas"] = 100 - df_radar_norm["Alertas"]
+        df_radar_norm["Perdas"] = 100 - df_radar_norm["Perdas"]
+
+        # 📌 Criar o radar
+        import plotly.graph_objects as go
+
+        categorias = ["Produção", "Disponibilidade", "Alertas", "Perdas"]
+
+        fig_radar = go.Figure()
+
+        for i, row in df_radar_norm.iterrows():
+            fig_radar.add_trace(go.Scatterpolar(
+                r=[row[c] for c in categorias],
+                theta=categorias,
+                fill='toself',
+                name=row["Unidade"]
+            ))
+
+        fig_radar.update_layout(
+            polar=dict(
+                radialaxis=dict(visible=True, range=[0, 100])
+            ),
+            showlegend=True,
+            title="🧭 Radar Comparativo das Unidades"
+        )
+
+    st.plotly_chart(fig_radar, use_container_width=True)      
+
+#------------------------------------------------------------------------
     st.subheader("Disponibilidade Operacional Média por Unidade")
 
     df_disponibilidade_total = []
