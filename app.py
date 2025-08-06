@@ -680,7 +680,7 @@ elif st.session_state["page"] == "visao360":
         st.plotly_chart(fig_prod_mensal, use_container_width=True)
 
     with tab_semanal:
-            st.subheader("📆 Produção Semanal por Unidade")
+            st.subheader("Produção Semanal por Unidade")
 
             df_semanal = df_comparativo.copy()
             df_semanal["Semana"] = df_semanal["Data"].dt.to_period("W").apply(lambda r: r.start_time.date())
@@ -699,11 +699,7 @@ elif st.session_state["page"] == "visao360":
             )
             st.plotly_chart(fig_prod_semanal, use_container_width=True)
 
-            # Soma total da produção por unidade no período exibido
-            st.markdown("### 📊 Produção Total no Período (por unidade)")
-            df_soma_semanal = df_semanal_agrupada.groupby("Unidade")["Estimativa_m3"].sum().reset_index()
-            df_soma_semanal = df_soma_semanal.rename(columns={"Estimativa_m3": "Produção Total (m³)"})
-            st.dataframe(df_soma_semanal)    
+         
     with tab_diario:
 
         st.subheader("Produção Diária Consolidada por Unidade")
