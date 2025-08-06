@@ -381,7 +381,7 @@ if st.session_state["page"] == "gestao":
             st.plotly_chart(fig3, use_container_width=True)
         
         with tabdisp:
-            fig4 = px.line(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)")
+            fig4 = px.line(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)",markers=True)
             st.plotly_chart(fig4, use_container_width=True)
         with tabcarregamento:
             if "df_carregamentos" in locals() and not df_carregamentos.empty:
@@ -390,7 +390,7 @@ if st.session_state["page"] == "gestao":
                 
                 fig5 = px.line(df_carregamentos, x="Data", y="Qtde_Carregada",
                             color_discrete_sequence=["#2ca02c"],
-                            title="Fornos Carregados (Qtde)")
+                            title="Fornos Carregados (Qtde)",markers=True)
                 fig5.add_hline(y=media_carregamento, line_dash="dash", line_color="gray",
                             annotation_text=f"Média: {media_carregamento:.1f}", annotation_position="top left")
                 st.plotly_chart(fig5, use_container_width=True)
@@ -407,7 +407,7 @@ if st.session_state["page"] == "gestao":
                 max_descarregamentos = df_descarregamentos["Qtde_Descarregada"].max()
                 fig6 = px.line(df_descarregamentos, x="Data", y="Qtde_Descarregada",
                             color_discrete_sequence=["#2ca02c"],
-                            title="Fornos Descarregados (Qtde)")
+                            title="Fornos Descarregados (Qtde)",markers=True)
                 fig6.add_hline(y=media_descarregamento, line_dash="dash", line_color="gray",
                             annotation_text=f"Média: {media_descarregamento:.1f}", annotation_position="top left")
                 st.plotly_chart(fig6, use_container_width=True)
