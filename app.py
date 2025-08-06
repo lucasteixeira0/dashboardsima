@@ -19,7 +19,7 @@ def carregar_csv_seguro(caminho, colunas_minimas=None):
         df = pd.read_csv(caminho)
         # Padronização de nomes de colunas problemáticas
         renomear_colunas = {
-            "Inatividade (%)": "Inatividade_%",
+            "Taxa Inatividade (%)": "Inatividade_%",
             "Inatividade (%) ": "Inatividade_%",  # com espaço
             " Inatividade (%)": "Inatividade_%"   # com espaço antes
         }
