@@ -171,7 +171,7 @@ if "username" not in st.session_state:
 
 # Tela de login
 if not st.session_state["logged_in"]:
-    st.title("🔐 Login")
+    st.title("Login")
     username = st.text_input("Usuário")
     password = st.text_input("Senha", type="password")
 
@@ -219,7 +219,7 @@ for nome, chave in PAGES.items():
             
 # ===================== PÁGINA PRINCIPAL (Gestão) =====================
 if st.session_state["page"] == "gestao":
-    st.sidebar.header("🏭 Selecione a Unidade")
+    st.sidebar.header("Selecione a Unidade")
     todas_fazendas = list(fazendas_ativas.keys())
     unidade_sel = st.sidebar.selectbox("Unidade:", todas_fazendas)
     caminho_base = f"data/{unidade_sel.lower().replace(' ', '').replace('.', '')}"
@@ -277,7 +277,7 @@ if st.session_state["page"] == "gestao":
 
 
         # Filtro de data global
-        st.sidebar.header("📅 Filtro de Período")
+        st.sidebar.header("Filtro de Período")
         data_inicio = df_prod_em_processo["Data"].min().date()
         data_fim = df_prod_em_processo["Data"].max().date()
         if not df_prod_em_processo.empty: 
