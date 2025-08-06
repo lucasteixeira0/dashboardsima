@@ -55,7 +55,7 @@ def carregar_json_seguro(caminho, valor_padrao=None):
 def formatar_nome_fazenda(nome):
     return nome.lower().replace(" ", "").replace(".", "")
 def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
-    st.subheader("📅 Dados históricos")
+    st.subheader("Dados históricos")
     
     df_historico["Data"] = pd.to_datetime(df_historico["Data"], errors='coerce')
     df_historico["FazendaNomeSanitizada"] = df_historico["FazendaNome"].apply(formatar_nome_fazenda)
@@ -96,23 +96,23 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     wavg_umid = (df_faz["Umidade"] * df_faz["Metragem"]).sum() / df_faz["Metragem"].sum() if df_faz["Metragem"].sum() else None
 
     # Produção diária
-    st.subheader("📈 Produção Diária")
+    st.subheader("Produção Diária")
     prod_dia = df_faz.groupby("Dia")["Metragem"].sum().reset_index()
     st.plotly_chart(px.bar(prod_dia, x="Dia", y="Metragem", title="Produção Diária (m³)"), use_container_width=True)
 
     # Produção mensal
-    st.subheader("📆 Produção Mensal")
+    st.subheader("Produção Mensal")
     prod_mes = df_faz.groupby(["Ano", "Mes"])["Metragem"].sum().reset_index()
     prod_mes["AnoMes"] = prod_mes["Ano"].astype(str) + "-" + prod_mes["Mes"].astype(str).str.zfill(2)
     st.plotly_chart(px.bar(prod_mes, x="AnoMes", y="Metragem", title="Produção Mensal (m³)", text_auto='.2f'), use_container_width=True)
 
     # Produção anual
-    st.subheader("📅 Produção Anual")
+    st.subheader("Produção Anual")
     prod_ano = df_faz.groupby("Ano")["Metragem"].sum().reset_index()
     st.plotly_chart(px.bar(prod_ano, x="Ano", y="Metragem", title="Produção Anual (m³)", text_auto='.2f'), use_container_width=True)
 
     # Densidade
-    st.subheader("📈 Densidade")
+    st.subheader("Densidade")
     prod_dia_dens = df_faz.groupby("Dia")["DensidadeSeca"].mean().reset_index()
     st.plotly_chart(px.line(prod_dia_dens, x="Dia", y="DensidadeSeca", title="Densidade média (kg/m³)"), use_container_width=True)
 
@@ -122,7 +122,7 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     st.info(f"🔍 Dias com densidade anômala detectados: **{num_outliers}**")
 
     # Umidade
-    st.subheader("📈 Umidade")
+    st.subheader("Umidade")
     prod_dia_umid = df_faz.groupby("Dia")["Umidade"].mean().reset_index()
     st.plotly_chart(px.line(prod_dia_umid, x="Dia", y="Umidade", title="Umidade média (%)"), use_container_width=True)
 
