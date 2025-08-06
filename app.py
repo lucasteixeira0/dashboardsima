@@ -634,10 +634,10 @@ if st.session_state["page"] == "gestao":
 
 # ===================== VISÃO 360° ====================================
 elif st.session_state["page"] == "visao360":
-    st.title("🌍 Visão 360° – Comparativo entre Unidades")
+    st.title("Visão 360° – Comparativo entre Unidades")
     st.markdown("Esta página consolida os principais indicadores das unidades ativas para análise integrada de desempenho.")
 
-    # 🔁 Unidades que deseja comparar
+    #  Unidades que deseja comparar
     unidades_ativas = [k for k, v in fazendas_ativas.items() if v]
 
     # Base de dados por unidade
@@ -661,7 +661,7 @@ elif st.session_state["page"] == "visao360":
         st.stop()
     #---------------------------------------------------------------------------
 
-    st.subheader("📈 Produção Mensal por Unidade")
+    st.subheader("Produção Mensal por Unidade")
 
     df_mensal = df_comparativo.groupby(["Unidade", "AnoMes"])["Estimativa_m3"].sum().reset_index()
 
@@ -679,7 +679,7 @@ elif st.session_state["page"] == "visao360":
     st.plotly_chart(fig_prod_mensal, use_container_width=True)
 
 
-    st.subheader("✅ Disponibilidade Operacional Média por Unidade")
+    st.subheader("Disponibilidade Operacional Média por Unidade")
 
     df_disponibilidade_total = []
 
