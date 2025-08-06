@@ -377,11 +377,11 @@ if st.session_state["page"] == "gestao":
             
             # Calcular disponibilidade
             df_inatividade["Disponibilidade_%"] = 100 - df_inatividade["Inatividade_%"]
-            fig3 = px.bar(df_inatividade, x="Data", y="Disponibilidade_%",color_discrete_sequence=["#2ca02c"], title="Disponibilidade Diária (%)", markers=True)
+            fig3 = px.bar(df_inatividade, x="Data", y="Disponibilidade_%",color_discrete_sequence=["#2ca02c"], title="Disponibilidade Diária (%)")
             st.plotly_chart(fig3, use_container_width=True)
         
         with tabdisp:
-            fig4 = px.bar(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)",markers=True)
+            fig4 = px.bar(df_inatividade, x="Data", y="Inatividade_%",color_discrete_sequence=["#2ca02c"], title="Taxa de Inatividade Diária (%)")
             st.plotly_chart(fig4, use_container_width=True)
         with tabcarregamento:
             if "df_carregamentos" in locals() and not df_carregamentos.empty:
