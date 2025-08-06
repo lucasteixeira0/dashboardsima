@@ -367,7 +367,7 @@ if st.session_state["page"] == "gestao":
         # ------------------------------------------
         st.header(" Saúde Operacional")
         
-        tabinat,tabdisp,tabcarregamento,tabdescarregamento= st.tabs(["Taxa de Inatividade","Disponibilidade Operacional","Carregamentos Diários", "Descarregamentos Diários"])
+        tabinat,tabdisp,tabcarregamento,tabdescarregamento= st.tabs(["Disponibilidade Operacional","Taxa de Inatividade","Carregamentos Diários", "Descarregamentos Diários"])
         with tabinat: 
             if df_inatividade.empty or "Inatividade_%" not in df_inatividade.columns:
                 df_inatividade = pd.DataFrame({
