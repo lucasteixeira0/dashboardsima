@@ -793,6 +793,7 @@ elif st.session_state["page"] == "visao360":
 
 #------------------------------------------------------------------------
     st.subheader("Indicadores Consolidadados")
+    st.markdown("---")
     st.markdown("**Disponibilidade operacional média (%)**")
     df_disponibilidade_total = []
 
@@ -811,17 +812,19 @@ elif st.session_state["page"] == "visao360":
     #------------------------------------------------------------------------
     if not df_resumo.empty:
         # Exibir resumo por seção
+        st.markdown("---")
         st.markdown("**Fornos Operacionais por Unidade**")
         st.dataframe(df_resumo[["Unidade", "Fornos Operacionais"]])
-
+        st.markdown("---")
         st.markdown("**Ciclo Médio por Unidade**")
         st.dataframe(df_resumo[["Unidade", "Ciclo Médio (dias)"]])
-
+        st.markdown("---")
         st.markdown("**Estoque Atual (m³st) por Unidade**")
         st.dataframe(df_resumo[["Unidade", "Estoque (m³st)"]])
-
+        st.markdown("---")
         st.markdown("**Conversão (mst/mca) por Unidade**")
         st.dataframe(df_resumo[["Unidade", "Conversão (mst/mca)"]])
+        st.markdown("---")
     else:
         st.warning("⚠️ Nenhum dado de resumo operacional foi encontrado nas unidades.")
 
