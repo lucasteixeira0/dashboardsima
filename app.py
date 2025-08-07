@@ -662,31 +662,53 @@ elif st.session_state["page"] == "visao360":
     #---------------------------------------------------------------------------
     tab_mensal, tab_semanal, tab_diario, tab_box = st.tabs(["Produção Mensal","Produção Semanal", "Produção Diária","Distribuição (Boxplot)"])
     with tab_mensal:    
-        st.subheader("Produção Mensal por Unidade")
+        st.subheader("📅 Produção Mensal por Unidade")
 
         df_mensal = df_comparativo.groupby(["Unidade", "AnoMes"])["Estimativa_m3"].sum().reset_index()
 
-        fig_prod_mensal = px.bar(
-            df_mensal,
-            x="AnoMes",
-            y="Estimativa_m3",
-            color="Unidade",
-            barmode="group",
-            title="Produção mensal (m³) por unidade",
-            labels={"Estimativa_m3": "Produção (m³)", "AnoMes": "Ano-Mês"},
-            text_auto=".2s"
-        )
-
-        st.plotly_chart(fig_prod_mensal, use_container_width=True)
+        if st.button("📊 Soma das Fazendas – Mensal", key="btn_soma_mensal"):
+            df_total_mensal = df_mensal.groupby("AnoMes")["Estimativa_m3"].sum().reset_index()
+            fig_soma_mensal = px.bar(
+                df_total_mensal,
+                x="AnoMes",
+                y="Estimativa_m3",
+                title="Produção Mensal Total (m³) – Todas as Unidades",
+                labels={"Estimativa_m3": "Produção (m³)", "AnoMes": "Mês"},
+                text_auto=".2s"
+            )
+            st.plotly_chart(fig_soma_mensal, use_container_width=True)
+        else:
+            fig_prod_mensal = px.bar(
+                df_mensal,
+                x="AnoMes",
+                y="Estimativa_m3",
+                color="Unidade",
+                barmode="group",
+                title="Produção mensal (m³) por unidade",
+                labels={"Estimativa_m3": "Produção (m³)", "AnoMes": "Ano-Mês"},
+                text_auto=".2s"
+            )
+            st.plotly_chart(fig_prod_mensal, use_container_width=True)
 
     with tab_semanal:
-            st.subheader("Produção Semanal por Unidade")
+        st.subheader("📆 Produção Semanal por Unidade")
 
-            df_semanal = df_comparativo.copy()
-            df_semanal["Semana"] = df_semanal["Data"].dt.to_period("W").apply(lambda r: r.start_time.date())
+        df_semanal = df_comparativo.copy()
+        df_semanal["Semana"] = df_semanal["Data"].dt.to_period("W").apply(lambda r: r.start_time.date())
+        df_semanal_agrupada = df_semanal.groupby(["Semana", "Unidade"])["Estimativa_m3"].sum().reset_index()
 
-            df_semanal_agrupada = df_semanal.groupby(["Semana", "Unidade"])["Estimativa_m3"].sum().reset_index()
-
+        if st.button("📊 Soma das Fazendas – Semanal", key="btn_soma_semanal"):
+            df_total_semanal = df_semanal_agrupada.groupby("Semana")["Estimativa_m3"].sum().reset_index()
+            fig_soma_semanal = px.bar(
+                df_total_semanal,
+                x="Semana",
+                y="Estimativa_m3",
+                title="Produção Semanal Total (m³) – Todas as Unidades",
+                labels={"Estimativa_m3": "Produção (m³)", "Semana": "Semana"},
+                text_auto=".2s"
+            )
+            st.plotly_chart(fig_soma_semanal, use_container_width=True)
+        else:
             fig_prod_semanal = px.bar(
                 df_semanal_agrupada,
                 x="Semana",
@@ -700,29 +722,38 @@ elif st.session_state["page"] == "visao360":
             st.plotly_chart(fig_prod_semanal, use_container_width=True)
 
          
+   
+
     with tab_diario:
+            st.subheader("📆 Produção Diária Consolidada por Unidade")
 
-        st.subheader("Produção Diária Consolidada por Unidade")
+            df_diario = df_comparativo.copy()
+            df_diario["Dia"] = df_diario["Data"].dt.date
+            df_diaria_agrupada = df_diario.groupby(["Dia", "Unidade"])["Estimativa_m3"].sum().reset_index()
 
-        # Agrupar por dia e unidade
-        df_diario = df_comparativo.copy()
-        df_diario["Dia"] = df_diario["Data"].dt.date  # só a data, sem hora
-
-        df_diaria_agrupada = df_diario.groupby(["Dia", "Unidade"])["Estimativa_m3"].sum().reset_index()
-
-        # Gráfico de barras por dia
-        fig_prod_diaria = px.bar(
-            df_diaria_agrupada,
-            x="Dia",
-            y="Estimativa_m3",
-            color="Unidade",
-            barmode="group",
-            title="Produção diária (m³) por unidade",
-            labels={"Estimativa_m3": "Produção (m³)", "Dia": "Data"},
-            text_auto=".2s"
-        )
-
-        st.plotly_chart(fig_prod_diaria, use_container_width=True) 
+            if st.button("📊 Soma das Fazendas – Diária", key="btn_soma_diaria"):
+                df_total_diaria = df_diaria_agrupada.groupby("Dia")["Estimativa_m3"].sum().reset_index()
+                fig_soma_diaria = px.bar(
+                    df_total_diaria,
+                    x="Dia",
+                    y="Estimativa_m3",
+                    title="Produção Diária Total (m³) – Todas as Unidades",
+                    labels={"Estimativa_m3": "Produção (m³)", "Dia": "Data"},
+                    text_auto=".2s"
+                )
+                st.plotly_chart(fig_soma_diaria, use_container_width=True)
+            else:
+                fig_prod_diaria = px.bar(
+                    df_diaria_agrupada,
+                    x="Dia",
+                    y="Estimativa_m3",
+                    color="Unidade",
+                    barmode="group",
+                    title="Produção diária (m³) por unidade",
+                    labels={"Estimativa_m3": "Produção (m³)", "Dia": "Data"},
+                    text_auto=".2s"
+                )
+                st.plotly_chart(fig_prod_diaria, use_container_width=True) 
 
     with tab_box:
         st.subheader("📈 Distribuição da Produção Diária por Unidade")
