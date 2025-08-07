@@ -831,11 +831,11 @@ elif st.session_state["page"] == "visao360":
         st.markdown("**Conversão (mst/mca) por Unidade**")
         st.dataframe(df_resumo[["Unidade", "Conversão (mst/mca)"]])
         st.markdown("---")
-        st.markdown("**Capacidade Volumétrica Fornos (m³)")
+        st.markdown("**Capacidade Volumétrica Fornos (m³)**")
         st.dataframe(df_resumo[["Unidade", "Capacidade Volumétrica Fornos (mst)"]])
         st.markdown("---")
         st.markdown("---")
-        st.markdown("**Capacidade Produtiva Fornos (mca)")
+        st.markdown("**Capacidade Produtiva Fornos (mca)**")
         st.dataframe(df_resumo[["Unidade", "Capacidade Produtiva"]])
 
     else:
