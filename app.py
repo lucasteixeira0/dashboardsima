@@ -670,7 +670,7 @@ elif st.session_state["page"] == "visao360":
     df_resumo["Conversão (mst/mca)"] = pd.to_numeric(df_resumo["Conversão (mst/mca)"], errors="coerce")
     df_resumo["Capacidade Volumétrica Fornos (mst)"] = pd.to_numeric(df_resumo["Capacidade Volumétrica Fornos (mst)"], errors="coerce")
 
-    df_resumo["Capacidade Produtiva"] = df_resumo["Capacidade Volumétrica Fornos (mst)"] / df_resumo["Conversão (mst/mca)"]
+    df_resumo["Capacidade Produtiva"] = (df_resumo["Capacidade Volumétrica Fornos (mst)"] / df_resumo["Conversão (mst/mca)"]).round(2)
 
 
     # Unir todos em um único DataFrame
