@@ -198,7 +198,7 @@ mensagem.empty()
 PAGES = {
     "Painel de Gestão":      "gestao",
     "Visão 360°":            "visao360",
-    "Indicadores Operacionais":"indicadores",
+    #"Indicadores Operacionais":"indicadores",
     "Simulador":             "simulador",
     "Auditoria Cubagem":     "auditoria"      # << NOVA PÁGINA
 }
