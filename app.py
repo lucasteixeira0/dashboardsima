@@ -811,16 +811,16 @@ elif st.session_state["page"] == "visao360":
     #------------------------------------------------------------------------
     if not df_resumo.empty:
         # Exibir resumo por seção
-        st.markdown("### 🔧 Fornos Operacionais por Unidade")
+        st.markdown("###Fornos Operacionais por Unidade")
         st.dataframe(df_resumo[["Unidade", "Fornos Operacionais"]])
 
-        st.markdown("### 🔁 Ciclo Médio por Unidade")
+        st.markdown("###Ciclo Médio por Unidade")
         st.dataframe(df_resumo[["Unidade", "Ciclo Médio (dias)"]])
 
-        st.markdown("### 📦 Estoque Atual (m³st) por Unidade")
+        st.markdown("###Estoque Atual (m³st) por Unidade")
         st.dataframe(df_resumo[["Unidade", "Estoque (m³st)"]])
 
-        st.markdown("### 📊 Conversão (mst/mca) por Unidade")
+        st.markdown("### Conversão (mst/mca) por Unidade")
         st.dataframe(df_resumo[["Unidade", "Conversão (mst/mca)"]])
     else:
         st.warning("⚠️ Nenhum dado de resumo operacional foi encontrado nas unidades.")
