@@ -841,11 +841,9 @@ elif st.session_state["page"] == "visao360":
     else:
         st.warning("⚠️ Nenhum dado de resumo operacional foi encontrado nas unidades.")
 
-
-
 # ===================== INDICADORES OPERACIONAIS ======================
-elif st.session_state["page"] == "indicadores":
-    st.title("Indicadores Operacionais")
+#elif st.session_state["page"] == "indicadores":
+ #   st.title("Indicadores Operacionais")
     #  código correspondente
 
 # ===================== SIMULADOR =====================================
