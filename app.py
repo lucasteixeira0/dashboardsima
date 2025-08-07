@@ -792,8 +792,8 @@ elif st.session_state["page"] == "visao360":
           
 
 #------------------------------------------------------------------------
-    st.subheader("Disponibilidade Operacional Média por Unidade")
-
+    st.subheader("Indicadores Consolidadados")
+    st.markdown("Disponibilidade operacional média (%)")
     df_disponibilidade_total = []
 
     for unidade in unidades_ativas:
