@@ -642,15 +642,30 @@ elif st.session_state["page"] == "visao360":
 
     # Base de dados por unidade
     dados_unidades = {}
+    dados_resumo = []
 
     for unidade in unidades_ativas:
         caminho = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/producao_estimada_diaria.csv"
         df = carregar_csv_seguro(caminho, colunas_minimas=["Data", "Estimativa_m3"])
+        caminho_json = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/resumo_operacional.json"
+        resumo = carregar_json_seguro(caminho_json)
         if not df.empty:
             df["Unidade"] = unidade
             df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
             df["AnoMes"] = df["Data"].dt.to_period("M").astype(str)
             dados_unidades[unidade] = df
+        if resumo:  # Se o JSON foi carregado corretamente
+            dados_resumo.append({
+                "Unidade": unidade,
+                "Estoque (m³st)": resumo.get("EstoqueAtual_m3st", None),
+                "Ciclo Médio (dias)": resumo.get("DuracaoMediaCiclo_dias", None),
+                "Fornos Operacionais": resumo.get("FornosOperacionais", None),
+                "Conversão (mst/mca)": resumo.get("Conversaost", None)
+            })
+    
+    # Transformar em DataFrame
+    df_resumo = pd.DataFrame(dados_resumo)
+
 
     # Unir todos em um único DataFrame
     df_comparativo = pd.concat(dados_unidades.values(), ignore_index=True) if dados_unidades else pd.DataFrame()
@@ -793,6 +808,25 @@ elif st.session_state["page"] == "visao360":
 
     df_disp_final = pd.DataFrame(df_disponibilidade_total)
     st.dataframe(df_disp_final)
+    #------------------------------------------------------------------------
+    if not df_resumo.empty:
+        # Exibir resumo por seção
+        st.markdown("### 🔧 Fornos Operacionais por Unidade")
+        st.dataframe(df_resumo[["Unidade", "Fornos Operacionais"]])
+
+        st.markdown("### 🔁 Ciclo Médio por Unidade")
+        st.dataframe(df_resumo[["Unidade", "Ciclo Médio (dias)"]])
+
+        st.markdown("### 📦 Estoque Atual (m³st) por Unidade")
+        st.dataframe(df_resumo[["Unidade", "Estoque (m³st)"]])
+
+        st.markdown("### 📊 Conversão (mst/mca) por Unidade")
+        st.dataframe(df_resumo[["Unidade", "Conversão (mst/mca)"]])
+    else:
+        st.warning("⚠️ Nenhum dado de resumo operacional foi encontrado nas unidades.")
+
+
+
 # ===================== INDICADORES OPERACIONAIS ======================
 elif st.session_state["page"] == "indicadores":
     st.title("Indicadores Operacionais")
