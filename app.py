@@ -666,6 +666,10 @@ elif st.session_state["page"] == "visao360":
     
     # Transformar em DataFrame
     df_resumo = pd.DataFrame(dados_resumo)
+    # Garantir que os valores sejam numéricos
+    df_resumo["Conversão (mst/mca)"] = pd.to_numeric(df_resumo["Conversão (mst/mca)"], errors="coerce")
+    df_resumo["Capacidade Volumétrica Fornos (mst)"] = pd.to_numeric(df_resumo["Capacidade Volumétrica Fornos (mst)"], errors="coerce")
+
     df_resumo["Capacidade Produtiva"] = df_resumo["Capacidade Volumétrica Fornos (mst)"] / df_resumo["Conversão (mst/mca)"]
 
 
