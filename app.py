@@ -798,53 +798,40 @@ elif st.session_state["page"] == "visao360":
           
 
 #------------------------------------------------------------------------
-    st.subheader("Indicadores Consolidadados")
+    st.subheader("Indicadores Consolidados")
     st.markdown("---")
-    st.markdown("**Disponibilidade operacional média (%)**")
-    df_disponibilidade_total = []
 
-    for unidade in unidades_ativas:
-        caminho_disp = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/taxa_inatividade_diaria.csv"
-        df_disp = carregar_csv_seguro(caminho_disp)
-        if not df_disp.empty and "Inatividade_%" in df_disp.columns:
-            disponibilidade = 100 - df_disp["Inatividade_%"].mean()
-            df_disponibilidade_total.append({
-                "Unidade": unidade,
-                "Disponibilidade Média (%)": round(disponibilidade, 2)
-            })
+        # Juntar df_resumo com df_disp_final pela coluna "Unidade"
+    df_merged = pd.merge(df_resumo, df_disp_final, on="Unidade", how="outer")
 
-    df_disp_final = pd.DataFrame(df_disponibilidade_total)
-    st.dataframe(df_disp_final)
-    #------------------------------------------------------------------------
-    if not df_resumo.empty:
-        # Exibir resumo por seção
-        st.markdown("---")
-        st.markdown("**Fornos Operacionais por Unidade**")
-        st.dataframe(df_resumo[["Unidade", "Fornos Operacionais"]])
-        st.markdown("---")
-        st.markdown("**Ciclo Médio por Unidade**")
-        st.dataframe(df_resumo[["Unidade", "Ciclo Médio (dias)"]])
-        st.markdown("---")
-        st.markdown("**Estoque Atual (m³st) por Unidade**")
-        st.dataframe(df_resumo[["Unidade", "Estoque (m³st)"]])
-        st.markdown("---")
-        st.markdown("**Conversão (mst/mca) por Unidade**")
-        st.dataframe(df_resumo[["Unidade", "Conversão (mst/mca)"]])
-        st.markdown("---")
-        st.markdown("**Capacidade Volumétrica Fornos (m³)**")
-        st.dataframe(df_resumo[["Unidade", "Capacidade Volumétrica Fornos (mst)"]])
-        st.markdown("---")
-        st.markdown("---")
-        st.markdown("**Capacidade Produtiva Fornos (mca)**")
-        st.dataframe(df_resumo[["Unidade", "Capacidade Produtiva"]])
+        # Reorganizar colunas, se desejar
+    colunas_desejadas = [
+            "Unidade",
+            "Fornos Operacionais",
+            "Ciclo Médio (dias)",
+            "Estoque (m³st)",
+            "Conversão (mst/mca)",
+            "Capacidade Volumétrica Fornos (mst)",
+            "Capacidade Produtiva",
+            "Disponibilidade Média (%)"
+        ]
 
-    else:
-        st.warning("⚠️ Nenhum dado de resumo operacional foi encontrado nas unidades.")
+    df_merged = df_merged[[col for col in colunas_desejadas if col in df_merged.columns]]
 
-# ===================== INDICADORES OPERACIONAIS ======================
-#elif st.session_state["page"] == "indicadores":
- #   st.title("Indicadores Operacionais")
-    #  código correspondente
+        # Exibir a tabela única
+    st.dataframe(df_merged.style.format({
+            "Ciclo Médio (dias)": "{:.1f}",
+            "Estoque (m³st)": "{:,.2f}",
+            "Conversão (mst/mca)": "{:.2f}",
+            "Capacidade Volumétrica Fornos (mst)": "{:,.2f}",
+            "Capacidade Produtiva": "{:,.2f}",
+            "Disponibilidade Média (%)": "{:.2f}"
+        }))
+
+    # ===================== INDICADORES OPERACIONAIS ======================
+    #elif st.session_state["page"] == "indicadores":
+    #   st.title("Indicadores Operacionais")
+        #  código correspondente
 
 # ===================== SIMULADOR =====================================
 elif st.session_state["page"] == "simulador":
