@@ -793,7 +793,7 @@ elif st.session_state["page"] == "visao360":
 
 #------------------------------------------------------------------------
     st.subheader("Indicadores Consolidadados")
-    st.markdown("---")
+    st.markdown("**---**")
     st.markdown("**Disponibilidade operacional média (%)**")
     df_disponibilidade_total = []
 
