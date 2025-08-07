@@ -662,11 +662,11 @@ elif st.session_state["page"] == "visao360":
     #---------------------------------------------------------------------------
     tab_mensal, tab_semanal, tab_diario, tab_box = st.tabs(["Produção Mensal","Produção Semanal", "Produção Diária","Distribuição (Boxplot)"])
     with tab_mensal:    
-        st.subheader("📅 Produção Mensal por Unidade")
+        st.subheader("Produção Mensal por Unidade")
 
         df_mensal = df_comparativo.groupby(["Unidade", "AnoMes"])["Estimativa_m3"].sum().reset_index()
 
-        if st.button("📊 Soma das Fazendas – Mensal", key="btn_soma_mensal"):
+        if st.button("Soma das Fazendas – Mensal", key="btn_soma_mensal"):
             df_total_mensal = df_mensal.groupby("AnoMes")["Estimativa_m3"].sum().reset_index()
             fig_soma_mensal = px.bar(
                 df_total_mensal,
@@ -691,13 +691,13 @@ elif st.session_state["page"] == "visao360":
             st.plotly_chart(fig_prod_mensal, use_container_width=True)
 
     with tab_semanal:
-        st.subheader("📆 Produção Semanal por Unidade")
+        st.subheader("Produção Semanal por Unidade")
 
         df_semanal = df_comparativo.copy()
         df_semanal["Semana"] = df_semanal["Data"].dt.to_period("W").apply(lambda r: r.start_time.date())
         df_semanal_agrupada = df_semanal.groupby(["Semana", "Unidade"])["Estimativa_m3"].sum().reset_index()
 
-        if st.button("📊 Soma das Fazendas – Semanal", key="btn_soma_semanal"):
+        if st.button("Soma das Fazendas – Semanal", key="btn_soma_semanal"):
             df_total_semanal = df_semanal_agrupada.groupby("Semana")["Estimativa_m3"].sum().reset_index()
             fig_soma_semanal = px.bar(
                 df_total_semanal,
@@ -725,13 +725,13 @@ elif st.session_state["page"] == "visao360":
    
 
     with tab_diario:
-            st.subheader("📆 Produção Diária Consolidada por Unidade")
+            st.subheader("Produção Diária Consolidada por Unidade")
 
             df_diario = df_comparativo.copy()
             df_diario["Dia"] = df_diario["Data"].dt.date
             df_diaria_agrupada = df_diario.groupby(["Dia", "Unidade"])["Estimativa_m3"].sum().reset_index()
 
-            if st.button("📊 Soma das Fazendas – Diária", key="btn_soma_diaria"):
+            if st.button("Soma das Fazendas – Diária", key="btn_soma_diaria"):
                 df_total_diaria = df_diaria_agrupada.groupby("Dia")["Estimativa_m3"].sum().reset_index()
                 fig_soma_diaria = px.bar(
                     df_total_diaria,
@@ -756,7 +756,7 @@ elif st.session_state["page"] == "visao360":
                 st.plotly_chart(fig_prod_diaria, use_container_width=True) 
 
     with tab_box:
-        st.subheader("📈 Distribuição da Produção Diária por Unidade")
+        st.subheader("Distribuição da Produção Diária por Unidade")
 
         df_diario_box = df_comparativo.copy()
         df_diario_box["Dia"] = df_diario_box["Data"].dt.date
