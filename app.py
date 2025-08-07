@@ -660,11 +660,13 @@ elif st.session_state["page"] == "visao360":
                 "Estoque (m³st)": resumo.get("EstoqueAtual_m3st", None),
                 "Ciclo Médio (dias)": resumo.get("DuracaoMediaCiclo_dias", None),
                 "Fornos Operacionais": resumo.get("FornosOperacionais", None),
-                "Conversão (mst/mca)": resumo.get("Conversaost", None)
+                "Conversão (mst/mca)": resumo.get("Conversaost", None),
+                "Capacidade Volumétrica Fornos (mst)": resumo.get("Capacidadevol",None)
             })
     
     # Transformar em DataFrame
     df_resumo = pd.DataFrame(dados_resumo)
+    df_resumo["Capacidade Produtiva"] = df_resumo["Capacidade Volumétrica Fornos (mst)"] / df_resumo["Conversão (mst/mca)"]
 
 
     # Unir todos em um único DataFrame
@@ -825,6 +827,13 @@ elif st.session_state["page"] == "visao360":
         st.markdown("**Conversão (mst/mca) por Unidade**")
         st.dataframe(df_resumo[["Unidade", "Conversão (mst/mca)"]])
         st.markdown("---")
+        st.markdown("**Capacidade Volumétrica Fornos (m³)")
+        st.dataframe(df_resumo[["Unidade", "Capacidade Volumétrica Fornos (mst)"]])
+        st.markdown("---")
+        st.markdown("---")
+        st.markdown("**Capacidade Produtiva Fornos (mca)")
+        st.dataframe(df_resumo[["Unidade", "Capacidade Produtiva"]])
+
     else:
         st.warning("⚠️ Nenhum dado de resumo operacional foi encontrado nas unidades.")
 
