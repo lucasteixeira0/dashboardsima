@@ -1,7 +1,7 @@
 {
-    "EstoqueAtual_m3st": 646,
-    "DuracaoMediaCiclo_dias":0,
-    "FornosOperacionais": 200,
-    "Conversaost": 1.9,
-    "Capacidadevol":17
+    "EstoqueAtual_m3st": 102.0,
+    "DuracaoMediaCiclo_dias": 14,
+    "FornosOperacionais": "200",
+    "Conversaost": "1.9",
+    "Capacidadevol": "17"
 }
