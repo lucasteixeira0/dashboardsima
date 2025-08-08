@@ -796,6 +796,50 @@ elif st.session_state["page"] == "visao360":
 
         st.plotly_chart(fig_box, use_container_width=True) 
     
+    
+#------------------------------------------------------------------------
+    st.subheader("Indicadores Consolidadados")
+    
+    df_disponibilidade_total = []
+
+    for unidade in unidades_ativas:
+        caminho_disp = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/taxa_inatividade_diaria.csv"
+        df_disp = carregar_csv_seguro(caminho_disp)
+        if not df_disp.empty and "Inatividade_%" in df_disp.columns:
+            disponibilidade = 100 - df_disp["Inatividade_%"].mean()
+            df_disponibilidade_total.append({
+                "Unidade": unidade,
+                "Disponibilidade Média (%)": round(disponibilidade, 2)
+            })
+
+    df_disp_final = pd.DataFrame(df_disponibilidade_total)
+    #------------------------------------------------------------------------
+    # Juntar df_resumo com df_disp_final pela coluna "Unidade"
+    df_merged = pd.merge(df_resumo, df_disp_final, on="Unidade", how="outer")
+
+    # Reorganizar colunas, se desejar
+    colunas_desejadas = [
+        "Unidade",
+        "Fornos Operacionais",
+        "Ciclo Médio (dias)",
+        "Estoque (m³st)",
+        "Conversão (mst/mca)",
+        "Capacidade Volumétrica Fornos (mst)",
+        "Capacidade Produtiva",
+        "Disponibilidade Média (%)"
+    ]
+    df_merged = df_merged[[col for col in colunas_desejadas if col in df_merged.columns]]
+
+    # Exibir a tabela única
+    st.dataframe(df_merged.style.format({
+        "Ciclo Médio (dias)": "{:.1f}",
+        "Estoque (m³st)": "{:,.2f}",
+        "Conversão (mst/mca)": "{:.2f}",
+        "Capacidade Volumétrica Fornos (mst)": "{:,.2f}",
+        "Capacidade Produtiva": "{:,.2f}",
+        "Disponibilidade Média (%)": "{:.2f}"
+    }))
+
     #-----------------------------SPREAD DE PREÇO MERCADO-------------------------
     caminho_spread="data/variacao_mensal.csv"
     
@@ -848,48 +892,6 @@ elif st.session_state["page"] == "visao360":
 
     st.plotly_chart(fig, use_container_width=True)
 
-#------------------------------------------------------------------------
-    st.subheader("Indicadores Consolidadados")
-    
-    df_disponibilidade_total = []
-
-    for unidade in unidades_ativas:
-        caminho_disp = f"data/{unidade.lower().replace(' ', '').replace('.', '')}/taxa_inatividade_diaria.csv"
-        df_disp = carregar_csv_seguro(caminho_disp)
-        if not df_disp.empty and "Inatividade_%" in df_disp.columns:
-            disponibilidade = 100 - df_disp["Inatividade_%"].mean()
-            df_disponibilidade_total.append({
-                "Unidade": unidade,
-                "Disponibilidade Média (%)": round(disponibilidade, 2)
-            })
-
-    df_disp_final = pd.DataFrame(df_disponibilidade_total)
-    #------------------------------------------------------------------------
-    # Juntar df_resumo com df_disp_final pela coluna "Unidade"
-    df_merged = pd.merge(df_resumo, df_disp_final, on="Unidade", how="outer")
-
-    # Reorganizar colunas, se desejar
-    colunas_desejadas = [
-        "Unidade",
-        "Fornos Operacionais",
-        "Ciclo Médio (dias)",
-        "Estoque (m³st)",
-        "Conversão (mst/mca)",
-        "Capacidade Volumétrica Fornos (mst)",
-        "Capacidade Produtiva",
-        "Disponibilidade Média (%)"
-    ]
-    df_merged = df_merged[[col for col in colunas_desejadas if col in df_merged.columns]]
-
-    # Exibir a tabela única
-    st.dataframe(df_merged.style.format({
-        "Ciclo Médio (dias)": "{:.1f}",
-        "Estoque (m³st)": "{:,.2f}",
-        "Conversão (mst/mca)": "{:.2f}",
-        "Capacidade Volumétrica Fornos (mst)": "{:,.2f}",
-        "Capacidade Produtiva": "{:,.2f}",
-        "Disponibilidade Média (%)": "{:.2f}"
-    }))
 
 # ===================== INDICADORES OPERACIONAIS ======================
 #elif st.session_state["page"] == "indicadores":
