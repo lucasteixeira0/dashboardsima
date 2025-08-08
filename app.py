@@ -138,9 +138,9 @@ def faixa_disponibilidade(valor):
     else:
         return "Baixa (<70%)"
 def faixa_inatividade(valor):
-    if valor <= 5:
+    if valor <= 10:
         return "Baixa (≤10%)"
-    elif valor <= 15:
+    elif valor <= 30:
         return "Média (10–30%)"
     else:
         return "Alta (>30%)"
