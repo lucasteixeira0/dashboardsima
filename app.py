@@ -813,6 +813,8 @@ elif st.session_state["page"] == "visao360":
 
         # Criar coluna de data para facilitar o eixo X do gráfico
         df_cotacao_mensal["Data"] = pd.to_datetime(df_cotacao_mensal["Ano"].astype(str) + "-" + df_cotacao_mensal["Mes"].astype(str) + "-01")
+        df_cotacao_mensal = df_cotacao_mensal.sort_values("Data")
+
     else:
         st.warning("⚠️ O arquivo de variação mensal não foi encontrado ou está vazio.")
         st.stop()
