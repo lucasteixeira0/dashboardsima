@@ -510,9 +510,11 @@ if st.session_state["page"] == "gestao":
             caminho_proj_30 = f"{caminho_absoluto_base}/simulacao_30dias.csv"
             caminho_proj_meta = f"{caminho_absoluto_base}/simulacao_meta_volume.csv"
             
+           
             with tab3:
                 if os.path.exists(caminho_proj_30):
                     df_proj_30 = pd.read_csv(caminho_proj_30)
+                    somaproj=df_proj_30["Estimativa_m3"].sum()
                     fig5 = px.bar(
                         df_proj_30,
                         x="Previsao_Descarregado",
@@ -521,6 +523,9 @@ if st.session_state["page"] == "gestao":
                         text_auto='.2f'
                     )
                     st.plotly_chart(fig5, use_container_width=True)
+
+                    col1 = st.columns(1)
+                    col2.metric("📦 Volume Total", f"{somaproj:.2f} m³")
                 else:
                     st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
             
