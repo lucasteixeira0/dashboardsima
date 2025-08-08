@@ -131,9 +131,9 @@ def exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda):
     colG.metric("% com umidade ≤ 12%", f"{dentro_umid:.1f}%" if not pd.isna(dentro_umid) else "N/D")
     st.info(f"🔍 Dias com umidade anômala detectados: **{num_outliers_umd}**")
 def faixa_disponibilidade(valor):
-    if valor >= 95:
+    if valor >= 90:
         return "Alta (≥90%)"
-    elif valor >= 85:
+    elif valor >= 70:
         return "Média (70–90%)"
     else:
         return "Baixa (<70%)"
