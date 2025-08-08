@@ -866,7 +866,7 @@ elif st.session_state["page"] == "visao360":
         st.stop()
     fig = go.Figure()
 
-    # Linha do preço de mercado
+    # Preço de mercado
     fig.add_trace(go.Scatter(
         x=df_cotacao_mensal["Data"],
         y=df_cotacao_mensal["PrecoUnitarioNota"],
@@ -875,14 +875,14 @@ elif st.session_state["page"] == "visao360":
         line=dict(color="blue", width=3)
     ))
 
-    # Adicionar custo fixo por unidade
+    # Custos fixos
     for unidade, custo in custos_fixos.items():
         fig.add_trace(go.Scatter(
             x=df_cotacao_mensal["Data"],
             y=[custo] * len(df_cotacao_mensal),
             mode="lines",
             name=f"Custo {unidade}",
-            line=dict(dash="dash")  # Linha tracejada
+            line=dict(dash="dash")
         ))
 
     fig.update_layout(
@@ -891,6 +891,8 @@ elif st.session_state["page"] == "visao360":
         yaxis_title="Preço (R$/m³st)",
         hovermode="x unified"
     )
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 # ===================== INDICADORES OPERACIONAIS ======================
