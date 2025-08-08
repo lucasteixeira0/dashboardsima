@@ -795,55 +795,8 @@ elif st.session_state["page"] == "visao360":
         )
 
         st.plotly_chart(fig_box, use_container_width=True) 
+
     
-    #-----------------------------SPREAD DE PREÇO MERCADO-------------------------
-    caminho_spread="data/variacao_mensal.csv"
-    
-    df_cotacao_mensal=carregar_csv_seguro(caminho_spread)
-
-    custos_fixos = {
-    "Mata Verde": 338,
-    "Proteção": 160,
-}   
-    st.subheader("Custo de produção vs Cotação de mercado - Carvão Vegetal (m³)")
-    # Garantir que o CSV foi carregado corretamente
-    if not df_cotacao_mensal.empty:
-        df_cotacao_mensal["Ano"] = df_cotacao_mensal["Ano"].astype(int)
-        df_cotacao_mensal["Mes"] = df_cotacao_mensal["Mes"].astype(int)
-
-        # Criar coluna de data para facilitar o eixo X do gráfico
-        df_cotacao_mensal["Data"] = pd.to_datetime(df_cotacao_mensal["Ano"].astype(str) + "-" + df_cotacao_mensal["Mes"].astype(str) + "-01")
-    else:
-        st.warning("⚠️ O arquivo de variação mensal não foi encontrado ou está vazio.")
-        st.stop()
-    fig = go.Figure()
-
-    # Linha do preço de mercado
-    fig.add_trace(go.Scatter(
-        x=df_cotacao_mensal["Data"],
-        y=df_cotacao_mensal["PrecoUnitarioNota"],
-        mode="lines+markers",
-        name="Preço Mercado",
-        line=dict(color="blue", width=3)
-    ))
-
-    # Adicionar custo fixo por unidade
-    for unidade, custo in custos_fixos.items():
-        fig.add_trace(go.Scatter(
-            x=df_cotacao_mensal["Data"],
-            y=[custo] * len(df_cotacao_mensal),
-            mode="lines",
-            name=f"Custo {unidade}",
-            line=dict(dash="dash")  # Linha tracejada
-        ))
-
-    fig.update_layout(
-        title="Preço de Mercado vs Custos Fixos por Unidade",
-        xaxis_title="Data",
-        yaxis_title="Preço (R$/m³st)",
-        hovermode="x unified"
-    )
-
     st.plotly_chart(fig, use_container_width=True)
 
 #------------------------------------------------------------------------
@@ -887,7 +840,58 @@ elif st.session_state["page"] == "visao360":
         "Capacidade Volumétrica Fornos (mst)": "{:,.2f}",
         "Capacidade Produtiva": "{:,.2f}",
         "Disponibilidade Média (%)": "{:.2f}"
-    }))
+    }))    
+    
+    #-----------------------------SPREAD DE PREÇO MERCADO-------------------------
+    caminho_spread="data/variacao_mensal.csv"
+    
+    df_cotacao_mensal=carregar_csv_seguro(caminho_spread)
+
+    custos_fixos = {
+    "Mata Verde": 338,
+    "Proteção": 160,
+}   
+    st.subheader("Custo de produção vs Cotação de mercado - Carvão Vegetal (m³)")
+    # Garantir que o CSV foi carregado corretamente
+    if not df_cotacao_mensal.empty:
+        df_cotacao_mensal["Ano"] = df_cotacao_mensal["Ano"].astype(int)
+        df_cotacao_mensal["Mes"] = df_cotacao_mensal["Mes"].astype(int)
+
+        # Agrupar por mês e calcular média do preço, se houver duplicatas
+        df_cotacao_mensal["Data"] = pd.to_datetime(df_cotacao_mensal["Ano"].astype(str) + "-" + df_cotacao_mensal["Mes"].astype(str) + "-01")
+        df_cotacao_mensal = df_cotacao_mensal.groupby("Data", as_index=False)["PrecoUnitarioNota"].mean()
+        df_cotacao_mensal = df_cotacao_mensal.sort_values("Data")
+    else:
+        st.warning("⚠️ O arquivo de variação mensal não foi encontrado ou está vazio.")
+        st.stop()
+    fig = go.Figure()
+
+    # Linha do preço de mercado
+    fig.add_trace(go.Scatter(
+        x=df_cotacao_mensal["Data"],
+        y=df_cotacao_mensal["PrecoUnitarioNota"],
+        mode="lines+markers",
+        name="Preço Mercado",
+        line=dict(color="blue", width=3)
+    ))
+
+    # Adicionar custo fixo por unidade
+    for unidade, custo in custos_fixos.items():
+        fig.add_trace(go.Scatter(
+            x=df_cotacao_mensal["Data"],
+            y=[custo] * len(df_cotacao_mensal),
+            mode="lines",
+            name=f"Custo {unidade}",
+            line=dict(dash="dash")  # Linha tracejada
+        ))
+
+    fig.update_layout(
+        title="Preço de Mercado vs Custos Fixos por Unidade",
+        xaxis_title="Data",
+        yaxis_title="Preço (R$/m³st)",
+        hovermode="x unified"
+    )
+
 
 # ===================== INDICADORES OPERACIONAIS ======================
 #elif st.session_state["page"] == "indicadores":
