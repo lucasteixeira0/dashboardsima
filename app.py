@@ -524,7 +524,7 @@ if st.session_state["page"] == "gestao":
                     )
                     st.plotly_chart(fig5, use_container_width=True)
 
-                    col1 = st.columns(1)
+                    col1 = st.columns(1)[0]
                     col1.metric("📦 Volume Total", f"{somaproj:.2f} m³")
                 else:
                     st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
