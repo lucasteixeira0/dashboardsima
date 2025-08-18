@@ -200,7 +200,9 @@ PAGES = {
     "Visão 360°":            "visao360",
     #"Indicadores Operacionais":"indicadores",
     "Simulador":             "simulador",
-    "Auditoria Cubagem":     "auditoria"      # << NOVA PÁGINA
+    "Auditoria Cubagem":     "auditoria",
+    "Silvicultura" : "silvicultura",
+    "Alertas" : "alertas"               
 }
 
 # valor inicial
@@ -898,11 +900,14 @@ elif st.session_state["page"] == "visao360":
     st.plotly_chart(fig, use_container_width=True)
 
 
-# ===================== INDICADORES OPERACIONAIS ======================
-#elif st.session_state["page"] == "indicadores":
- #   st.title("Indicadores Operacionais")
-    #  código correspondente
+# ===================== Alertas ======================
+elif st.session_state["page"] == "alertas":
+   st.title("Alertas")
 
+# ===================== Silvicultura ======================
+elif st.session_state["page"] == "silvicultura":
+   st.title("Silvicultura")
+   
 # ===================== SIMULADOR =====================================
 elif st.session_state["page"] == "simulador":
     st.title("Simulador")
