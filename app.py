@@ -200,7 +200,7 @@ PAGES = {
     "Visão 360°":            "visao360",
     #"Indicadores Operacionais":"indicadores",
     "Simulador":             "simulador",
-    "Auditoria Cubagem":     "auditoria",
+    "Monitoramento Cargas":     "auditoria",
     "Silvicultura" : "silvicultura",
     "Alertas" : "alertas"               
 }
