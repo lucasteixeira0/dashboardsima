@@ -41,3 +41,17 @@ dfa3d550,53,Descarregado,2025-08-03,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dia
 8cf06826,53,Vazio,2025-08-04,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,0,,False,13,Vazio,False,False
 2f376063,53,Carregado,2025-08-05,UPC-Mata Verde,Carregado,0,,0,,True,14,Vazio,True,False
 254f3e5f,53,Carbonizando,2025-08-06,UPC-Mata Verde,Carbonizando,0,,0,,True,15,Carregado,False,False
+a0379e10,53,Carbonizando,2025-08-07,UPC-Mata Verde,Carbonizando,0,,0,,False,15,Carbonizando,False,False
+19a5d39d,53,Carbonizando,2025-08-08,UPC-Mata Verde,Carbonizando,0,,0,,False,15,Carbonizando,False,False
+4bcb7702,53,Carbonizando,2025-08-09,UPC-Mata Verde,Carbonizando,0,,0,,False,15,Carbonizando,False,False
+64f1b321,53,Carbonizando,2025-08-10,UPC-Mata Verde,Carbonizando,0,,0,,False,15,Carbonizando,False,False
+796ab3c5,53,Carbonizando,2025-08-11,UPC-Mata Verde,Carbonizando,0,,0,,False,15,Carbonizando,False,False
+0ea91f51,53,Carbonizando,2025-08-12,UPC-Mata Verde,Carbonizando,0,,0,,False,15,Carbonizando,False,False
+43cb3fb2,53,Resfriando,2025-08-13,UPC-Mata Verde,Resfriando,0,,1,,True,16,Carbonizando,False,False
+e1ac1894,53,Resfriando,2025-08-14,UPC-Mata Verde,Resfriando,0,,2,,False,16,Resfriando,False,False
+30486a68,53,Resfriando,2025-08-15,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!,False,16,Resfriando,False,False
+bbab14bd,53,Resfriando,2025-08-16,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!,False,16,Resfriando,False,False
+121a26fa,53,Resfriando,2025-08-17,UPC-Mata Verde,Resfriando,0,,5,Forno resfriando há 5 dias consecutivos!,False,16,Resfriando,False,False
+35d256c1,53,Resfriando,2025-08-18,UPC-Mata Verde,Resfriando,0,,6,Forno resfriando há 6 dias consecutivos!,False,16,Resfriando,False,False
+0d1151d6,53,Resfriando,2025-08-19,UPC-Mata Verde,Resfriando,0,,7,Forno resfriando há 7 dias consecutivos!,False,16,Resfriando,False,False
+7990f957,53,Resfriando,2025-08-20,UPC-Mata Verde,Resfriando,0,,8,Forno resfriando há 8 dias consecutivos!,False,16,Resfriando,False,False

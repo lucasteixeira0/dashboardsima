@@ -41,3 +41,17 @@ dfa3d550,35,Vazio,2025-08-03,UPC-Mata Verde,Vazio,4,Forno vazio há 4 dias conse
 8cf06826,35,Vazio,2025-08-04,UPC-Mata Verde,Vazio,5,Forno vazio há 5 dias consecutivos!,0,,False,12,Vazio,False,False
 2f376063,35,Vazio,2025-08-05,UPC-Mata Verde,Vazio,6,Forno vazio há 6 dias consecutivos!,0,,False,12,Vazio,False,False
 254f3e5f,35,Vazio,2025-08-06,UPC-Mata Verde,Vazio,7,Forno vazio há 7 dias consecutivos!,0,,False,12,Vazio,False,False
+a0379e10,35,Vazio,2025-08-07,UPC-Mata Verde,Vazio,8,Forno vazio há 8 dias consecutivos!,0,,False,12,Vazio,False,False
+19a5d39d,35,Vazio,2025-08-08,UPC-Mata Verde,Vazio,9,Forno vazio há 9 dias consecutivos!,0,,False,12,Vazio,False,False
+4bcb7702,35,Carbonizando,2025-08-09,UPC-Mata Verde,Carbonizando,0,,0,,True,13,Vazio,True,False
+64f1b321,35,Carbonizando,2025-08-10,UPC-Mata Verde,Carbonizando,0,,0,,False,13,Carbonizando,False,False
+796ab3c5,35,Carbonizando,2025-08-11,UPC-Mata Verde,Carbonizando,0,,0,,False,13,Carbonizando,False,False
+0ea91f51,35,Resfriando,2025-08-12,UPC-Mata Verde,Resfriando,0,,1,,True,14,Carbonizando,False,False
+43cb3fb2,35,Resfriando,2025-08-13,UPC-Mata Verde,Resfriando,0,,2,,False,14,Resfriando,False,False
+e1ac1894,35,Resfriando,2025-08-14,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!,False,14,Resfriando,False,False
+30486a68,35,Resfriando,2025-08-15,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!,False,14,Resfriando,False,False
+bbab14bd,35,Resfriando,2025-08-16,UPC-Mata Verde,Resfriando,0,,5,Forno resfriando há 5 dias consecutivos!,False,14,Resfriando,False,False
+121a26fa,35,Resfriando,2025-08-17,UPC-Mata Verde,Resfriando,0,,6,Forno resfriando há 6 dias consecutivos!,False,14,Resfriando,False,False
+35d256c1,35,Resfriando,2025-08-18,UPC-Mata Verde,Resfriando,0,,7,Forno resfriando há 7 dias consecutivos!,False,14,Resfriando,False,False
+0d1151d6,35,Resfriando,2025-08-19,UPC-Mata Verde,Resfriando,0,,8,Forno resfriando há 8 dias consecutivos!,False,14,Resfriando,False,False
+7990f957,35,Descarregado,2025-08-20,UPC-Mata Verde,Descarregado,0,,0,,True,15,Resfriando,False,True
