@@ -257,7 +257,7 @@ if st.session_state["page"] == "gestao":
 
         df_perdas = carregar_csv_seguro(
             f"{caminho_absoluto_base}/perdas_por_vazios.csv",
-            colunas_minimas=["Mes", "Dias_no_Status", "Perda_m3", "Data_Inicio"]
+            colunas_minimas=["Mes", "Dias_no_Status", "Perda_m3", "Data_Inicio","Data_Fim"]
         )
 
         df_transporte = carregar_csv_seguro(
@@ -276,7 +276,7 @@ if st.session_state["page"] == "gestao":
         df_prod_efetiva["Data"] = pd.to_datetime(df_prod_efetiva["Data"])
         df_prod_em_processo["Data"] = pd.to_datetime(df_prod_em_processo["Data"])
         df_inatividade["Data"] = pd.to_datetime(df_inatividade["Data"])
-        df_perdas["Data_Inicio"]=pd.to_datetime(df_perdas["Data_Inicio"])
+        df_perdas["Data_Fim"]=pd.to_datetime(df_perdas["Data_Fim"])
 
 
         # Filtro de data global
@@ -294,7 +294,7 @@ if st.session_state["page"] == "gestao":
             df_prod_efetiva = df_prod_efetiva[(df_prod_efetiva["Data"] >= ini) & (df_prod_efetiva["Data"] <= fim)]
             df_prod_em_processo = df_prod_em_processo[(df_prod_em_processo["Data"] >= ini) & (df_prod_em_processo["Data"] <= fim)]
             df_inatividade = df_inatividade[(df_inatividade["Data"] >= ini) & (df_inatividade["Data"] <= fim)]
-            df_perdas = df_perdas[(df_perdas["Data_Inicio"] >= ini) & (df_perdas["Data_Inicio"] <= fim)]
+            df_perdas = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
             
 
         st.markdown(f"Período selecionado: **{ini.date()} a {fim.date()}**")
