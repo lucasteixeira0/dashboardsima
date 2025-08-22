@@ -516,20 +516,50 @@ if st.session_state["page"] == "gestao":
             with tab3:
                 if os.path.exists(caminho_proj_30):
                     df_proj_30 = pd.read_csv(caminho_proj_30)
-                    somaproj=df_proj_30["Estimativa_m3"].sum()
-                    fig5 = px.bar(
-                        df_proj_30,
-                        x="Previsao_Descarregado",
-                        y="Estimativa_m3",
-                        title="Projeção próximos 30 dias",
-                        text_auto='.2f'
-                    )
-                    st.plotly_chart(fig5, use_container_width=True)
 
-                    col1 = st.columns(1)[0]
-                    col1.metric("📦 Volume Total", f"{somaproj:.2f} m³")
+                    # garantir datetime e limpar
+                    df_proj_30["Previsao_Descarregado"] = pd.to_datetime(
+                        df_proj_30["Previsao_Descarregado"], errors="coerce"
+                    )
+                    df_proj_30 = df_proj_30.dropna(subset=["Previsao_Descarregado"])
+
+                    if df_proj_30.empty:
+                        st.info("Sem projeções válidas.")
+                    else:
+                        # período do mês atual
+                        hoje = pd.Timestamp.today()
+                        periodo_atual = hoje.to_period("M")
+
+                        # períodos disponíveis no DF
+                        periodos = df_proj_30["Previsao_Descarregado"].dt.to_period("M")
+
+                        # escolha do período alvo
+                        if (periodos == periodo_atual).any():
+                            alvo = periodo_atual
+                        else:
+                            alvo = periodos.max()  # mês mais recente do DF
+
+                        # filtrar para o mês alvo
+                        dff = df_proj_30[periodos == alvo].copy()
+
+                        if dff.empty:
+                            st.info("Sem projeções no mês selecionado.")
+                        else:
+                            somaproj = dff["Estimativa_m3"].sum()
+                            mes_legenda = f"{alvo.start_time:%Y-%m}"
+
+                            fig5 = px.bar(
+                                dff,
+                                x="Previsao_Descarregado",
+                                y="Estimativa_m3",
+                                title=f"Projeção próximos 30 dias — {mes_legenda}",
+                                text_auto=".2f",
+                            )
+                            st.plotly_chart(fig5, use_container_width=True)
+
+                            st.metric("📦 Volume Total", f"{somaproj:.2f} m³")
                 else:
-                    st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
+                        st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
             
             with tab4:
                 if os.path.exists(caminho_proj_meta):
