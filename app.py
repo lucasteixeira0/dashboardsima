@@ -207,7 +207,7 @@ PAGES = {
 
 # valor inicial
 if "page" not in st.session_state:
-    st.session_state["page"] = "gestao"
+    st.session_state["page"] = "visao360"
 
 # renderiza os botões
 for nome, chave in PAGES.items():
@@ -552,7 +552,7 @@ if st.session_state["page"] == "gestao":
                                 dff,
                                 x="Previsao_Descarregado",
                                 y="Estimativa_m3",
-                                title=f"Projeção próximos 30 dias — {mes_legenda}",
+                                title=f"Projeção para o mês atual — {mes_legenda}",
                                 text_auto=".2f",
                             )
                             st.plotly_chart(fig5, use_container_width=True)
