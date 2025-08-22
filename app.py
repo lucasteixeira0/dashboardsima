@@ -296,7 +296,8 @@ if st.session_state["page"] == "gestao":
             df_prod_efetiva = df_prod_efetiva[(df_prod_efetiva["Data"] >= ini) & (df_prod_efetiva["Data"] <= fim)]
             df_prod_em_processo = df_prod_em_processo[(df_prod_em_processo["Data"] >= ini) & (df_prod_em_processo["Data"] <= fim)]
             df_inatividade = df_inatividade[(df_inatividade["Data"] >= ini) & (df_inatividade["Data"] <= fim)]
-            df_perdas = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
+            if not df_perdas.empty:
+                df_perdas = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
             
 
         st.markdown(f"Período selecionado: **{ini.date()} a {fim.date()}**")
