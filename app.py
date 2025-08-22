@@ -718,7 +718,7 @@ elif st.session_state["page"] == "visao360":
         st.warning("❗ Nenhum dado disponível para exibir o comparativo.")
         st.stop()
     #---------------------------------------------------------------------------
-    tab_mensal, tab_semanal, tab_diario, tab_box = st.tabs(["Produção Diária","Produção Semanal","Produção Mensal","Distribuição (Boxplot)"])
+    tab_diario, tab_semanal,tab_mensal,  tab_box = st.tabs(["Produção Diária","Produção Semanal","Produção Mensal","Distribuição (Boxplot)"])
 
     with tab_diario:
             st.subheader("Produção Diária Consolidada por Unidade")
