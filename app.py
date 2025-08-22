@@ -559,7 +559,7 @@ if st.session_state["page"] == "gestao":
 
                             st.metric("📦 Volume Total", f"{somaproj:.2f} m³")
                 else:
-                        st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade.")
+                        st.warning("⛔ Dados de projeção para os próximos 30 dias não disponíveis para esta unidade .")
             
             with tab4:
                 if os.path.exists(caminho_proj_meta):
