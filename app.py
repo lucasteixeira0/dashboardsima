@@ -718,7 +718,7 @@ elif st.session_state["page"] == "visao360":
         st.warning("❗ Nenhum dado disponível para exibir o comparativo.")
         st.stop()
     #---------------------------------------------------------------------------
-    tab_mensal, tab_semanal, tab_diario, tab_box = st.tabs(["Produção Mensal","Produção Semanal", "Produção Diária","Distribuição (Boxplot)"])
+    tab_mensal, tab_semanal, tab_diario, tab_box = st.tabs(["Produção Diária","Produção Semanal","Produção Mensal","Distribuição (Boxplot)"])
 
     with tab_diario:
             st.subheader("Produção Diária Consolidada por Unidade")
@@ -751,7 +751,7 @@ elif st.session_state["page"] == "visao360":
                 )
                 st.plotly_chart(fig_prod_diaria, use_container_width=True) 
 
-                
+
     with tab_semanal:
         st.subheader("Produção Semanal por Unidade")
 
