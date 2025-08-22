@@ -276,7 +276,9 @@ if st.session_state["page"] == "gestao":
         df_prod_efetiva["Data"] = pd.to_datetime(df_prod_efetiva["Data"])
         df_prod_em_processo["Data"] = pd.to_datetime(df_prod_em_processo["Data"])
         df_inatividade["Data"] = pd.to_datetime(df_inatividade["Data"])
-        df_perdas["Data_Fim"]=pd.to_datetime(df_perdas["Data_Fim"])
+        if not df_perdas.empty:
+            df_perdas["Data_Fim"]=pd.to_datetime(df_perdas["Data_Fim"])
+        
 
 
         # Filtro de data global
