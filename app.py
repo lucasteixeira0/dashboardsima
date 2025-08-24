@@ -158,6 +158,20 @@ fazendas_ativas = {
     "CAB. COMP": False
 }    
 
+# -----------------------------------------------------------
+# 🔀 NAVEGAÇÃO PELAS PÁGINAS DO DASHBOARD
+# -----------------------------------------------------------
+PAGES = {
+    "Painel de Gestão":      "gestao",
+    "Visão 360°":            "visao360",
+    #"Indicadores Operacionais":"indicadores",
+    "Simulador":             "simulador",
+    "Monitoramento Cargas":     "auditoria",
+    "Silvicultura" : "silvicultura",
+    "Alertas" : "alertas"
+}
+
+
 usuarios = st.secrets["usuarios"]
 # Configuração da página – deve ser a primeira chamada
 st.set_page_config(page_title="Dashboard Fornos UPC-Mata Verde", layout="wide")
@@ -189,21 +203,9 @@ if not st.session_state["logged_in"]:
 mensagem = st.empty()
 mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 
-time.sleep(2)
+time.sleep(1)
 mensagem.empty()
 
-# -----------------------------------------------------------
-# 🔀 NAVEGAÇÃO PELAS PÁGINAS DO DASHBOARD
-# -----------------------------------------------------------
-PAGES = {
-    "Painel de Gestão":      "gestao",
-    "Visão 360°":            "visao360",
-    #"Indicadores Operacionais":"indicadores",
-    "Simulador":             "simulador",
-    "Monitoramento Cargas":     "auditoria",
-    "Silvicultura" : "silvicultura",
-    "Alertas" : "alertas"               
-}
 
 # valor inicial
 if "page" not in st.session_state:
@@ -213,11 +215,6 @@ if "page" not in st.session_state:
 for nome, chave in PAGES.items():
     if st.sidebar.button(nome):
         st.session_state["page"] = chave
-
-
-
-
-
             
 # ===================== PÁGINA PRINCIPAL (Gestão) =====================
 if st.session_state["page"] == "gestao":
@@ -616,7 +613,6 @@ if st.session_state["page"] == "gestao":
             st.warning("⛔ Dados não encontrados para o forno selecionado nesta unidade.")
 
 
-
         # ------------------------------------------
         # 📥 Atrasos de Produção
         # ------------------------------------------    
@@ -939,7 +935,6 @@ elif st.session_state["page"] == "visao360":
 
     st.plotly_chart(fig, use_container_width=True)
 
-
 # ===================== Alertas ======================
 elif st.session_state["page"] == "alertas":
    st.title("Alertas")
@@ -1116,3 +1111,5 @@ elif st.session_state["page"] == "auditoria":
 # ------------------------------------------
 st.markdown("---")
 st.caption("Desenvolvido por Lucas Neves Teixeira")
+
+
