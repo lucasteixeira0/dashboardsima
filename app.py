@@ -617,7 +617,7 @@ if st.session_state["page"] == "gestao":
 
                 
 
-                    # Exibir gráfico
+                    # Exibir gráfico0
                     fig6 = px.bar(
                         df_proj_vol,
                         x="Previsao_Descarregado",
