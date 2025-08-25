@@ -992,6 +992,7 @@ elif st.session_state["page"] == "silvicultura":
    # ajuste o caminho conforme seu repo
     caminho_csv = "data/silvicultura/silvicultura_preprocessado.csv"
     df = carregar_csv_seguro(caminho_csv)
+
     if df.empty:
         st.warning("Sem dados de silvicultura.")
         st.stop()
@@ -1023,6 +1024,28 @@ elif st.session_state["page"] == "silvicultura":
     st.caption(f"Período: {ini.date()} a {fim.date()}")
 
     dff = df[(df["Data"] >= ini) & (df["Data"] <= fim)].copy()
+
+    # ---- Filtros adicionais: Fazenda e Tipo de Atividade ----
+    def _pick_col(df, candidates):
+        for c in candidates:
+            if c in df.columns:
+                return c
+        return None
+
+    col_faz = _pick_col(dff, ["Fazenda", "FazendaNome", "Fazenda Nome", "Fazenda Origem"])
+    col_ati = _pick_col(dff, ["Atividade", "Tipo Atividade", "Tipo de Atividade", "Atividades", "Tipo"])
+
+    if col_faz:
+        opts_faz = ["Todos"] + sorted(dff[col_faz].dropna().astype(str).unique())
+        sel_faz = st.sidebar.selectbox("Fazenda", opts_faz, index=0)
+        if sel_faz != "Todos":
+            dff = dff[dff[col_faz].astype(str) == sel_faz]
+
+    if col_ati:
+        opts_ati = ["Todos"] + sorted(dff[col_ati].dropna().astype(str).unique())
+        sel_ati = st.sidebar.selectbox("Tipo de Atividade", opts_ati, index=0)
+        if sel_ati != "Todos":
+            dff = dff[dff[col_ati].astype(str) == sel_ati]
 
     # filtro de talhão
     if "Talhão" in dff.columns:
