@@ -342,6 +342,7 @@ if st.session_state["page"] == "gestao":
         # ------------------------------------------
         # 📊 RESUMO EXECUTIVO
         # ------------------------------------------
+
         st.header("Resumo Executivo")
 
         
@@ -718,7 +719,6 @@ if st.session_state["page"] == "gestao":
         colunas_minimas=["FazendaNome", "Data", "Metragem"]
     )
         exibir_painel_historico(df_historico, unidade_sel, formatar_nome_fazenda)
-
 # ===================== VISÃO 360° ====================================
 elif st.session_state["page"] == "visao360":
     st.title("Visão 360° – Comparativo entre Unidades")
@@ -983,20 +983,119 @@ elif st.session_state["page"] == "visao360":
     )
 
     st.plotly_chart(fig, use_container_width=True)
-
 # ===================== Alertas ======================
 elif st.session_state["page"] == "alertas":
    st.title("Alertas")
-
 # ===================== Silvicultura ======================
 elif st.session_state["page"] == "silvicultura":
-   st.title("Silvicultura")
-   
+    st.title("Silvicultura")
+   # ajuste o caminho conforme seu repo
+    caminho_csv = "data/silvicultura/silvicultura_preprocessado.csv"
+    df = carregar_csv_seguro(caminho_csv)
+    if df.empty:
+        st.warning("Sem dados de silvicultura.")
+        st.stop()
+
+    # tipos
+    import numpy as np, plotly.express as px
+    num_cols = ["Talhão","Área (ha)","Valor/ha (R$)","Custo Diário (R$)","Colaboradores","Total (kg)"]
+    for c in num_cols:
+        if c in df.columns: df[c] = pd.to_numeric(df[c], errors="coerce")
+    if "Data" not in df.columns:
+        st.error("Coluna 'Data' ausente no CSV.")
+        st.stop()
+    df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
+    df = df.dropna(subset=["Data"]).sort_values("Data")
+
+    # período (padrão: mês atual)
+    dmin, dmax = df["Data"].min().normalize(), df["Data"].max().normalize()
+    hoje = pd.Timestamp.today().normalize()
+    ini = max(hoje.replace(day=1), dmin)
+    fim = min(ini + pd.offsets.MonthEnd(1), dmax)
+    modo = st.sidebar.selectbox("Período", ["Mês atual","Mês mais recente","Intervalo personalizado"], index=0)
+    if modo == "Mês mais recente":
+        ini = max(dmax.replace(day=1), dmin); fim = dmax
+    elif modo == "Intervalo personalizado":
+        di = st.sidebar.date_input("Intervalo:", [dmin.date(), dmax.date()])
+        if isinstance(di, (list, tuple)) and len(di) == 2:
+            ini, fim = pd.to_datetime(di[0]), pd.to_datetime(di[1])
+    st.caption(f"Período: {ini.date()} a {fim.date()}")
+
+    dff = df[(df["Data"] >= ini) & (df["Data"] <= fim)].copy()
+
+    # filtro de talhão
+    if "Talhão" in dff.columns:
+        talhoes = sorted(dff["Talhão"].dropna().astype(int).astype(str).unique())
+        sel_t = st.multiselect("Talhões", talhoes, default=talhoes)
+        if sel_t:
+            dff = dff[dff["Talhão"].astype(int).astype(str).isin(sel_t)]
+
+    # KPIs (sem criar colunas no df original)
+    total_kg     = float(dff["Total (kg)"].sum()) if "Total (kg)" in dff.columns else 0.0
+    custo_total  = float(dff["Custo Diário (R$)"].sum()) if "Custo Diário (R$)" in dff.columns else 0.0
+    area_total   = float(dff["Área (ha)"].sum()) if "Área (ha)" in dff.columns else 0.0
+    colab_total  = float(dff["Colaboradores"].sum()) if "Colaboradores" in dff.columns else 0.0
+    custo_kg     = (custo_total/total_kg) if total_kg > 0 else 0.0
+    prod_kg_ha   = (total_kg/area_total) if area_total > 0 else 0.0
+    kg_por_colab = (total_kg/colab_total) if colab_total > 0 else 0.0
+
+    c1,c2,c3,c4 = st.columns(4)
+    c1.metric("Produção (kg)", f"{total_kg:,.0f}")
+    c2.metric("Custo (R$)", f"{custo_total:,.2f}")
+    c3.metric("Custo por kg (R$/kg)", f"{custo_kg:,.2f}")
+    c4.metric("Produtividade (kg/ha)", f"{prod_kg_ha:,.1f}")
+    c5,c6 = st.columns(2)
+    c5.metric("Área trabalhada (ha)", f"{area_total:,.2f}")
+    c6.metric("kg por colaborador", f"{kg_por_colab:,.1f}")
+
+    # Séries por dia
+    by_day = dff.groupby("Data", as_index=False).agg({
+        "Total (kg)": "sum",
+        "Custo Diário (R$)": "sum",
+        "Área (ha)": "sum",
+        "Colaboradores": "sum",
+    })
+    by_day["custo_kg"] = by_day["Custo Diário (R$)"] / by_day["Total (kg)"]
+
+    st.subheader("Produção diária (kg)")
+    st.plotly_chart(px.bar(by_day, x="Data", y="Total (kg)", text_auto=True), use_container_width=True)
+
+    st.subheader("Custo diário (R$)")
+    st.plotly_chart(px.line(by_day, x="Data", y="Custo Diário (R$)"), use_container_width=True)
+
+    st.subheader("Custo por kg por dia (R$/kg)")
+    st.plotly_chart(px.line(by_day, x="Data", y="custo_kg"), use_container_width=True)
+
+    # Por talhão
+    if "Talhão" in dff.columns:
+        by_talhao = dff.groupby("Talhão", as_index=False).agg({
+            "Total (kg)": "sum",
+            "Custo Diário (R$)": "sum",
+            "Área (ha)": "sum"
+        }).sort_values("Total (kg)", ascending=False)
+
+        st.subheader("Produção por talhão (kg)")
+        st.plotly_chart(px.bar(by_talhao.head(15), x="Talhão", y="Total (kg)", text_auto=True), use_container_width=True)
+
+        st.subheader("Custo por talhão (R$)")
+        st.plotly_chart(px.bar(by_talhao.head(15), x="Talhão", y="Custo Diário (R$)", text_auto=True), use_container_width=True)
+
+        st.subheader("Relação Área vs Produção")
+        st.plotly_chart(px.scatter(by_talhao, x="Área (ha)", y="Total (kg)", size="Total (kg)", hover_name="Talhão"),
+                        use_container_width=True)
+
+    # Turnos (se existir)
+    if "Horário (Início - Fim)" in dff.columns:
+        turnos = dff.groupby("Horário (Início - Fim)").size().reset_index(name="Registros").sort_values("Registros", ascending=False)
+        st.subheader("Registros por turno")
+        st.plotly_chart(px.bar(turnos, x="Horário (Início - Fim)", y="Registros", text_auto=True), use_container_width=True)
+
+    # Tabela detalhada
+    st.subheader("Registros")
+    st.dataframe(dff)
 # ===================== SIMULADOR =====================================
 elif st.session_state["page"] == "simulador":
     st.title("Simulador")
-    #  código do simulador
-
 # ===================== AUDITORIA CUBAGEM ==============================
 elif st.session_state["page"] == "auditoria":
     st.title("📋 Painel de Auditoria – Cubagem")
