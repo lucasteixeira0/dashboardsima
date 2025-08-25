@@ -325,7 +325,7 @@ if st.session_state["page"] == "gestao":
                 else:
                     ini, fim = dmin, dmax
 
-        # Função para aplicar
+        # Função para aplicar v
         def _aplica_intervalo(df, col="Data"):
             if df.empty or col not in df.columns:
                 return df
