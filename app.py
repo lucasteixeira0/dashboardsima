@@ -170,10 +170,11 @@ PAGES = {
     "Alertas" : "alertas"
 }
 
-
-usuarios = st.secrets["usuarios"]
 # Configuração da página – deve ser a primeira chamada
 st.set_page_config(page_title="Painel Fazendas Simasul", layout="wide")
+
+usuarios = st.secrets["usuarios"]
+
 
 # Inicializar session state
 if "logged_in" not in st.session_state:
