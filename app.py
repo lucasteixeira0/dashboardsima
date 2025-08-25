@@ -659,31 +659,40 @@ if st.session_state["page"] == "gestao":
             
         st.header("Estimativa de Perdas por Ociosidade")
 
-        if not df_perdas.empty and {"Data_Fim", "Mes", "Perda_m3"}.issubset(df_perdas.columns):
-            df_perdas["Data_Fim"] = pd.to_datetime(df_perdas["Data_Fim"])
-            
-            # Filtro de período
+        if not df_perdas.empty and {"Data_Fim", "Perda_m3"}.issubset(df_perdas.columns):
+            # Datas e coluna Mes
+            df_perdas["Data_Fim"] = pd.to_datetime(df_perdas["Data_Fim"], errors="coerce")
+            df_perdas = df_perdas.dropna(subset=["Data_Fim"])
+            if "Mes" not in df_perdas.columns:
+                df_perdas["Mes"] = df_perdas["Data_Fim"].dt.to_period("M").astype(str)  # ex: 2025-08
+
+            # Filtro período
             df_perdas_filtrado = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
 
             if not df_perdas_filtrado.empty:
-                perdas_agrupadas = df_perdas_filtrado[["Mes", "Perda_m3"]].sum().reset_index()
+                # Agrupamento correto
+                perdas_agrupadas = (
+                    df_perdas_filtrado.groupby("Mes", as_index=False)["Perda_m3"].sum()
+                )
+
+                # Ordena por mês cronológico
+                perdas_agrupadas["Mes_ord"] = pd.to_datetime(perdas_agrupadas["Mes"], format="%Y-%m", errors="coerce")
+                perdas_agrupadas = perdas_agrupadas.sort_values("Mes_ord").drop(columns=["Mes_ord"])
 
                 fig_perdas = px.bar(
                     perdas_agrupadas,
                     x="Mes",
                     y="Perda_m3",
-                    text_auto='.2f',
+                    text_auto=".2f",
                     title="Perdas Estimadas por Mês (m³)",
                     labels={"Perda_m3": "Perda (m³)", "Mes": "Mês"},
                     color_discrete_sequence=["red"]
                 )
-
                 st.plotly_chart(fig_perdas, use_container_width=True)
             else:
                 st.info("Não há perdas registradas no período selecionado.")
         else:
-            st.warning("⛔ Dados de perdas por ociosidade não estão disponíveis ou incompletos para esta unidade.")
-        
+            st.warning("⛔ Dados de perdas por ociosidade indisponíveis ou incompletos.")
         # ------------------------------------------
         # 📥 DOWNLOAD RELATÓRIO PDF
         # ------------------------------------------
