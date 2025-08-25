@@ -167,7 +167,7 @@ PAGES = {
     #"Indicadores Operacionais":"indicadores",
     "Simulador":             "simulador",
     "Monitoramento Cargas":     "auditoria",
-    "Silviculturan" : "silvicultura",
+    "Silvicultura" : "silvicultura",
     "Alertas" : "alertas"
 }
 
