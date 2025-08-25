@@ -145,12 +145,6 @@ def faixa_inatividade(valor):
     else:
         return "Alta (>30%)"
 
-import subprocess, streamlit as st
-def git_head():
-    try: return subprocess.check_output(["git","rev-parse","--short","HEAD"]).decode().strip()
-    except: return "desconhecido"
-st.caption(f"Commit em produção: {git_head()}")
-
 base_2="data/auditoria"
 
 fazendas_ativas = {
