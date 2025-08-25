@@ -999,6 +999,7 @@ elif st.session_state["page"] == "silvicultura":
     # tipos
     import numpy as np, plotly.express as px
     num_cols = ["Talhão","Área (ha)","Valor/ha (R$)","Custo Diário (R$)","Colaboradores","Total (kg)"]
+
     for c in num_cols:
         if c in df.columns: df[c] = pd.to_numeric(df[c], errors="coerce")
     if "Data" not in df.columns:
@@ -1040,7 +1041,7 @@ elif st.session_state["page"] == "silvicultura":
     kg_por_colab = (total_kg/colab_total) if colab_total > 0 else 0.0
 
     c1,c2,c3,c4 = st.columns(4)
-    c1.metric("Produção (kg)", f"{total_kg:,.0f}")
+    c1.metric("Insumo (kg)", f"{total_kg:,.0f}")
     c2.metric("Custo (R$)", f"{custo_total:,.2f}")
     c3.metric("Custo por kg (R$/kg)", f"{custo_kg:,.2f}")
     c4.metric("Produtividade (kg/ha)", f"{prod_kg_ha:,.1f}")
@@ -1057,7 +1058,7 @@ elif st.session_state["page"] == "silvicultura":
     })
     by_day["custo_kg"] = by_day["Custo Diário (R$)"] / by_day["Total (kg)"]
 
-    st.subheader("Produção diária (kg)")
+    st.subheader("Consumo de insumo (kg)")
     st.plotly_chart(px.bar(by_day, x="Data", y="Total (kg)", text_auto=True), use_container_width=True)
 
     st.subheader("Custo diário (R$)")
@@ -1074,13 +1075,13 @@ elif st.session_state["page"] == "silvicultura":
             "Área (ha)": "sum"
         }).sort_values("Total (kg)", ascending=False)
 
-        st.subheader("Produção por talhão (kg)")
+        st.subheader("Consumo de insumo por talhão(kg)")
         st.plotly_chart(px.bar(by_talhao.head(15), x="Talhão", y="Total (kg)", text_auto=True), use_container_width=True)
 
         st.subheader("Custo por talhão (R$)")
         st.plotly_chart(px.bar(by_talhao.head(15), x="Talhão", y="Custo Diário (R$)", text_auto=True), use_container_width=True)
 
-        st.subheader("Relação Área vs Produção")
+        st.subheader("Relação Área vs Insumo")
         st.plotly_chart(px.scatter(by_talhao, x="Área (ha)", y="Total (kg)", size="Total (kg)", hover_name="Talhão"),
                         use_container_width=True)
 
