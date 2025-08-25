@@ -659,12 +659,12 @@ if st.session_state["page"] == "gestao":
             
         st.header("Estimativa de Perdas por Ociosidade")
 
-        if not df_perdas.empty and {"Data_Inicio", "Mes", "Perda_m3"}.issubset(df_perdas.columns):
-            df_perdas["Data_Inicio"] = pd.to_datetime(df_perdas["Data_Inicio"])
+        if not df_perdas.empty and {"Data_Fim", "Mes", "Perda_m3"}.issubset(df_perdas.columns):
+            df_perdas["Data_Fim"] = pd.to_datetime(df_perdas["Data_Fim"])
             
             # Filtro de período
-            df_perdas_filtrado = df_perdas[(df_perdas["Data_Inicio"] >= ini) & (df_perdas["Data_Inicio"] <= fim)]
-            
+            df_perdas_filtrado = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
+
             if not df_perdas_filtrado.empty:
                 perdas_agrupadas = df_perdas_filtrado.groupby("Mes")[["Dias_no_Status", "Perda_m3"]].sum().reset_index()
 
