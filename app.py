@@ -286,7 +286,7 @@ if st.session_state["page"] == "gestao":
 
         if base.empty:
             st.warning("Sem dados de datas para filtrar.")
-            ini, fim = pd.Timestamp("1970-01-01"), pd.Timestamp("1970-01-01")
+            ini, fim = pd.Timestamp("1970-01-01"), pd.Timestamp("1970-01-02")
         else:
             base["Data"] = pd.to_datetime(base["Data"])
             dmin, dmax = base["Data"].min().normalize(), base["Data"].max().normalize()
