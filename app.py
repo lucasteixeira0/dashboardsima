@@ -280,24 +280,66 @@ if st.session_state["page"] == "gestao":
 
         # Filtro de data global
         st.sidebar.header("Filtro de Período")
-        data_inicio = df_prod_em_processo["Data"].min().date()
-        data_fim = df_prod_em_processo["Data"].max().date()
-        if not df_prod_em_processo.empty: 
-            data_sel = st.sidebar.date_input("Selecione o intervalo:", [data_inicio, data_fim])
-        else:     
-            data_sel=[1,2]
 
-        # Aplicar o filtro
-        if len(data_sel) == 2:
-            ini, fim = pd.to_datetime(data_sel[0]), pd.to_datetime(data_sel[1])
-            df_prod_efetiva = df_prod_efetiva[(df_prod_efetiva["Data"] >= ini) & (df_prod_efetiva["Data"] <= fim)]
-            df_prod_em_processo = df_prod_em_processo[(df_prod_em_processo["Data"] >= ini) & (df_prod_em_processo["Data"] <= fim)]
-            df_inatividade = df_inatividade[(df_inatividade["Data"] >= ini) & (df_inatividade["Data"] <= fim)]
-            if not df_perdas.empty:
+        # Base para datas: use o df mais completo disponível
+        base = df_prod_em_processo.copy()
+        if base.empty:
+            base = df_prod_efetiva.copy()
+        if base.empty:
+            st.warning("Sem dados de datas para filtrar.")
+            ini, fim = pd.Timestamp("1970-01-01"), pd.Timestamp("1970-01-01")
+        else:
+            base["Data"] = pd.to_datetime(base["Data"])
+            dmin, dmax = base["Data"].min().normalize(), base["Data"].max().normalize()
+
+            modo = st.sidebar.selectbox(
+                "Período",
+                ["Intervalo personalizado", "Mês atual", "Mês mais recente do dataset"]
+            )
+
+            if modo == "Intervalo personalizado":
+                data_sel = st.sidebar.date_input(
+                    "Selecione o intervalo:",
+                    [dmin.date(), dmax.date()]
+                )
+                if isinstance(data_sel, (list, tuple)) and len(data_sel) == 2:
+                    ini = pd.to_datetime(data_sel[0])
+                    fim = pd.to_datetime(data_sel[1])
+                else:
+                    ini, fim = dmin, dmax
+
+            elif modo == "Mês atual":
+                hoje = pd.Timestamp.today().normalize()
+                ini = hoje.replace(day=1)
+                fim = (ini + pd.offsets.MonthEnd(1))
+
+                # restringe ao intervalo existente no dataset
+                ini = max(ini, dmin)
+                fim = min(fim, dmax)
+
+            else:  # "Mês mais recente do dataset"
+                # pega o último dia do dataset e calcula o mês dele
+                ultimo = dmax
+                ini = ultimo.replace(day=1)
+                fim = (ini + pd.offsets.MonthEnd(1))
+
+                # restringe ao intervalo existente no dataset
+                ini = max(ini, dmin)
+                fim = min(fim, dmax)
+
+            # Aplicar o filtro se existir base
+            def _aplica_intervalo(df, col="Data"):
+                if df.empty or col not in df.columns:
+                    return df
+                return df[(df[col] >= ini) & (df[col] <= fim)]
+
+            df_prod_efetiva      = _aplica_intervalo(df_prod_efetiva, "Data")
+            df_prod_em_processo  = _aplica_intervalo(df_prod_em_processo, "Data")
+            df_inatividade       = _aplica_intervalo(df_inatividade, "Data")
+            if not df_perdas.empty and "Data_Fim" in df_perdas.columns:
                 df_perdas = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
-            
 
-        st.markdown(f"Período selecionado: **{ini.date()} a {fim.date()}**")
+            st.markdown(f"Período selecionado: **{ini.date()} a {fim.date()}**")
 
         # ------------------------------------------
         # 📊 RESUMO EXECUTIVO
