@@ -55,3 +55,7 @@ bbab14bd,13,Vazio,2025-08-16,UPC-Mata Verde,Vazio,4,Forno vazio há 4 dias conse
 35d256c1,13,Vazio,2025-08-18,UPC-Mata Verde,Vazio,6,Forno vazio há 6 dias consecutivos!,0,,False,15,Vazio,False,False
 0d1151d6,13,Vazio,2025-08-19,UPC-Mata Verde,Vazio,7,Forno vazio há 7 dias consecutivos!,0,,False,15,Vazio,False,False
 7990f957,13,Carregado,2025-08-20,UPC-Mata Verde,Carregado,0,,0,,True,16,Vazio,True,False
+acd55806,13,Carbonizando,2025-08-21,UPC-Mata Verde,Carbonizando,0,,0,,True,17,Carregado,False,False
+7c2a5096,13,Carbonizando,2025-08-22,UPC-Mata Verde,Carbonizando,0,,0,,False,17,Carbonizando,False,False
+01b9bbb3,13,Carbonizando,2025-08-23,UPC-Mata Verde,Carbonizando,0,,0,,False,17,Carbonizando,False,False
+c446444c,13,Resfriando,2025-08-24,UPC-Mata Verde,Resfriando,0,,1,,True,18,Carbonizando,False,False

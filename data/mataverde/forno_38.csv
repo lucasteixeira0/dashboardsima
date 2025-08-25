@@ -55,3 +55,7 @@ bbab14bd,38,Resfriando,2025-08-16,UPC-Mata Verde,Resfriando,0,,1,,True,4,Carboni
 35d256c1,38,Resfriando,2025-08-18,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!,False,4,Resfriando,False,False
 0d1151d6,38,Resfriando,2025-08-19,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!,False,4,Resfriando,False,False
 7990f957,38,Resfriando,2025-08-20,UPC-Mata Verde,Resfriando,0,,5,Forno resfriando há 5 dias consecutivos!,False,4,Resfriando,False,False
+acd55806,38,Descarregado,2025-08-21,UPC-Mata Verde,Descarregado,0,,0,,True,5,Resfriando,False,True
+7c2a5096,38,Vazio,2025-08-22,UPC-Mata Verde,Vazio,1,,0,,True,6,Descarregado,False,False
+01b9bbb3,38,Vazio,2025-08-23,UPC-Mata Verde,Vazio,2,Forno vazio há 2 dias consecutivos!,0,,False,6,Vazio,False,False
+c446444c,38,Vazio,2025-08-24,UPC-Mata Verde,Vazio,3,Forno vazio há 3 dias consecutivos!,0,,False,6,Vazio,False,False
