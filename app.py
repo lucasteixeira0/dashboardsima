@@ -666,7 +666,7 @@ if st.session_state["page"] == "gestao":
             df_perdas_filtrado = df_perdas[(df_perdas["Data_Fim"] >= ini) & (df_perdas["Data_Fim"] <= fim)]
 
             if not df_perdas_filtrado.empty:
-                perdas_agrupadas = df_perdas_filtrado[["Mes", "Perda_m3"]].sum().reset_index()
+                perdas_agrupadas = df_perdas_filtrado[["Perda_m3"]].sum().reset_index()
 
                 fig_perdas = px.bar(
                     perdas_agrupadas,
