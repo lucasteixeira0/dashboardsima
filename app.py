@@ -1013,7 +1013,7 @@ elif st.session_state["page"] == "silvicultura":
     "Monitoramento de crescimento, sanidade e qualidade da madeira",
     "Conservação de APP/RL e restauração ecológica",
     "Colheita, baldeio e carregamento",
-    "Transporte florestal e logística de pátio",
+    "Transporte florestal e logística de pátio.",
     "Manejo de resíduos e pós-colheita (restos culturais)",
     "Segurança, treinamento e certificações (FSC/PEFC)",
     "Silvicultura de precisão: drones, sensores, taxa variável",
