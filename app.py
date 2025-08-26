@@ -993,7 +993,7 @@ elif st.session_state["page"] == "silvicultura":
     fazendas_opts = ["Todas", "Mata Verde", "Gloria", "Proteção", "Santa Ana", "Mapal", "Alto da Serra", "CAB. COMP"]
     fazenda_sel = st.sidebar.selectbox("Fazenda", fazendas_opts, index=0)
 
-    tiv_opts = [
+    ativ_opts = [
     "Todos",
     "Planejamento, licenciamento e mapas",
     "Viveiro: produção e aclimatação de mudas",
@@ -1004,7 +1004,7 @@ elif st.session_state["page"] == "silvicultura":
     "Controle de formigas e outras pragas",
     "Controle de plantas daninhas (roçada manual, mecânica, química)",
     "Manutenção de aceiros e prevenção a incêndios",
-    "Podas, desrama e condução de ceopas",
+    "Podas, desrama e condução de copas",
     "Desbastes e uniformização de povoamentos",
     "Adubação de cobertura e reposições",
     "Estradas florestais: abertura, drenagem e manutenção",
