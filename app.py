@@ -1023,7 +1023,7 @@ elif st.session_state["page"] == "silvicultura":
 
     st.caption(f"Selecionado • Fazenda: {fazenda_sel} | Atividade: {atividade_sel}")
 
-   # ajuste o caminho conforme seu repo
+   # ajuste o caminho conforme seu repohg
     caminho_csv = "data/silvicultura/silvicultura_preprocessado.csv"
     df = carregar_csv_seguro(caminho_csv)
 
