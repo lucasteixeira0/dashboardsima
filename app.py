@@ -1004,7 +1004,7 @@ elif st.session_state["page"] == "silvicultura":
     "Controle de formigas e outras pragas",
     "Controle de plantas daninhas (roçada manual, mecânica, química)",
     "Manutenção de aceiros e prevenção a incêndios",
-    "Podas, desrama e condução de copas",
+    "Podas, desrama e condução de ceopas",
     "Desbastes e uniformização de povoamentos",
     "Adubação de cobertura e reposições",
     "Estradas florestais: abertura, drenagem e manutenção",
