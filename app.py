@@ -993,7 +993,32 @@ elif st.session_state["page"] == "silvicultura":
     fazendas_opts = ["Todas", "Mata Verde", "Gloria", "Proteção", "Santa Ana", "Mapal", "Alto da Serra", "CAB. COMP"]
     fazenda_sel = st.sidebar.selectbox("Fazenda", fazendas_opts, index=0)
 
-    ativ_opts = ["Todos","Desbaste", "Roçada", "Limpeza de Aceiro", "Aplicação de Isca", "Inventário", "Manutenção", "Outros"]
+    tiv_opts = [
+    "Todos",
+    "Planejamento, licenciamento e mapas",
+    "Viveiro: produção e aclimatação de mudas",
+    "Preparo de solo e conservação (terraceamento, curvas de nível)",
+    "Correção e adubação (calagem, fosfatagem, NPK)",
+    "Plantio e replantio",
+    "Irrigação inicial, sombreamento e tutoria",
+    "Controle de formigas e outras pragas",
+    "Controle de plantas daninhas (roçada manual, mecânica, química)",
+    "Manutenção de aceiros e prevenção a incêndios",
+    "Podas, desrama e condução de copas",
+    "Desbastes e uniformização de povoamentos",
+    "Adubação de cobertura e reposições",
+    "Estradas florestais: abertura, drenagem e manutenção",
+    "Cercas, marcos e proteção de áreas sensíveis",
+    "Inventário florestal e mensurações dendrométricas",
+    "Monitoramento de crescimento, sanidade e qualidade da madeira",
+    "Conservação de APP/RL e restauração ecológica",
+    "Colheita, baldeio e carregamento",
+    "Transporte florestal e logística de pátio",
+    "Manejo de resíduos e pós-colheita (restos culturais)",
+    "Segurança, treinamento e certificações (FSC/PEFC)",
+    "Silvicultura de precisão: drones, sensores, taxa variável",
+    "Gestão de custos, orçamentos e indicadores",
+]
     atividade_sel = st.sidebar.selectbox("Tipo de atividade", ativ_opts, index=0)
 
     st.caption(f"Selecionado • Fazenda: {fazenda_sel} | Atividade: {atividade_sel}")
