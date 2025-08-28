@@ -206,7 +206,6 @@ mensagem.success(f"✅ Bem-vindo, {st.session_state.username}!")
 time.sleep(1)
 mensagem.empty()
 
-
 # valor inicial
 if "page" not in st.session_state:
     st.session_state["page"] = "visao360"
