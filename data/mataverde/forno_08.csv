@@ -59,3 +59,7 @@ acd55806,08,Carregado,2025-08-21,UPC-Mata Verde,Carregado,0,,0,,True,17,Vazio,Tr
 7c2a5096,08,Carbonizando,2025-08-22,UPC-Mata Verde,Carbonizando,0,,0,,True,18,Carregado,False,False
 01b9bbb3,08,Carbonizando,2025-08-23,UPC-Mata Verde,Carbonizando,0,,0,,False,18,Carbonizando,False,False
 c446444c,08,Carbonizando,2025-08-24,UPC-Mata Verde,Carbonizando,0,,0,,False,18,Carbonizando,False,False
+1b1e8071,08,Carbonizando,2025-08-25,UPC-Mata Verde,Carbonizando,0,,0,,False,18,Carbonizando,False,False
+dee492cb,08,Carbonizando,2025-08-26,UPC-Mata Verde,Carbonizando,0,,0,,False,18,Carbonizando,False,False
+3944c62b,08,Resfriando,2025-08-27,UPC-Mata Verde,Resfriando,0,,1,,True,19,Carbonizando,False,False
+06d130ed,08,Resfriando,2025-08-28,UPC-Mata Verde,Resfriando,0,,2,,False,19,Resfriando,False,False
