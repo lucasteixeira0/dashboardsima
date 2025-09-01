@@ -62,3 +62,6 @@ c446444c,41,Resfriando,2025-08-24,UPC-Mata Verde,Resfriando,0,,9,Forno resfriand
 1b1e8071,41,Descarregado,2025-08-25,UPC-Mata Verde,Descarregado,0,,0,,True,15,Resfriando,False,True
 dee492cb,41,Vazio,2025-08-26,UPC-Mata Verde,Vazio,1,,0,,True,16,Descarregado,False,False
 06d130ed,41,Carbonizando,2025-08-28,UPC-Mata Verde,Carbonizando,0,,0,,True,17,Vazio,True,False
+f96483e8,41,Resfriando,2025-08-29,UPC-Mata Verde,Resfriando,0,,1,,True,18,Carbonizando,False,False
+3cf8f347,41,Resfriando,2025-08-30,UPC-Mata Verde,Resfriando,0,,2,,False,18,Resfriando,False,False
+a9476d82,41,Resfriando,2025-08-31,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!,False,18,Resfriando,False,False

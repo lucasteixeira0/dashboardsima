@@ -63,3 +63,6 @@ c446444c,32,Carregado,2025-08-24,UPC-Mata Verde,Carregado,0,,0,,False,20,Carrega
 dee492cb,32,Carbonizando,2025-08-26,UPC-Mata Verde,Carbonizando,0,,0,,False,21,Carbonizando,False,False
 3944c62b,32,Resfriando,2025-08-27,UPC-Mata Verde,Resfriando,0,,1,,True,22,Carbonizando,False,False
 06d130ed,32,Resfriando,2025-08-28,UPC-Mata Verde,Resfriando,0,,2,,False,22,Resfriando,False,False
+f96483e8,32,Resfriando,2025-08-29,UPC-Mata Verde,Resfriando,0,,3,Forno resfriando há 3 dias consecutivos!,False,22,Resfriando,False,False
+3cf8f347,32,Resfriando,2025-08-30,UPC-Mata Verde,Resfriando,0,,4,Forno resfriando há 4 dias consecutivos!,False,22,Resfriando,False,False
+a9476d82,32,Resfriando,2025-08-31,UPC-Mata Verde,Resfriando,0,,5,Forno resfriando há 5 dias consecutivos!,False,22,Resfriando,False,False
