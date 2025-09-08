@@ -67,3 +67,6 @@ f96483e8,52,Vazio,2025-08-29,UPC-Mata Verde,Vazio,6,Forno vazio há 6 dias conse
 3cf8f347,52,Vazio,2025-08-30,UPC-Mata Verde,Vazio,7,Forno vazio há 7 dias consecutivos!,0,,False,17,Vazio,False,False
 a9476d82,52,Carregado,2025-08-31,UPC-Mata Verde,Carregado,0,,0,,True,18,Vazio,True,False
 73866919,52,Carregado,2025-09-01,UPC-Mata Verde,Carregado,0,,0,,False,18,Carregado,False,False
+86f3cd4d,52,Carbonizando,2025-09-02,UPC-Mata Verde,Carbonizando,0,,0,,True,19,Carregado,False,False
+2170da12,52,Carbonizando,2025-09-03,UPC-Mata Verde,Carbonizando,0,,0,,False,19,Carbonizando,False,False
+57297f5e,52,Resfriando,2025-09-04,UPC-Mata Verde,Resfriando,0,,1,,True,20,Carbonizando,False,False
