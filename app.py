@@ -1062,8 +1062,9 @@ elif st.session_state["page"] == "silvicultura":
         "Controle de formigas": "Controle de formigas e outras pragas",
         "Controle de pragas": "Controle de formigas e outras pragas",
     }
-    def normaliza_atividade(s):
-        if not isinstance(s, str): return s
+    def normaliza_atividade(s: str):
+        if not isinstance(s, str):
+            return s
         s = s.strip().rstrip(".")
         return MAP_APP2CAN.get(s, s)
 
@@ -1073,17 +1074,16 @@ elif st.session_state["page"] == "silvicultura":
 
     # ----------------- Dados do link publicado -----------------
     url_csv = st.secrets["silviculturadatabase"]["link"]
-    df = ler_csv_publicado(url_csv)  # sua função simples já criada
+    df = ler_csv_publicado(url_csv)
 
     if df.empty:
         st.warning("Sem dados de silvicultura.")
         st.stop()
 
     # ----------------- Higiene de cabeçalhos + renomeação -----------------
-    # remove espaços extras e NBSP dos nomes de coluna
     df.columns = (
         df.columns.astype(str)
-        .str.replace("\u00A0", " ")
+        .str.replace("\u00A0", " ", regex=False)
         .str.strip()
     )
     rename_map = {
@@ -1094,15 +1094,16 @@ elif st.session_state["page"] == "silvicultura":
         "Atividade": "Atividade",
         "Fornecedor/Responsável": "Fornecedor",
         "Categoria Atividade": "Categoria",
-        "Unidade de medida": "UM",
-        "Quantidade": "Quantidade",
-        "Insumo": "Insumo",
+        "Unidade de medida": "UM",                  # UM da ATIVIDADE
+        "Quantidade": "Quantidade",                 # Quantidade da ATIVIDADE
+        "Insumo": "Insumo",                         # Qtd do INSUMO (sem UM)
         "Descrição": "Descrição",
-        "Valor unitário(R$/X)": "Valor unitário (R$/X)",
-        "Custo diário(R$)": "Custo Diário (R$)",
+        "Valor unitário(R$/X)": "Valor unitário (R$/X)",  # Valor da ATIVIDADE
+        "Custo diário(R$)": "Custo Diário (R$)",          # Custo da ATIVIDADE
         "Colaboradores": "Colaboradores",
         "Horário": "Horário (Início - Fim)",
-        "Horário (Início – Fim)": "Horário (Início - Fim)",  # traço diferente
+        "Horário (Início – Fim)": "Horário (Início - Fim)",
+        "Área (ha)": "Área (ha)",
     }
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
@@ -1110,12 +1111,12 @@ elif st.session_state["page"] == "silvicultura":
     if "Data" not in df.columns:
         st.error("Coluna 'Data' ausente.")
         st.stop()
-    # ler_csv_publicado já usa dayfirst; reforço:
+
     df["Data"] = pd.to_datetime(df["Data"], dayfirst=True, errors="coerce")
     df = df.dropna(subset=["Data"]).sort_values("Data")
 
-    # como o CSV já vem com decimal vírgula tratado, apenas coagir numéricos
-    for c in ["Talhão", "Quantidade", "Valor unitário (R$/X)", "Custo Diário (R$)", "Colaboradores", "Área (ha)"]:
+    for c in ["Talhão", "Quantidade", "Valor unitário (R$/X)", "Custo Diário (R$)",
+              "Colaboradores", "Área (ha)", "Insumo"]:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
 
@@ -1126,16 +1127,10 @@ elif st.session_state["page"] == "silvicultura":
         if {"Quantidade", "Valor unitário (R$/X)"}.issubset(df.columns):
             df["Custo Diário (R$)"] = df["Quantidade"] * df["Valor unitário (R$/X)"]
 
-    if {"UM", "Quantidade"}.issubset(df.columns):
-        mask_kg = df["UM"].astype(str).str.lower().isin(["kg", "quilograma", "quilogramas"])
-        df["Total (kg)"] = np.where(mask_kg, df["Quantidade"], np.nan)
-
     # ----------------- Filtros UI -----------------
-    # Fazendas dinâmicas do próprio dataset
+    fazendas_opts = ["Todas"]
     if "Fazenda" in df.columns:
-        fazendas_opts = ["Todas"] + sorted([x for x in df["Fazenda"].dropna().astype(str).unique()])
-    else:
-        fazendas_opts = ["Todas"]
+        fazendas_opts += sorted(df["Fazenda"].dropna().astype(str).unique())
     fazenda_sel = st.sidebar.selectbox("Fazenda", fazendas_opts, index=0)
 
     atividade_sel = st.sidebar.selectbox("Atividade", ATIVIDADES, index=0)
@@ -1174,77 +1169,84 @@ elif st.session_state["page"] == "silvicultura":
         st.stop()
 
     # ----------------- KPIs -----------------
-    total_kg     = float(dff["Total (kg)"].sum()) if "Total (kg)" in dff.columns else 0.0
+    total_insumo = float(dff["Insumo"].sum()) if "Insumo" in dff.columns else 0.0
     custo_total  = float(dff["Custo Diário (R$)"].sum()) if "Custo Diário (R$)" in dff.columns else 0.0
     colab_total  = float(dff["Colaboradores"].sum()) if "Colaboradores" in dff.columns else 0.0
     area_total   = float(dff["Área (ha)"].sum()) if "Área (ha)" in dff.columns else np.nan
 
-    custo_kg     = (custo_total / total_kg) if total_kg > 0 else np.nan
-    prod_kg_ha   = (total_kg / area_total) if (pd.notna(area_total) and area_total > 0 and total_kg > 0) else np.nan
-    kg_por_colab = (total_kg / colab_total) if (colab_total > 0 and total_kg > 0) else np.nan
+    custo_por_insumo = (custo_total / total_insumo) if total_insumo > 0 else np.nan
+    insumo_por_ha    = (total_insumo / area_total) if (pd.notna(area_total) and area_total > 0) else np.nan
+    insumo_por_colab = (total_insumo / colab_total) if (colab_total > 0) else np.nan
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Insumo (kg)", f"{total_kg:,.0f}" if total_kg > 0 else "—")
+    c1.metric("Insumo (unid.)", f"{total_insumo:,.0f}" if total_insumo > 0 else "—")
     c2.metric("Custo (R$)", f"{custo_total:,.2f}" if custo_total > 0 else "—")
-    c3.metric("Custo por kg (R$/kg)", f"{custo_kg:,.2f}" if pd.notna(custo_kg) else "—")
-    c4.metric("Produtividade (kg/ha)", f"{prod_kg_ha:,.1f}" if pd.notna(prod_kg_ha) else "—")
+    c3.metric("Custo por insumo (R$)", f"{custo_por_insumo:,.2f}" if pd.notna(custo_por_insumo) else "—")
+    c4.metric("Insumo por ha", f"{insumo_por_ha:,.1f}" if pd.notna(insumo_por_ha) else "—")
     c5, c6 = st.columns(2)
     c5.metric("Área trabalhada (ha)", f"{area_total:,.2f}" if pd.notna(area_total) else "—")
-    c6.metric("kg por colaborador", f"{kg_por_colab:,.1f}" if pd.notna(kg_por_colab) else "—")
+    c6.metric("Insumo por colaborador", f"{insumo_por_colab:,.1f}" if pd.notna(insumo_por_colab) else "—")
 
     # ----------------- Séries por dia -----------------
     agg = {}
-    for c in ["Custo Diário (R$)", "Total (kg)", "Quantidade"]:
-        if c in dff.columns: agg[c] = "sum"
+    for c in ["Custo Diário (R$)", "Insumo", "Quantidade"]:
+        if c in dff.columns:
+            agg[c] = "sum"
     by_day = dff.groupby("Data", as_index=False).agg(agg) if agg else pd.DataFrame({"Data": []})
 
-    if "Total (kg)" in by_day.columns and not by_day["Total (kg)"].isna().all():
-        st.subheader("Consumo de insumo (kg)")
-        st.plotly_chart(px.bar(by_day, x="Data", y="Total (kg)", text_auto=True), use_container_width=True)
+    if "Insumo" in by_day.columns and not by_day["Insumo"].isna().all():
+        st.subheader("Consumo de insumo (unid.)")
+        st.plotly_chart(px.bar(by_day, x="Data", y="Insumo", text_auto=True), use_container_width=True)
     elif "Quantidade" in by_day.columns:
-        st.subheader("Quantidade total (todas UMs)")
-        st.plotly_chart(px.bar(by_day, x="Data", y="Quantidade"), use_container_width=True)
+        st.subheader("Quantidade de atividade (UM da atividade)")
+        st.plotly_chart(px.bar(by_day, x="Data", y="Quantidade", text_auto=True), use_container_width=True)
 
     if "Custo Diário (R$)" in by_day.columns:
         st.subheader("Custo diário (R$)")
         st.plotly_chart(px.line(by_day, x="Data", y="Custo Diário (R$)"), use_container_width=True)
 
-    if {"Custo Diário (R$)", "Total (kg)"} <= set(by_day.columns):
-        by_day["custo_kg"] = np.where(by_day["Total (kg)"] > 0,
-                                      by_day["Custo Diário (R$)"] / by_day["Total (kg)"], np.nan)
-        st.subheader("Custo por kg por dia (R$/kg)")
-        st.plotly_chart(px.line(by_day, x="Data", y="custo_kg"), use_container_width=True)
+    if {"Custo Diário (R$)", "Insumo"} <= set(by_day.columns):
+        by_day["Custo por insumo (R$)"] = np.where(by_day["Insumo"] > 0,
+                                                   by_day["Custo Diário (R$)"] / by_day["Insumo"], np.nan)
+        st.subheader("Custo por unidade de insumo por dia (R$)")
+        st.plotly_chart(px.line(by_day, x="Data", y="Custo por insumo (R$)"), use_container_width=True)
 
     # ----------------- Por talhão -----------------
     if "Talhão" in dff.columns:
-        cols = [c for c in ["Total (kg)", "Quantidade", "Custo Diário (R$)"] if c in dff.columns]
+        cols = [c for c in ["Insumo", "Quantidade", "Custo Diário (R$)"] if c in dff.columns]
         if cols:
             by_talhao = dff.groupby("Talhão", as_index=False).agg({c: "sum" for c in cols})
 
-            if "Total (kg)" in by_talhao.columns and not by_talhao["Total (kg)"].isna().all():
-                st.subheader("Consumo de insumo por talhão (kg)")
-                st.plotly_chart(px.bar(by_talhao.sort_values("Total (kg)", ascending=False).head(15),
-                                       x="Talhão", y="Total (kg)", text_auto=True),
-                                use_container_width=True)
+            if "Insumo" in by_talhao.columns and not by_talhao["Insumo"].isna().all():
+                st.subheader("Consumo de insumo por talhão (unid.)")
+                st.plotly_chart(
+                    px.bar(by_talhao.sort_values("Insumo", ascending=False).head(15),
+                           x="Talhão", y="Insumo", text_auto=True),
+                    use_container_width=True
+                )
             elif "Quantidade" in by_talhao.columns:
-                st.subheader("Quantidade por talhão")
-                st.plotly_chart(px.bar(by_talhao.sort_values("Quantidade", ascending=False).head(15),
-                                       x="Talhão", y="Quantidade", text_auto=True),
-                                use_container_width=True)
+                st.subheader("Quantidade da atividade por talhão")
+                st.plotly_chart(
+                    px.bar(by_talhao.sort_values("Quantidade", ascending=False).head(15),
+                           x="Talhão", y="Quantidade", text_auto=True),
+                    use_container_width=True
+                )
 
             if "Custo Diário (R$)" in by_talhao.columns:
                 st.subheader("Custo por talhão (R$)")
-                st.plotly_chart(px.bar(by_talhao.sort_values("Custo Diário (R$)", ascending=False).head(15),
-                                       x="Talhão", y="Custo Diário (R$)", text_auto=True),
-                                use_container_width=True)
+                st.plotly_chart(
+                    px.bar(by_talhao.sort_values("Custo Diário (R$)", ascending=False).head(15),
+                           x="Talhão", y="Custo Diário (R$)", text_auto=True),
+                    use_container_width=True
+                )
 
     # ----------------- Turnos -----------------
     if "Horário (Início - Fim)" in dff.columns:
         turnos = (
             dff.groupby("Horário (Início - Fim)")
-               .size()
-               .reset_index(name="Registros")
-               .sort_values("Registros", ascending=False)
+              .size()
+              .reset_index(name="Registros")
+              .sort_values("Registros", ascending=False)
         )
         st.subheader("Registros por turno")
         st.plotly_chart(px.bar(turnos, x="Horário (Início - Fim)", y="Registros", text_auto=True),
@@ -1253,6 +1255,7 @@ elif st.session_state["page"] == "silvicultura":
     # ----------------- Tabela -----------------
     st.subheader("Registros")
     st.dataframe(dff, use_container_width=True)
+
 
 
 # ===================== SIMULADOR =====================================
