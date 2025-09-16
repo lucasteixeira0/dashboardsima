@@ -1004,11 +1004,7 @@ elif st.session_state["page"] == "alertas":
    st.title("Alertas")
 # ===================== Silvicultura ======================
 elif st.session_state["page"] == "silvicultura":
-    import pandas as pd
-    import numpy as np
-    import plotly.express as px
-    import streamlit as st
-
+    
     # ----------------- Taxonomia canônica e mapa AppSheet->canônico -----------------
     ATIVIDADES = [
         "Todos",
@@ -1068,6 +1064,60 @@ elif st.session_state["page"] == "silvicultura":
         s = s.strip().rstrip(".")
         return MAP_APP2CAN.get(s, s)
 
+    INSUMO_MAP_CATEG = {
+    # aplica: se há insumo; um_insumo: unidade do insumo
+    # label_insumo: como rotular; dec: casas decimais; kpi: aparece em KPI
+    # norm_ha: se faz sentido mostrar insumo/ha por padrão para a categoria
+    "Correção e adubação (calagem, fosfatagem, NPK)": {
+        "aplica": True, "um_insumo": "kg", "label_insumo": "Fertilizante",
+        "dec": 0, "kpi": True, "norm_ha": True
+    },
+    "Adubação de cobertura e reposições": {
+        "aplica": True, "um_insumo": "kg", "label_insumo": "Fertilizante",
+        "dec": 0, "kpi": True, "norm_ha": True
+    },
+    "Controle de formigas e outras pragas": {
+        "aplica": True, "um_insumo": "kg", "label_insumo": "Isca",
+        "dec": 0, "kpi": True, "norm_ha": True
+    },
+    "Controle de plantas daninhas (roçada manual, mecânica, química)": {
+        "aplica": True, "um_insumo": "L", "label_insumo": "Herbicida",
+        "dec": 1, "kpi": True, "norm_ha": True
+    },
+    "Irrigação inicial, sombreamento e tutoria": {
+        "aplica": True, "um_insumo": "m³", "label_insumo": "Água",
+        "dec": 1, "kpi": True, "norm_ha": False
+    },
+    "Viveiro: produção e aclimatação de mudas": {
+        "aplica": True, "um_insumo": "unid", "label_insumo": "Mudas",
+        "dec": 0, "kpi": True, "norm_ha": False
+    },
+    "Estradas florestais: abertura, drenagem e manutenção": {
+        "aplica": True, "um_insumo": "m³", "label_insumo": "Brita/Saibro",
+        "dec": 1, "kpi": True, "norm_ha": False
+    },
+    "Cercas, marcos e proteção de áreas sensíveis": {
+        "aplica": True, "um_insumo": "unid", "label_insumo": "Mourões/Arame",
+        "dec": 0, "kpi": True, "norm_ha": False
+    },
+
+    # Sem insumo
+    "Planejamento, licenciamento e mapas":                         {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Preparo de solo e conservação (terraceamento, curvas de nível)":{"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Plantio e replantio":                                         {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Manutenção de aceiros e prevenção a incêndios":               {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Podas, desrama e condução de copas":                          {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Desbastes e uniformização de povoamentos":                    {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Inventário florestal e mensurações dendrométricas":           {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Monitoramento de crescimento, sanidade e qualidade da madeira":{"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Conservação de APP/RL e restauração ecológica":               {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Colheita, baldeio e carregamento":                            {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Transporte florestal e logística de pátio":                   {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Manejo de resíduos e pós-colheita (restos culturais)":        {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Segurança, treinamento e certificações (FSC/PEFC)":           {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Silvicultura de precisão: drones, sensores, taxa variável":   {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+    "Gestão de custos, orçamentos e indicadores":                  {"aplica": False, "um_insumo": None, "label_insumo": None, "dec": 0, "kpi": False, "norm_ha": False},
+}
     # ----------------- Título -----------------
     st.title("Silvicultura")
     st.sidebar.header("Filtros")
@@ -1178,8 +1228,8 @@ elif st.session_state["page"] == "silvicultura":
         area_auto = dff.loc[mask_ha, "Quantidade"].sum()
     area_col = dff["Área (ha)"].sum() if "Área (ha)" in dff.columns else 0.0
     area_total = float(area_auto + area_col) if (area_auto + area_col) > 0 else np.nan
-    
-    custo_por_insumo = (custo_total / total_insumo) if total_insumo > 0 else np.nan
+
+    #custo_por_insumo = (custo_total / total_insumo) if total_insumo > 0 else np.nan
     insumo_por_ha    = (total_insumo / area_total) if (pd.notna(area_total) and area_total > 0) else np.nan
     insumo_por_colab = (total_insumo / colab_total) if (colab_total > 0) else np.nan
 
