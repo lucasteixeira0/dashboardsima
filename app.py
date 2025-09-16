@@ -1055,7 +1055,7 @@ elif st.session_state["page"] == "silvicultura":
     st.title("Silvicultura")
     st.sidebar.header("Filtros")
 
-    fazendas_opts = ["Todas", "Mata Verde", "Gloria", "Proteção", "Santa Ana", "Mapal", "Alto da Serra", "CAB. COMP"]
+    fazendas_opts = ["Todas", "Mata Verde", "Gloria", "Proteção", "Santa Ana", "Mapal", "Alto da Serra", "Faz. Cabeceira Comprida"]
     fazenda_sel = st.sidebar.selectbox("Fazenda", fazendas_opts, index=0)
     atividade_sel = st.sidebar.selectbox("Atividade", ATIVIDADES, index=0)
     st.caption(f"Selecionado • Fazenda: {fazenda_sel} | Atividade: {atividade_sel}")
