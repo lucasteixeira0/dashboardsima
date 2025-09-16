@@ -147,53 +147,20 @@ def faixa_inatividade(valor):
         return "Alta (>30%)"
 
 @st.cache_data(show_spinner=False)
-def ler_planilha_publicada(url: str, expect_cols=None, timeout=15, bust_seconds=300) -> pd.DataFrame:
-    """Lê CSV de planilha publicada (Google Sheets/AppSheet) com validações básicas."""
-    if not isinstance(url, str) or not url.startswith(("http://", "https://")):
-        st.error("URL inválida.")
-        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
-
-    # força output=csv e cache-buster
-    sep = "&" if "?" in url else "?"
-    base = url
-    if "output=csv" not in url:
-        base = f"{url}{sep}output=csv"
-        sep = "&"
-    url_final = f"{base}{sep}cachebust={int(time.time())//bust_seconds}"
-
-    try:
-        r = requests.get(url_final, timeout=timeout, headers={"User-Agent":"Mozilla/5.0"})
-    except Exception as e:
-        st.error(f"Falha de rede: {e}")
-        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
-
-    if r.status_code != 200:
-        st.error(f"HTTP {r.status_code} no link publicado.")
-        st.code((r.text or "")[:800])
-        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
-
-    txt = r.text or ""
-    if txt.lstrip().startswith("<"):
-        st.error("O link retornou HTML, não CSV. Publique a aba como CSV e use o gid correto.")
-        st.code(textwrap.shorten(txt, width=800, placeholder=" [...] "))
-        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
-
-    # tenta separadores
-    buf = io.StringIO(txt)
-    for sep_try in [",", ";", "\t"]:
-        buf.seek(0)
-        try:
-            df = pd.read_csv(buf, sep=sep_try, encoding="utf-8-sig")
-            if df.shape[1] > 1 or sep_try == ",":
-                df = df.dropna(how="all")
-                return df if not expect_cols else df.reindex(columns=list(dict.fromkeys(expect_cols + list(df.columns))))
-        except Exception:
-            continue
-
-    # fallback
-    st.warning("CSV sem separador claro. Exibindo amostra bruta para diagnóstico.")
-    st.code(txt[:800])
-    return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
+def ler_csv_publicado(url: str) -> pd.DataFrame:
+    """Lê CSV publicado do Google Sheets/AppSheet. Entradas já padronizadas."""
+    df = pd.read_csv(
+        url,
+        encoding="utf-8-sig",
+        sep=",",            # CSV padrão
+        decimal=",",        # vírgula como separador decimal
+        thousands=".",      # ponto como separador de milhar
+        dtype=None          # inferência automática
+    )
+    # Data padrão BR, se existir
+    if "Data" in df.columns:
+        df["Data"] = pd.to_datetime(df["Data"], dayfirst=True, errors="coerce")
+    return df
 
 base_2="data/auditoria"
 
