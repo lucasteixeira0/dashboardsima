@@ -14,6 +14,7 @@ import hashlib
 import streamlit as st
 import time 
 import json
+import time, textwrap, io, requests
 
 def carregar_csv_seguro(caminho, colunas_minimas=None):
     if os.path.exists(caminho):
@@ -144,6 +145,55 @@ def faixa_inatividade(valor):
         return "Média (10–30%)"
     else:
         return "Alta (>30%)"
+
+@st.cache_data(show_spinner=False)
+def ler_planilha_publicada(url: str, expect_cols=None, timeout=15, bust_seconds=300) -> pd.DataFrame:
+    """Lê CSV de planilha publicada (Google Sheets/AppSheet) com validações básicas."""
+    if not isinstance(url, str) or not url.startswith(("http://", "https://")):
+        st.error("URL inválida.")
+        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
+
+    # força output=csv e cache-buster
+    sep = "&" if "?" in url else "?"
+    base = url
+    if "output=csv" not in url:
+        base = f"{url}{sep}output=csv"
+        sep = "&"
+    url_final = f"{base}{sep}cachebust={int(time.time())//bust_seconds}"
+
+    try:
+        r = requests.get(url_final, timeout=timeout, headers={"User-Agent":"Mozilla/5.0"})
+    except Exception as e:
+        st.error(f"Falha de rede: {e}")
+        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
+
+    if r.status_code != 200:
+        st.error(f"HTTP {r.status_code} no link publicado.")
+        st.code((r.text or "")[:800])
+        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
+
+    txt = r.text or ""
+    if txt.lstrip().startswith("<"):
+        st.error("O link retornou HTML, não CSV. Publique a aba como CSV e use o gid correto.")
+        st.code(textwrap.shorten(txt, width=800, placeholder=" [...] "))
+        return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
+
+    # tenta separadores
+    buf = io.StringIO(txt)
+    for sep_try in [",", ";", "\t"]:
+        buf.seek(0)
+        try:
+            df = pd.read_csv(buf, sep=sep_try, encoding="utf-8-sig")
+            if df.shape[1] > 1 or sep_try == ",":
+                df = df.dropna(how="all")
+                return df if not expect_cols else df.reindex(columns=list(dict.fromkeys(expect_cols + list(df.columns))))
+        except Exception:
+            continue
+
+    # fallback
+    st.warning("CSV sem separador claro. Exibindo amostra bruta para diagnóstico.")
+    st.code(txt[:800])
+    return pd.DataFrame(columns=expect_cols) if expect_cols else pd.DataFrame()
 
 base_2="data/auditoria"
 
@@ -1062,7 +1112,11 @@ elif st.session_state["page"] == "silvicultura":
 
     # ----------------- Dados (mantém leitura via CSV) -----------------
     url_csv = st.secrets["silviculturadatabase"]["link"]
-    df = carregar_csv_seguro(url_csv)
+    df = ler_planilha_publicada(url_csv, expect_cols=[
+    "ID","Data","Fazenda/Unidade","Talhão","Atividade","Fornecedor/Responsável",
+    "Categoria Atividade","Unidade de medida","Quantidade","Insumo","Descrição",
+    "Valor unitário(R$/X)","Custo diário(R$)","Colaboradores","Horário"
+])
     if df.empty:
         st.warning("Sem dados de silvicultura.")
         st.stop()
