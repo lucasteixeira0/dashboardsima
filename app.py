@@ -1079,11 +1079,8 @@ elif st.session_state["page"] == "silvicultura":
 
     # ----------------- Dados (mantém leitura via CSV) -----------------
     url_csv = st.secrets["silviculturadatabase"]["link"]
-    df = ler_planilha_publicada(url_csv, expect_cols=[
-    "ID","Data","Fazenda/Unidade","Talhão","Atividade","Fornecedor/Responsável",
-    "Categoria Atividade","Unidade de medida","Quantidade","Insumo","Descrição",
-    "Valor unitário(R$/X)","Custo diário(R$)","Colaboradores","Horário"
-])
+    df = ler_csv_publicado(url_csv)
+       
     if df.empty:
         st.warning("Sem dados de silvicultura.")
         st.stop()
