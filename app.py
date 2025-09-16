@@ -1172,8 +1172,13 @@ elif st.session_state["page"] == "silvicultura":
     total_insumo = float(dff["Insumo"].sum()) if "Insumo" in dff.columns else 0.0
     custo_total  = float(dff["Custo Diário (R$)"].sum()) if "Custo Diário (R$)" in dff.columns else 0.0
     colab_total  = float(dff["Colaboradores"].sum()) if "Colaboradores" in dff.columns else 0.0
-    area_total   = float(dff["Área (ha)"].sum()) if "Área (ha)" in dff.columns else np.nan
-
+    area_auto = 0.0
+    if {"UM","Quantidade"} <= set(dff.columns):
+        mask_ha = dff["UM"].astype(str).str.lower().isin(["ha","hectare","hectares"])
+        area_auto = dff.loc[mask_ha, "Quantidade"].sum()
+    area_col = dff["Área (ha)"].sum() if "Área (ha)" in dff.columns else 0.0
+    area_total = float(area_auto + area_col) if (area_auto + area_col) > 0 else np.nan
+    
     custo_por_insumo = (custo_total / total_insumo) if total_insumo > 0 else np.nan
     insumo_por_ha    = (total_insumo / area_total) if (pd.notna(area_total) and area_total > 0) else np.nan
     insumo_por_colab = (total_insumo / colab_total) if (colab_total > 0) else np.nan
