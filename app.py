@@ -153,7 +153,7 @@ fazendas_ativas = {
     "Proteção": True,
     "Santa Ana": False,
     "Mapal": False,
-    "Alto da Serra": False,
+    "Alto da Serra": True,
     "CAB. COMP": False
 }    
 
@@ -987,146 +987,248 @@ elif st.session_state["page"] == "alertas":
    st.title("Alertas")
 # ===================== Silvicultura ======================
 elif st.session_state["page"] == "silvicultura":
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+    import streamlit as st
+
+    # ----------------- Taxonomia canônica e mapa AppSheet->canônico -----------------
+    ATIVIDADES = [
+        "Todos",
+        "Planejamento, licenciamento e mapas",
+        "Viveiro: produção e aclimatação de mudas",
+        "Preparo de solo e conservação (terraceamento, curvas de nível)",
+        "Correção e adubação (calagem, fosfatagem, NPK)",
+        "Plantio e replantio",
+        "Irrigação inicial, sombreamento e tutoria",
+        "Controle de formigas e outras pragas",
+        "Controle de plantas daninhas (roçada manual, mecânica, química)",
+        "Manutenção de aceiros e prevenção a incêndios",
+        "Podas, desrama e condução de copas",
+        "Desbastes e uniformização de povoamentos",
+        "Adubação de cobertura e reposições",
+        "Estradas florestais: abertura, drenagem e manutenção",
+        "Cercas, marcos e proteção de áreas sensíveis",
+        "Inventário florestal e mensurações dendrométricas",
+        "Monitoramento de crescimento, sanidade e qualidade da madeira",
+        "Conservação de APP/RL e restauração ecológica",
+        "Colheita, baldeio e carregamento",
+        "Transporte florestal e logística de pátio",
+        "Manejo de resíduos e pós-colheita (restos culturais)",
+        "Segurança, treinamento e certificações (FSC/PEFC)",
+        "Silvicultura de precisão: drones, sensores, taxa variável",
+        "Gestão de custos, orçamentos e indicadores",
+    ]
+    MAP_APP2CAN = {
+        "Planejamento, licenciamento e mapas": "Planejamento, licenciamento e mapas",
+        "Viveiro: produção e aclimatação de mudas": "Viveiro: produção e aclimatação de mudas",
+        "Preparo de solo e conservação (terraceamento, curvas de nível)": "Preparo de solo e conservação (terraceamento, curvas de nível)",
+        "Correção e adubação (calagem, fosfatagem, NPK)": "Correção e adubação (calagem, fosfatagem, NPK)",
+        "Plantio e replantio": "Plantio e replantio",
+        "Irrigação inicial, sombreamento e tutoria": "Irrigação inicial, sombreamento e tutoria",
+        "Controle de plantas daninhas (roçada manual, mecânica, química)": "Controle de plantas daninhas (roçada manual, mecânica, química)",
+        "Manutenção de aceiros e prevenção a incêndios": "Manutenção de aceiros e prevenção a incêndios",
+        "Podas, desrama e condução de copas": "Podas, desrama e condução de copas",
+        "Desbastes e uniformização de povoamentos": "Desbastes e uniformização de povoamentos",
+        "Adubação de cobertura e reposições": "Adubação de cobertura e reposições",
+        "Estradas florestais: abertura, drenagem e manutenção": "Estradas florestais: abertura, drenagem e manutenção",
+        "Cercas, marcos e proteção de áreas sensíveis": "Cercas, marcos e proteção de áreas sensíveis",
+        "Inventário florestal e mensurações dendrométricas": "Inventário florestal e mensurações dendrométricas",
+        "Monitoramento de crescimento, sanidade e qualidade da madeira": "Monitoramento de crescimento, sanidade e qualidade da madeira",
+        "Conservação de APP/RL e restauração ecológica": "Conservação de APP/RL e restauração ecológica",
+        "Colheita, baldeio e carregamento": "Colheita, baldeio e carregamento",
+        "Transporte florestal e logística de pátio": "Transporte florestal e logística de pátio",
+        "Silvicultura de precisão: drones, sensores, taxa variável": "Silvicultura de precisão: drones, sensores, taxa variável",
+        "Manejo de resíduos e pós-colheita (restos culturais)": "Manejo de resíduos e pós-colheita (restos culturais)",
+        "Segurança, treinamento e certificações (FSC/PEFC)": "Segurança, treinamento e certificações (FSC/PEFC)",
+        "Gestão de custos, orçamentos e indicadores": "Gestão de custos, orçamentos e indicadores",
+        # agregações
+        "Controle de formigas": "Controle de formigas e outras pragas",
+        "Controle de pragas": "Controle de formigas e outras pragas",
+    }
+    def normaliza_atividade(s):
+        if not isinstance(s, str): return s
+        s = s.strip().rstrip(".")
+        return MAP_APP2CAN.get(s, s)
+
+    # ----------------- UI -----------------
     st.title("Silvicultura")
     st.sidebar.header("Filtros")
+
     fazendas_opts = ["Todas", "Mata Verde", "Gloria", "Proteção", "Santa Ana", "Mapal", "Alto da Serra", "CAB. COMP"]
     fazenda_sel = st.sidebar.selectbox("Fazenda", fazendas_opts, index=0)
-
-    ativ_opts = [
-    "Todos",
-    "Planejamento, licenciamento e mapas",
-    "Viveiro: produção e aclimatação de mudas",
-    "Preparo de solo e conservação (terraceamento, curvas de nível)",
-    "Correção e adubação (calagem, fosfatagem, NPK)",
-    "Plantio e replantio",
-    "Irrigação inicial, sombreamento e tutoria",
-    "Controle de formigas e outras pragas",
-    "Controle de plantas daninhas (roçada manual, mecânica, química)",
-    "Manutenção de aceiros e prevenção a incêndios",
-    "Podas, desrama e condução de copas",
-    "Desbastes e uniformização de povoamentos",
-    "Adubação de cobertura e reposições",
-    "Estradas florestais: abertura, drenagem e manutenção",
-    "Cercas, marcos e proteção de áreas sensíveis",
-    "Inventário florestal e mensurações dendrométricas",
-    "Monitoramento de crescimento, sanidade e qualidade da madeira",
-    "Conservação de APP/RL e restauração ecológica",
-    "Colheita, baldeio e carregamento",
-    "Transporte florestal e logística de pátio.",
-    "Manejo de resíduos e pós-colheita (restos culturais)",
-    "Segurança, treinamento e certificações (FSC/PEFC)",
-    "Silvicultura de precisão: drones, sensores, taxa variável",
-    "Gestão de custos, orçamentos e indicadores",
-]
-    atividade_sel = st.sidebar.selectbox("Tipo de atividade", ativ_opts, index=0)
-
+    atividade_sel = st.sidebar.selectbox("Atividade", ATIVIDADES, index=0)
     st.caption(f"Selecionado • Fazenda: {fazenda_sel} | Atividade: {atividade_sel}")
 
-   # ajuste o caminho conforme seu repohg
-    caminho_csv = "data/silvicultura/silvicultura_preprocessado.csv"
-    df = carregar_csv_seguro(caminho_csv)
-
+    # ----------------- Dados (mantém leitura via CSV) -----------------
+    url_csv = st.secrets["silviculturadatabase"]["link"]
+    df = carregar_csv_seguro(url_csv)
     if df.empty:
         st.warning("Sem dados de silvicultura.")
         st.stop()
 
-    # tipos
-    import numpy as np, plotly.express as px
-    num_cols = ["Talhão","Área (ha)","Valor/ha (R$)","Custo Diário (R$)","Colaboradores","Total (kg)"]
+    # ----------------- Padroniza nomes vindos da planilha AppSheet -----------------
+    rename_map = {
+        "ID": "ID",
+        "Data": "Data",
+        "Fazenda/Unidade": "Fazenda",
+        "Talhão": "Talhão",
+        "Atividade": "Atividade",
+        "Fornecedor/Responsável": "Fornecedor",
+        "Categoria Atividade": "Categoria",
+        "Unidade de medida": "UM",
+        "Quantidade": "Quantidade",
+        "Insumo": "Insumo",
+        "Descrição": "Descrição",
+        "Valor unitário(R$/X)": "Valor unitário (R$/X)",
+        "Custo diário(R$)": "Custo Diário (R$)",
+        "Colaboradores": "Colaboradores",
+        "Horário": "Horário (Início - Fim)",
+    }
+    # renomeia apenas colunas existentes
+    df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
-    for c in num_cols:
-        if c in df.columns: df[c] = pd.to_numeric(df[c], errors="coerce")
+    # tipos
     if "Data" not in df.columns:
-        st.error("Coluna 'Data' ausente no CSV.")
+        st.error("Coluna 'Data' ausente.")
         st.stop()
     df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
     df = df.dropna(subset=["Data"]).sort_values("Data")
 
-    # período (padrão: mês atual)
+    for c in ["Talhão", "Quantidade", "Valor unitário (R$/X)", "Custo Diário (R$)", "Colaboradores"]:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+
+    # normaliza atividade
+    if "Atividade" in df.columns:
+        df["Atividade"] = df["Atividade"].apply(normaliza_atividade)
+
+    # se custo diário faltar, calcula
+    if "Custo Diário (R$)" in df.columns and df["Custo Diário (R$)"].isna().all():
+        if {"Quantidade", "Valor unitário (R$/X)"}.issubset(df.columns):
+            df["Custo Diário (R$)"] = df["Quantidade"] * df["Valor unitário (R$/X)"]
+
+    # cria coluna Total (kg) somente quando UM == kg
+    if {"UM", "Quantidade"}.issubset(df.columns):
+        mask_kg = df["UM"].astype(str).str.lower().isin(["kg", "quilograma", "quilogramas"])
+        df["Total (kg)"] = np.where(mask_kg, df["Quantidade"], np.nan)
+
+    # ----------------- Período -----------------
     dmin, dmax = df["Data"].min().normalize(), df["Data"].max().normalize()
     hoje = pd.Timestamp.today().normalize()
     ini = max(hoje.replace(day=1), dmin)
     fim = min(ini + pd.offsets.MonthEnd(1), dmax)
-    modo = st.sidebar.selectbox("Período", ["Mês atual","Mês mais recente","Intervalo personalizado"], index=0)
+
+    modo = st.sidebar.selectbox("Período", ["Mês atual", "Mês mais recente", "Intervalo personalizado"], index=0)
     if modo == "Mês mais recente":
         ini = max(dmax.replace(day=1), dmin); fim = dmax
     elif modo == "Intervalo personalizado":
         di = st.sidebar.date_input("Intervalo:", [dmin.date(), dmax.date()])
         if isinstance(di, (list, tuple)) and len(di) == 2:
             ini, fim = pd.to_datetime(di[0]), pd.to_datetime(di[1])
+
     st.caption(f"Período: {ini.date()} a {fim.date()}")
 
+    # ----------------- Filtros -----------------
     dff = df[(df["Data"] >= ini) & (df["Data"] <= fim)].copy()
-    # filtro de talhão
+
+    if fazenda_sel != "Todas" and "Fazenda" in dff.columns:
+        dff = dff[dff["Fazenda"] == fazenda_sel]
+
+    if atividade_sel != "Todos" and "Atividade" in dff.columns:
+        dff = dff[dff["Atividade"] == atividade_sel]
+
     if "Talhão" in dff.columns:
-        talhoes = sorted(dff["Talhão"].dropna().astype(int).astype(str).unique())
+        talhoes = sorted(dff["Talhão"].dropna().astype(str).unique())
         sel_t = st.multiselect("Talhões", talhoes, default=talhoes)
         if sel_t:
-            dff = dff[dff["Talhão"].astype(int).astype(str).isin(sel_t)]
+            dff = dff[dff["Talhão"].astype(str).isin(sel_t)]
 
-    # KPIs (sem criar colunas no df original)
+    if dff.empty:
+        st.warning("Sem registros no filtro atual.")
+        st.stop()
+
+    # ----------------- KPIs -----------------
     total_kg     = float(dff["Total (kg)"].sum()) if "Total (kg)" in dff.columns else 0.0
     custo_total  = float(dff["Custo Diário (R$)"].sum()) if "Custo Diário (R$)" in dff.columns else 0.0
-    area_total   = float(dff["Área (ha)"].sum()) if "Área (ha)" in dff.columns else 0.0
     colab_total  = float(dff["Colaboradores"].sum()) if "Colaboradores" in dff.columns else 0.0
-    custo_kg     = (custo_total/total_kg) if total_kg > 0 else 0.0
-    prod_kg_ha   = (total_kg/area_total) if area_total > 0 else 0.0
-    kg_por_colab = (total_kg/colab_total) if colab_total > 0 else 0.0
 
-    c1,c2,c3,c4 = st.columns(4)
-    c1.metric("Insumo (kg)", f"{total_kg:,.0f}")
-    c2.metric("Custo (R$)", f"{custo_total:,.2f}")
-    c3.metric("Custo por kg (R$/kg)", f"{custo_kg:,.2f}")
-    c4.metric("Produtividade (kg/ha)", f"{prod_kg_ha:,.1f}")
-    c5,c6 = st.columns(2)
-    c5.metric("Área trabalhada (ha)", f"{area_total:,.2f}")
-    c6.metric("kg por colaborador", f"{kg_por_colab:,.1f}")
+    # fallback de área não existe nessa planilha -> mostra só se existir
+    area_total = float(dff["Área (ha)"].sum()) if "Área (ha)" in dff.columns else np.nan
 
-    # Séries por dia
-    by_day = dff.groupby("Data", as_index=False).agg({
-        "Total (kg)": "sum",
-        "Custo Diário (R$)": "sum",
-        "Área (ha)": "sum",
-        "Colaboradores": "sum",
-    })
-    by_day["custo_kg"] = by_day["Custo Diário (R$)"] / by_day["Total (kg)"]
+    custo_kg     = (custo_total / total_kg) if total_kg > 0 else np.nan
+    prod_kg_ha   = (total_kg / area_total) if (not np.isnan(area_total) and area_total > 0 and total_kg > 0) else np.nan
+    kg_por_colab = (total_kg / colab_total) if colab_total > 0 and total_kg > 0 else np.nan
 
-    st.subheader("Consumo de insumo (kg)")
-    st.plotly_chart(px.bar(by_day, x="Data", y="Total (kg)", text_auto=True), use_container_width=True)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Insumo (kg)", f"{total_kg:,.0f}" if total_kg > 0 else "—")
+    c2.metric("Custo (R$)", f"{custo_total:,.2f}" if custo_total > 0 else "—")
+    c3.metric("Custo por kg (R$/kg)", f"{custo_kg:,.2f}" if pd.notna(custo_kg) else "—")
+    c4.metric("Produtividade (kg/ha)", f"{prod_kg_ha:,.1f}" if pd.notna(prod_kg_ha) else "—")
 
-    st.subheader("Custo diário (R$)")
-    st.plotly_chart(px.line(by_day, x="Data", y="Custo Diário (R$)"), use_container_width=True)
+    c5, c6 = st.columns(2)
+    c5.metric("Área trabalhada (ha)", f"{area_total:,.2f}" if pd.notna(area_total) else "—")
+    c6.metric("kg por colaborador", f"{kg_por_colab:,.1f}" if pd.notna(kg_por_colab) else "—")
 
-    st.subheader("Custo por kg por dia (R$/kg)")
-    st.plotly_chart(px.line(by_day, x="Data", y="custo_kg"), use_container_width=True)
+    # ----------------- Séries por dia -----------------
+    agg = {"Custo Diário (R$)": "sum"}
+    if "Total (kg)" in dff.columns:
+        agg["Total (kg)"] = "sum"
+    if "Quantidade" in dff.columns:
+        agg["Quantidade"] = "sum"
 
-    # Por talhão
+    by_day = dff.groupby("Data", as_index=False).agg(agg)
+
+    if "Total (kg)" in by_day.columns and not by_day["Total (kg)"].isna().all():
+        st.subheader("Consumo de insumo (kg)")
+        st.plotly_chart(px.bar(by_day, x="Data", y="Total (kg)", text_auto=True), use_container_width=True)
+    else:
+        st.subheader("Quantidade total (todas UMs)")
+        st.plotly_chart(px.bar(by_day, x="Data", y="Quantidade"), use_container_width=True)
+
+    if "Custo Diário (R$)" in by_day.columns:
+        st.subheader("Custo diário (R$)")
+        st.plotly_chart(px.line(by_day, x="Data", y="Custo Diário (R$)"), use_container_width=True)
+
+    if {"Custo Diário (R$)", "Total (kg)"} <= set(by_day.columns):
+        by_day["custo_kg"] = np.where(by_day["Total (kg)"] > 0,
+                                      by_day["Custo Diário (R$)"] / by_day["Total (kg)"], np.nan)
+        st.subheader("Custo por kg por dia (R$/kg)")
+        st.plotly_chart(px.line(by_day, x="Data", y="custo_kg"), use_container_width=True)
+
+    # ----------------- Por talhão -----------------
     if "Talhão" in dff.columns:
-        by_talhao = dff.groupby("Talhão", as_index=False).agg({
-            "Total (kg)": "sum",
-            "Custo Diário (R$)": "sum",
-            "Área (ha)": "sum"
-        }).sort_values("Total (kg)", ascending=False)
+        cols = [c for c in ["Total (kg)", "Quantidade", "Custo Diário (R$)"] if c in dff.columns]
+        if cols:
+            by_talhao = dff.groupby("Talhão", as_index=False).agg({c: "sum" for c in cols})
 
-        st.subheader("Consumo de insumo por talhão(kg)")
-        st.plotly_chart(px.bar(by_talhao.head(15), x="Talhão", y="Total (kg)", text_auto=True), use_container_width=True)
+            if "Total (kg)" in by_talhao.columns and not by_talhao["Total (kg)"].isna().all():
+                st.subheader("Consumo de insumo por talhão (kg)")
+                st.plotly_chart(px.bar(by_talhao.sort_values("Total (kg)", ascending=False).head(15),
+                                       x="Talhão", y="Total (kg)", text_auto=True),
+                                use_container_width=True)
+            else:
+                st.subheader("Quantidade por talhão")
+                st.plotly_chart(px.bar(by_talhao.sort_values("Quantidade", ascending=False).head(15),
+                                       x="Talhão", y="Quantidade", text_auto=True),
+                                use_container_width=True)
 
-        st.subheader("Custo por talhão (R$)")
-        st.plotly_chart(px.bar(by_talhao.head(15), x="Talhão", y="Custo Diário (R$)", text_auto=True), use_container_width=True)
+            if "Custo Diário (R$)" in by_talhao.columns:
+                st.subheader("Custo por talhão (R$)")
+                st.plotly_chart(px.bar(by_talhao.sort_values("Custo Diário (R$)", ascending=False).head(15),
+                                       x="Talhão", y="Custo Diário (R$)", text_auto=True),
+                                use_container_width=True)
 
-        st.subheader("Relação Área vs Insumo")
-        st.plotly_chart(px.scatter(by_talhao, x="Área (ha)", y="Total (kg)", size="Total (kg)", hover_name="Talhão"),
-                        use_container_width=True)
-
-    # Turnos (se existir)
+    # ----------------- Turnos -----------------
     if "Horário (Início - Fim)" in dff.columns:
         turnos = dff.groupby("Horário (Início - Fim)").size().reset_index(name="Registros").sort_values("Registros", ascending=False)
         st.subheader("Registros por turno")
         st.plotly_chart(px.bar(turnos, x="Horário (Início - Fim)", y="Registros", text_auto=True), use_container_width=True)
 
-    # Tabela detalhada
+    # ----------------- Tabela -----------------
     st.subheader("Registros")
-    st.dataframe(dff)
+    st.dataframe(dff, use_container_width=True)
+
 # ===================== SIMULADOR =====================================
 elif st.session_state["page"] == "simulador":
     st.title("Simulador")
