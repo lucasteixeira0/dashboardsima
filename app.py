@@ -1266,34 +1266,48 @@ elif st.session_state["page"] == "silvicultura":
        # st.subheader("Custo por unidade de insumo por dia (R$)")
         #st.plotly_chart(px.line(by_day, x="Data", y="Custo por insumo (R$)"), use_container_width=True)
 
-    # ----------------- Por talhão -----------------
-    if "Talhão" in dff.columns:
-        cols = [c for c in ["Insumo", "Quantidade", "Custo Diário (R$)"] if c in dff.columns]
-        if cols:
-            by_talhao = dff.groupby("Talhão", as_index=False).agg({c: "sum" for c in cols})
+# ----------------- Por talhão (bubble chart) -----------------
+if "Talhão" in dff.columns:
+    cols = [c for c in ["Insumo", "Quantidade", "Custo Diário (R$)"] if c in dff.columns]
+    if cols:
+        by_talhao = dff.groupby("Talhão", as_index=False).agg({c: "sum" for c in cols})
 
-            if "Insumo" in by_talhao.columns and not by_talhao["Insumo"].isna().all():
-                st.subheader("Consumo de insumo por talhão (unid.)")
-                st.plotly_chart(
-                    px.bar(by_talhao.sort_values("Insumo", ascending=False).head(15),
-                           x="Talhão", y="Insumo", text_auto=True),
-                    use_container_width=True
-                )
-            elif "Quantidade" in by_talhao.columns:
-                st.subheader("Quantidade da atividade por talhão")
-                st.plotly_chart(
-                    px.bar(by_talhao.sort_values("Quantidade", ascending=False).head(15),
-                           x="Talhão", y="Quantidade", text_auto=True),
-                    use_container_width=True
-                )
+        if "Insumo" in by_talhao.columns and not by_talhao["Insumo"].isna().all():
+            st.subheader("Consumo de insumo por talhão (unid.)")
+            st.plotly_chart(
+                px.scatter(by_talhao,
+                           x="Talhão",
+                           y="Insumo",
+                           size="Insumo",
+                           hover_name="Talhão",
+                           title="Consumo de insumo"),
+                use_container_width=True
+            )
 
-            if "Custo Diário (R$)" in by_talhao.columns:
-                st.subheader("Custo por talhão (R$)")
-                st.plotly_chart(
-                    px.bar(by_talhao.sort_values("Custo Diário (R$)", ascending=False).head(15),
-                           x="Talhão", y="Custo Diário (R$)", text_auto=True),
-                    use_container_width=True
-                )
+        elif "Quantidade" in by_talhao.columns:
+            st.subheader("Quantidade da atividade por talhão")
+            st.plotly_chart(
+                px.scatter(by_talhao,
+                           x="Talhão",
+                           y="Quantidade",
+                           size="Quantidade",
+                           hover_name="Talhão",
+                           title="Quantidade"),
+                use_container_width=True
+            )
+
+        if "Custo Diário (R$)" in by_talhao.columns:
+            st.subheader("Custo por talhão (R$)")
+            st.plotly_chart(
+                px.scatter(by_talhao,
+                           x="Talhão",
+                           y="Custo Diário (R$)",
+                           size="Custo Diário (R$)",
+                           hover_name="Talhão",
+                           title="Custo"),
+                use_container_width=True
+            )
+
 
     # ----------------- Turnos -----------------
     if "Horário (Início - Fim)" in dff.columns:
