@@ -1260,11 +1260,11 @@ elif st.session_state["page"] == "silvicultura":
         st.subheader("Custo diário (R$)")
         st.plotly_chart(px.line(by_day, x="Data", y="Custo Diário (R$)"), use_container_width=True)
 
-    if {"Custo Diário (R$)", "Insumo"} <= set(by_day.columns):
-        by_day["Custo por insumo (R$)"] = np.where(by_day["Insumo"] > 0,
-                                                   by_day["Custo Diário (R$)"] / by_day["Insumo"], np.nan)
-        st.subheader("Custo por unidade de insumo por dia (R$)")
-        st.plotly_chart(px.line(by_day, x="Data", y="Custo por insumo (R$)"), use_container_width=True)
+    #if {"Custo Diário (R$)", "Insumo"} <= set(by_day.columns):
+     #   by_day["Custo por insumo (R$)"] = np.where(by_day["Insumo"] > 0,
+      #                                             by_day["Custo Diário (R$)"] / by_day["Insumo"], np.nan)
+       # st.subheader("Custo por unidade de insumo por dia (R$)")
+        #st.plotly_chart(px.line(by_day, x="Data", y="Custo por insumo (R$)"), use_container_width=True)
 
     # ----------------- Por talhão -----------------
     if "Talhão" in dff.columns:
