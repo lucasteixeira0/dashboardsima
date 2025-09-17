@@ -170,7 +170,7 @@ fazendas_ativas = {
     "Proteção": True,
     "Santa Ana": False,
     "Mapal": False,
-    "Alto da Serra": True,
+    "Alto da Serra": False,
     "CAB. COMP": False
 }    
 
